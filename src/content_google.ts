@@ -273,7 +273,7 @@ async function addCryptoBtnToReadingMailGoogle(template: HTMLTemplateElement, ma
         mailParentDiv.insertBefore(cryptoBtnDiv, mailParentDiv.firstChild);
         setTimeout(() => {
             addDecryptBtnForAttachment(oneMail, template);
-        }, 1000);
+        }, 2000);
     })
 }
 
