@@ -383,6 +383,10 @@ function addEncryptBtnForQuickReply(mailArea: HTMLElement, template: HTMLTemplat
             }
         ) as HTMLElement;
 
+        sendDiv.addEventListener('click', () => {
+            cryptoBtnDiv.parentNode?.removeChild(cryptoBtnDiv);
+        });
+
         toolBarDiv.insertBefore(cryptoBtnDiv, sendDiv);
     });
 }
