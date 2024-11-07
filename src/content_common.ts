@@ -184,6 +184,7 @@ export async function encryptMailInComposing(mailBody: HTMLElement, receiver: st
 
 export async function decryptMailInReading(mailContent: HTMLElement, cryptoBtn: HTMLElement): Promise<void> {
     showLoading();
+    console.log("------>>> current mail content:", mailContent);
     try {
         const statusRsp = await sendMessageToBackground('', MsgType.CheckIfLogin)
         if (statusRsp.success < 0) {
