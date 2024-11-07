@@ -320,6 +320,7 @@ function addMailDecryptForReadingNetease(composeDiv: HTMLElement, template: HTML
         return;
     }
 
+    console.log("------------------->>>> frame id:", iframe?.id);
     const mailArea = iframeDocument.querySelector(".netease_mail_readhtml.netease_mail_readhtml_webmail") as HTMLElement | null;
     if (!mailArea) {
         let debounceTimer = setTimeout(() => {
