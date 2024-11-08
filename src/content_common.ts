@@ -7,7 +7,7 @@ import {
     sendMessageToBackground,
     showLoading
 } from "./utils";
-import {BMailBody, MailFlag} from "./bmail_body";
+import {MailFlag} from "./bmail_body";
 import {EmailReflects} from "./proto/bmail_srv";
 import {
     __bmail_mail_body_class_name,
