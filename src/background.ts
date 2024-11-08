@@ -168,6 +168,7 @@ async function encryptData(peerAddr: string[], plainTxt: string, sendResponse: (
                 sendResponse({success: true, data: JSON.stringify(rawObj)});
                 return;
             }
+            sendResponse({success: true, data: plainTxt});
         }
 
         const mail = encodeMail(peerAddr, plainTxt, mKey, attachment);

@@ -170,7 +170,6 @@ export async function encryptMailInComposing(mailBody: HTMLElement, receiver: st
         return false;
     }
     mailBody.innerHTML = `<div class="${__bmail_mail_body_class_name}">` + mailRsp.data + '</div>';
-    mailBody.dataset.bmailBodyStr = mailRsp.data;
 
     if (aekId) {
         removeAttachmentKey(aekId);

@@ -84,6 +84,7 @@ function queryEmailAddrQQ() {
     return match[0];
 }
 
+
 async function addCryptoBtnToComposeDivQQ(template: HTMLTemplateElement) {
     const composeBodyDiv = document.querySelector(".compose_body");
     if (!composeBodyDiv) {
@@ -113,6 +114,8 @@ async function addCryptoBtnToComposeDivQQ(template: HTMLTemplateElement) {
         console.log("------>>> no tool bar found for mail composing");
         return;
     }
+
+    await checkIfEditAgainContent(iframeDocument.body.querySelector(".rooster-content-body") as HTMLElement);
 
     const sendDiv = toolBar.querySelector(".xmail_sendmail_btn") as HTMLElement;
     const title = browser.i18n.getMessage('crypto_and_send');
@@ -189,15 +192,30 @@ function findAttachmentKeyID(): Set<string> {
     return mySet;
 }
 
+async function checkIfEditAgainContent(querySelector: HTMLElement) {
+    const editAgainContentDiv = querySelector.querySelector(`.${__bmail_mail_body_class_name}`) as HTMLElement;
+    if (!editAgainContentDiv) {
+        return;
+    }
+    if (!editAgainContentDiv.innerText.includes(MailFlag)) {
+        return;
+    }
+
+    const quotedContentDiv = querySelector.querySelector(".xm_compose_origin_mail_container");
+    if (quotedContentDiv && quotedContentDiv.contains(editAgainContentDiv)) {
+        return;
+    }
+    await decryptMailForEditionOfSentMail(editAgainContentDiv);
+}
+
 async function prepareMailContent(frameBody: HTMLElement): Promise<HTMLElement> {
 
     let mailContentDiv = frameBody.querySelector(".rooster-content-body") as HTMLElement;
+    let newMailBody = mailContentDiv;
 
     const replyOrQuoteDiv = mailContentDiv.querySelector(".xm_compose_origin_mail_container");
-    let newMailBody = mailContentDiv;
     if (replyOrQuoteDiv) {
-        mailContentDiv
-
+        mailContentDiv = replyOrQuoteDiv.parentElement as HTMLElement;
         if (mailContentDiv.childNodes.length === 2) {
             newMailBody = mailContentDiv.children[0] as HTMLElement;
         } else {
