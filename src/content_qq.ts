@@ -24,7 +24,7 @@ import {
 } from "./content_common";
 import {emailRegex, extractEmail, hideLoading, sendMessageToBackground, showLoading,} from "./utils";
 import browser from "webextension-polyfill";
-import {__raw_content_class_name, MsgType} from "./consts";
+import {__bmail_mail_body_class_name, MsgType} from "./consts";
 import {addAttachmentEncryptBtn, decryptAttachmentFileData, loadAKForReading} from "./content_attachment";
 import {MailFlag} from "./bmail_body";
 
@@ -218,7 +218,7 @@ async function prepareMailContent(mailContentDiv: HTMLElement): Promise<HTMLElem
         }
     }
 
-    const encryptedArea = newMailContentDiv.querySelector(`.${__raw_content_class_name}`) as HTMLElement;
+    const encryptedArea = newMailContentDiv.querySelector(`.${__bmail_mail_body_class_name}`) as HTMLElement;
     if (encryptedArea) {
         const hasEncryptedRawData = encryptedArea.innerText.includes(MailFlag);
         if (hasEncryptedRawData) {
@@ -625,7 +625,7 @@ async function prepareMailContentOldVersion(frameDoc: Document): Promise<HTMLEle
         bmailContentDiv.appendChild(frameDoc.body.firstChild as HTMLElement);
         frameDoc.body.insertBefore(bmailContentDiv, frameDoc.body.firstChild);
     } else {
-        const encryptedArea = bmailContentDiv.querySelector(`.${__raw_content_class_name}`) as HTMLElement | null;
+        const encryptedArea = bmailContentDiv.querySelector(`.${__bmail_mail_body_class_name}`) as HTMLElement | null;
         const hasEncryptedRawData = encryptedArea?.innerText.includes(MailFlag);
         if (encryptedArea && hasEncryptedRawData) {
             await decryptMailForEditionOfSentMail(encryptedArea);

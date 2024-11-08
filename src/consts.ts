@@ -40,4 +40,4 @@ export const __dbKey_cur_account_details: string = '__dbKey_cur_account_details_
 export const __key_wallet_status: string = '__key_wallet_status';
 export const __dbKey_cur_key: string = '__dbKey_cur_key__';
 export const __dbKey_cur_addr: string = '__dbKey_cur_addr__';
-export const __raw_content_class_name = "bmail-encrypted-data-wrapper"
+export const __bmail_mail_body_class_name = "bmail-encrypted-data-wrapper"

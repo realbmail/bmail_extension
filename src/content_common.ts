@@ -7,10 +7,10 @@ import {
     sendMessageToBackground,
     showLoading
 } from "./utils";
-import {MailFlag} from "./bmail_body";
+import {BMailBody, MailFlag} from "./bmail_body";
 import {EmailReflects} from "./proto/bmail_srv";
 import {
-    __raw_content_class_name,
+    __bmail_mail_body_class_name,
     AttachmentFileSuffix,
     ECInvalidEmailAddress,
     ECNoValidMailReceiver,
@@ -150,11 +150,6 @@ export async function encryptMailInComposing(mailBody: HTMLElement, receiver: st
         return false;
     }
 
-    //TODO::duplicate encrypt mail content
-    if (mailBody.innerHTML.includes(MailFlag)) {
-        return true;
-    }
-
     let attachment;
     if (aekId) {
         attachment = loadAKForCompose(aekId);
@@ -165,7 +160,7 @@ export async function encryptMailInComposing(mailBody: HTMLElement, receiver: st
         receivers: receiver,
         data: mailBody.innerHTML,
         attachment: attachment
-    })
+    });
 
     if (mailRsp.success <= 0) {
         if (mailRsp.success === 0) {
@@ -174,7 +169,8 @@ export async function encryptMailInComposing(mailBody: HTMLElement, receiver: st
         showTipsDialog("Tips", mailRsp.message);
         return false;
     }
-    mailBody.innerHTML = `<div class="${__raw_content_class_name}">` + mailRsp.data + '</div>';
+    mailBody.innerHTML = `<div class="${__bmail_mail_body_class_name}">` + mailRsp.data + '</div>';
+    mailBody.dataset.bmailBodyStr = mailRsp.data;
 
     if (aekId) {
         removeAttachmentKey(aekId);
@@ -512,7 +508,7 @@ export function replaceTextNodeWithDiv(firstChild: HTMLElement) {
         return;
     }
     // const regex = /<div class="bmail-encrypted-data-wrapper">(.*?)<\/div>/;
-    const regex = new RegExp(`<div class="${__raw_content_class_name}">(.*?)<\\/div>`);
+    const regex = new RegExp(`<div class="${__bmail_mail_body_class_name}">(.*?)<\\/div>`);
     const match = textContent.match(regex);
 
     if (!match || !match[1]) {
@@ -520,7 +516,7 @@ export function replaceTextNodeWithDiv(firstChild: HTMLElement) {
     }
     const extractedContent = match[1];
     const newDiv = document.createElement('div');
-    newDiv.className = __raw_content_class_name;
+    newDiv.className = __bmail_mail_body_class_name;
     newDiv.innerHTML = extractedContent;
     firstChild?.parentNode?.replaceChild(newDiv, firstChild);
 }
@@ -558,7 +554,7 @@ export function findAllTextNodesWithEncryptedDiv(mailArea: HTMLElement): Node[] 
     const matchingNodes: Node[] = [];
 
     while (currentNode) {
-        if (currentNode.nodeValue?.includes(`<div class="${__raw_content_class_name}">`)) {
+        if (currentNode.nodeValue?.includes(`<div class="${__bmail_mail_body_class_name}">`)) {
             matchingNodes.push(currentNode);
         }
         currentNode = walker.nextNode();

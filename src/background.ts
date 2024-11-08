@@ -3,8 +3,8 @@ import browser, {Runtime} from "webextension-polyfill";
 import {closeDatabase} from "./database";
 import {resetStorage, sessionGet, sessionSet} from "./session_storage";
 import {MailAddress, MailKey} from "./wallet";
-import {BMRequestToSrv, decodeHex, extractNameFromUrl} from "./utils";
-import {decodeMail, encodeMail, initMailBodyVersion} from "./bmail_body";
+import {BMRequestToSrv, decodeHex, extractJsonString, extractNameFromUrl} from "./utils";
+import {BMailBody, decodeMail, encodeMail, initMailBodyVersion, MailFlag} from "./bmail_body";
 import {BMailAccount, QueryReq, EmailReflects, BindAction} from "./proto/bmail_srv";
 import {
     __dbKey_cur_account_details,
@@ -152,11 +152,22 @@ async function encryptData(peerAddr: string[], plainTxt: string, sendResponse: (
     try {
         const mKey = await checkWalletStatus(sendResponse);
         if (!mKey) {
+            sendResponse({success: -1, message: "no open wallet found"});
             return;
         }
         if (peerAddr.length <= 0) {
             sendResponse({success: -1, message: "no valid blockchain address of receivers"});
             return null;
+        }
+
+        if (plainTxt.includes(MailFlag)) {
+            const encryptedMailBody = extractJsonString(plainTxt);
+            const rawObj = BMailBody.fromJSON(encryptedMailBody!.json);
+            if (!rawObj.attachment && attachment) {
+                rawObj.addAppendAttachment(mKey, attachment)
+                sendResponse({success: true, data: JSON.stringify(rawObj)});
+                return;
+            }
         }
 
         const mail = encodeMail(peerAddr, plainTxt, mKey, attachment);

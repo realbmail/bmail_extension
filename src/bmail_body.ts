@@ -52,6 +52,17 @@ export class BMailBody {
             attachment: this.attachment,
         };
     }
+
+    addAppendAttachment(mKey: MailKey, attachment: string) {
+        const firstEntry = this.receivers.entries().next().value;
+        const [peerPubStr, encryptedKey] = firstEntry || ["", ""];
+        const peerPub = decodePubKey(peerPubStr);
+        const peerCurvePub = ed2CurvePub(peerPub);
+        const sharedKey = nacl.scalarMult(mKey.curvePriKey, peerCurvePub!);
+        const aesKey = nacl.secretbox.open(decodeHex(encryptedKey), this.nonce, sharedKey);
+        const attData = nacl.secretbox(naclUtil.decodeUTF8(attachment), this.nonce, aesKey!);
+        this.attachment = naclUtil.encodeBase64(attData);
+    }
 }
 
 export function encodeMail(peers: string[], data: string, key: MailKey, attachment?: string): BMailBody {
