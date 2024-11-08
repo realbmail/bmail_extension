@@ -289,8 +289,9 @@ async function monitorQQMailReading(template: HTMLTemplateElement) {
         let idleTimer = setTimeout(() => {
             console.log("------>>> target hint, check elements and add bmail buttons");
             clearTimeout(idleTimer);
+
             addCryptoBtnToReadingMailQQ(template, mainArea);
-        }, 800);
+        }, 1200);
     });
 }
 
