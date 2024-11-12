@@ -713,6 +713,7 @@ function addListenerForQuickReplyOldVersion(template: HTMLTemplateElement, doc: 
         const title = browser.i18n.getMessage('crypto_and_send');
         const mailContentDiv = (iframe.contentDocument as Document).body as HTMLElement;
 
+
         const cryptoBtnDiv = parseCryptoMailBtn(template, 'file/logo_48.png', ".bmail-crypto-btn",
             title, 'bmail_crypto_btn_in_compose_qq_old', async _ => {
                 const spansWithEAttribute = doc.querySelectorAll('span[e]') as NodeListOf<HTMLElement>; // 查询包含 e 属性的所有 span 元素
@@ -739,6 +740,13 @@ function addListenerForQuickReplyOldVersion(template: HTMLTemplateElement, doc: 
                 checkFrameBody(mailArea, parentCryptoBtn)
             }
         ) as HTMLElement;
+
+        sendDiv.addEventListener('click', async (evt) => {
+            const elements = Array.from(doc.querySelectorAll('div[data-has-decrypted="true"]')) as HTMLElement[];
+            for (const bmailBody of elements) {
+                bmailBody.innerHTML = bmailBody.dataset.orignCrpted!;
+            }
+        }, true);
 
         toolBarDiv.insertBefore(cryptoBtnDiv, sendDiv);
     })
