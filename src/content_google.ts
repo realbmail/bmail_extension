@@ -59,51 +59,34 @@ function queryEmailAddrGoogle() {
 const _composeBtnParentClass = "td.I5"
 const __bmailComposeDivId = "bmail-mail-body-for-gmail";
 
-function checkMailBodyDiv(template: HTMLTemplateElement, composeDiv: HTMLElement): HTMLElement | null {
+
+async function prepareMailContent(composeDiv: HTMLElement): Promise<HTMLElement> {
     let mailBodyDiv = composeDiv.querySelector('.Am.aiL.Al.editable') as HTMLElement;
     if (!mailBodyDiv) {
-        composeDiv.dataset.tryTimes = composeDiv.dataset.tryTimes ?? "" + "1";
-        if (composeDiv.dataset.tryTimes.length > 3) {
-            console.log("------>>> failed to find mail body")
-            return null;
-        }
-
-        setTimeout(() => {
-            _addCryptoBtnForComposeDiv(template, composeDiv);
-        }, 1000)
-        return null;
+        return composeDiv;
     }
-    const gmailBody = mailBodyDiv.querySelector(__bmailComposeDivId) as HTMLElement;
+    const gmailBody = mailBodyDiv.querySelector('.' + __bmailComposeDivId) as HTMLElement;
     if (gmailBody) {
         return gmailBody;
     }
 
-    const replayArea = mailBodyDiv.querySelector(".gmail_quote");
-    if (!replayArea) {
-        return mailBodyDiv;
-    }
-    mailBodyDiv = replayArea.parentElement as HTMLElement;
-
     const div = document.createElement("div");
     div.classList.add(__bmailComposeDivId);
+    const replayArea = mailBodyDiv.querySelector(".gmail_quote");
 
-    const childrenArray = Array.from(mailBodyDiv.children) as HTMLElement[];
-    console.log("------>>> children nodes:", childrenArray);
+    const childrenArray = Array.from(mailBodyDiv.childNodes);
     childrenArray.forEach((subNode) => {
-        if (subNode !== replayArea) {
-            div.appendChild(subNode);
+        if (replayArea && subNode === replayArea) {
+            return;
         }
+        div.appendChild(subNode);
     });
 
-    mailBodyDiv.insertBefore(div, replayArea);
+    mailBodyDiv.insertBefore(div, mailBodyDiv.firstChild);
     return div;
 }
 
 function _addCryptoBtnForComposeDiv(template: HTMLTemplateElement, composeDiv: HTMLElement) {
-    const mailBodyDiv = checkMailBodyDiv(template, composeDiv);
-    if (!mailBodyDiv) {
-        return;
-    }
 
     const node = composeDiv.querySelector(".bmail-crypto-btn") as HTMLElement;
     if (node) {
@@ -122,10 +105,11 @@ function _addCryptoBtnForComposeDiv(template: HTMLTemplateElement, composeDiv: H
     const clone = parseCryptoMailBtn(template, 'file/logo_48.png', ".bmail-crypto-btn", title,
         "bmail_crypto_btn_in_compose_google", async _ => {
             const aekId = composeDiv.dataset.attachmentKeyId ?? "";
+            const mailBodyDiv = await prepareMailContent(composeDiv);
             await encryptMailAndSendGoogle(mailBodyDiv, titleForm, sendDiv, aekId);
             setTimeout(() => {
                 addCryptoBtnToReadingMailGoogle(template).then();
-            }, 1000);
+            }, 1200);
         });
     if (!clone) {
         console.log("------>>> crypt button not found");

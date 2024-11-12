@@ -741,7 +741,7 @@ function addListenerForQuickReplyOldVersion(template: HTMLTemplateElement, doc: 
             }
         ) as HTMLElement;
 
-        sendDiv.addEventListener('click', async (evt) => {
+        sendDiv.addEventListener('click', async () => {
             const elements = Array.from(doc.querySelectorAll('div[data-has-decrypted="true"]')) as HTMLElement[];
             for (const bmailBody of elements) {
                 bmailBody.innerHTML = bmailBody.dataset.orignCrpted!;
