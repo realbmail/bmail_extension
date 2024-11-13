@@ -34,13 +34,13 @@ function appendForQQ(template: HTMLTemplateElement) {
         () => {
             return document.querySelector(".ui-float-scroll-body.sidebar-menus") as HTMLElement || document.getElementById("SysFolderList") as HTMLElement;
         }, async () => {
-            console.log("------->>>start to populate qq mail area");
-            monitorComposeActionQQ(template).then();
             appendBmailInboxMenuQQ(template).then();
+
             monitorQQMailReading(template).then();
-            addCryptoBtnToReadingMailQQ(template);
-            addCryptoBtnToComposeDivQQ(template).then();
             monitorQQMailReadingOldVersion(template).then();
+
+            monitorComposeAction(template).then();
+            monitorComposeActionOldVersion(template).then();
         });
 }
 
@@ -85,56 +85,47 @@ function queryEmailAddrQQ() {
 }
 
 
-async function addCryptoBtnToComposeDivQQ(template: HTMLTemplateElement) {
-    const composeBodyDiv = document.querySelector(".compose_body");
-    if (!composeBodyDiv) {
-        console.log("------>>> no compose body found for new version");
-        return;
-    }
-    const iframe = composeBodyDiv.querySelector(".editor_iframe") as HTMLIFrameElement;
-    if (!iframe) {
-        console.log('----->>> encrypt failed to find iframe:=>');
-        return null;
-    }
-
-    const iframeDocument = iframe.contentDocument || iframe.contentWindow?.document;
-    if (!iframeDocument) {
-        console.log("----->>> no frame body found:=>");
-        return null;
-    }
-
-    const cryptoBtn = composeBodyDiv.querySelector(".bmail-crypto-btn") as HTMLElement;
-    if (cryptoBtn) {
-        console.log("------>>> node already exists");
-        checkFrameBody(iframeDocument.body, cryptoBtn);
-        return;
-    }
-    const toolBar = composeBodyDiv.querySelector(".main_options_container");
+async function addCryptoBtnToComposeDivQQ(template: HTMLTemplateElement, composeDiv: HTMLElement) {
+    const toolBar = composeDiv.querySelector(".mail-compose-header .ui-ellipsis-toolbar-btns");
     if (!toolBar) {
-        console.log("------>>> no tool bar found for mail composing");
+        console.log("----->>> tool bar not found in compose");
         return;
     }
 
-    await checkIfEditAgainContent(iframeDocument.body.querySelector(".rooster-content-body") as HTMLElement);
+    const cryptoBtn = toolBar.querySelector(".bmail-crypto-btn") as HTMLElement;
+    if (cryptoBtn) {
+        console.log("----->>> crypto button already exists");
+        return;
+    }
+    const sendDiv = toolBar.querySelector(".ui-btn-them-blue-lighten") as HTMLElement;
+    if (!sendDiv) {
+        console.log("----->>> send button not found in compose");
+        return
+    }
 
-    const sendDiv = toolBar.querySelector(".xmail_sendmail_btn") as HTMLElement;
-    const title = browser.i18n.getMessage('crypto_and_send');
-    const receiverTable = composeBodyDiv.querySelector('div.compose_mail_wrapper') as HTMLElement;
+    const mailBodyDiv = composeDiv.querySelector(".mail-content-editor") as HTMLElement;
+    if (!mailBodyDiv) {
+        console.log("----->>> mail body not found in compose");
+        return;
+    }
     const aekID = prepareAttachmentForCompose(template);
+    const title = browser.i18n.getMessage('crypto_and_send');
+    const receiverTable = composeDiv.querySelector('.receiver-editor') as HTMLElement;
+    if (!receiverTable) {
+        console.log("----->>> receiver table not found in compose");
+        return;
+    }
 
     const cryptoBtnDiv = parseCryptoMailBtn(template, 'file/logo_48.png', ".bmail-crypto-btn",
         title, 'bmail_crypto_btn_in_compose_qq', async _ => {
-            const mailContentDiv = await prepareMailContent(iframeDocument.body);
+            const mailContentDiv = await prepareMailContent(mailBodyDiv);
             mailContentDiv.dataset.attachmentKeyId = aekID;
             await encryptMailAndSendQQ(mailContentDiv, receiverTable, sendDiv);
         }
     ) as HTMLElement;
+    toolBar.insertBefore(cryptoBtnDiv, sendDiv.nextSibling as HTMLElement);
 
-    if (toolBar.children.length > 1) {
-        toolBar.insertBefore(cryptoBtnDiv, toolBar.children[1]);
-    } else {
-        toolBar.appendChild(cryptoBtnDiv);
-    }
+    await checkIfEditAgainContent(mailBodyDiv);
 }
 
 function prepareAttachmentForCompose(template: HTMLTemplateElement): string {
@@ -482,29 +473,36 @@ async function encryptSimpleMailReplyQQ(mailBody: HTMLElement, email: string, se
     }
 }
 
-async function monitorComposeActionQQ(template: HTMLTemplateElement) {
+
+async function monitorComposeAction(template: HTMLTemplateElement) {
     let frameMainDiv = document.querySelector(".frame-main") as HTMLElement;
+    if (!frameMainDiv) {
+        console.log("------>>>compose action: this is not for qq new version");
+        return;
+    }
+    let oldComposeDiv: HTMLElement | null = null;
+    observeForElement(frameMainDiv, 800, () => {
 
-    if (frameMainDiv) {
-        let iframe = frameMainDiv.querySelector(".editor_iframe") as HTMLElement | null;
+        const newComposeDiv = frameMainDiv.querySelector(".mail-compose-page") as HTMLElement | null;
+        if (oldComposeDiv === newComposeDiv) {
+            return null;
+        }
+        oldComposeDiv = newComposeDiv;
+        return newComposeDiv;
+    }, async () => {
+        const newComposeDiv = frameMainDiv.querySelector(".mail-compose-page") as HTMLElement
+        addCryptoBtnToComposeDivQQ(template, newComposeDiv).then()
+    }, true);
+}
 
-        observeForElement(frameMainDiv, 800, () => {
 
-            const newFrame = frameMainDiv.querySelector(".editor_iframe") as HTMLElement | null;
-            if (iframe === newFrame) {
-                return null;
-            }
-            iframe = newFrame;
-            return newFrame;
-
-        }, async () => {
-            addCryptoBtnToComposeDivQQ(template).then()
-        }, true);
-
+async function monitorComposeActionOldVersion(template: HTMLTemplateElement) {
+    const monitorDiv = document.getElementById("resize") as HTMLElement;
+    if (!monitorDiv) {
+        console.log("------>>> this is not for qq old version");
         return;
     }
 
-    const monitorDiv = document.getElementById("resize") as HTMLElement;
     let oldElement: HTMLElement | null = null;
     observeForElement(monitorDiv, 300, () => {
         const iframe = document.getElementById("mainFrameContainer")?.querySelector('iframe[name="mainFrame"]') as HTMLIFrameElement | null;
@@ -517,9 +515,7 @@ async function monitorComposeActionQQ(template: HTMLTemplateElement) {
         return formInFrame;
     }, async () => {
         console.log("------>>> old qq mail query iframe");
-        await addCryptoBtnToComposeDivQQ(template).then()
         await addCryptoBtnToComposeDivQQOldVersion(template);
-
     }, true);
 }
 
