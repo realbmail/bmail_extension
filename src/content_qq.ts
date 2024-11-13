@@ -617,7 +617,11 @@ function prepareAttachmentForComposeOldVersion(frameDoc: Document, template: HTM
 const __bmailComposeDivId = "bmail-mail-body-for-qq";
 
 async function prepareMailContentOldVersion(frameDoc: Document): Promise<HTMLElement> {
-    let bmailContentDiv = frameDoc.body.firstElementChild as HTMLElement;
+    // let bmailContentDiv = frameDoc.body.firstElementChild as HTMLElement;
+    let bmailContentDiv = Array.from(frameDoc.body.children).find(
+        (child) => child.tagName === 'DIV'
+    ) as HTMLElement | undefined;
+
     if (!bmailContentDiv) {
         console.warn("------>>> should not lost mail content when compose");
         return frameDoc.body as HTMLElement;
@@ -712,7 +716,6 @@ function addListenerForQuickReplyOldVersion(template: HTMLTemplateElement, doc: 
         const sendDiv = toolBarDiv.firstChild as HTMLElement;
         const title = browser.i18n.getMessage('crypto_and_send');
         const mailContentDiv = (iframe.contentDocument as Document).body as HTMLElement;
-
 
         const cryptoBtnDiv = parseCryptoMailBtn(template, 'file/logo_48.png', ".bmail-crypto-btn",
             title, 'bmail_crypto_btn_in_compose_qq_old', async _ => {
