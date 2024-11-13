@@ -206,11 +206,11 @@ async function monitorReadingActionGoogle(template: HTMLTemplateElement) {
     observeForElement(mainArea, 1000, () => {
         const div = mainArea.querySelectorAll(".a3s.aiL");
         if (div.length === oldDivNo) {
-            // console.log("-------->>>null-------------------------------->>>", div, oldDiv)
+            console.log("-------->>>null-------------------------------->>>", div, oldDivNo)
             return null;
         }
         oldDivNo = div.length;
-        // console.log("-------->>>div-------------------------------->>>", div)
+        console.log("-------->>>div-------------------------------->>>", div)
         return div[0] as HTMLElement;
     }, async () => {
         addCryptoBtnToReadingMailGoogle(template, mainArea).then();

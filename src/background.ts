@@ -195,13 +195,17 @@ async function decryptData(mail: string, sendResponse: (response: any) => void) 
 }
 
 async function checkLoginStatus(sendResponse: (response: any) => void) {
-    const status = await sessionGet(__key_wallet_status) || WalletStatus.Init
-    if (status !== WalletStatus.Unlocked) {
-        await browser.action.openPopup();
-        sendResponse({success: -1, data: "open wallet first please!"});
-        return;
+    try {
+        const status = await sessionGet(__key_wallet_status) || WalletStatus.Init
+        if (status !== WalletStatus.Unlocked) {
+            await browser.action.openPopup();
+            sendResponse({success: -1, data: "open wallet first please!"});
+            return;
+        }
+        sendResponse({success: 1});
+    } catch (err) {
+        console.log("[service work] checkLoginStatus failed:", err)
     }
-    sendResponse({success: 1});
 }
 
 async function SigDataInBackground(data: any, sendResponse: (response: any) => void) {
