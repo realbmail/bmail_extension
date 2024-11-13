@@ -11,7 +11,7 @@ import {
     encryptMailInComposing,
     extractAesKeyId,
     findAllTextNodesWithEncryptedDiv,
-    observeForElement,
+    observeForElement, observeForElementDirect,
     observeFrame,
     parseBmailInboxBtn,
     parseContentHtml,
@@ -339,12 +339,12 @@ function addCryptoBtnToReadingMailQQ(template: HTMLTemplateElement, mainArea?: H
 
     const replayBar = parentDiv.querySelector(".mail-detail-reply") as HTMLElement | null;
     if (replayBar) {
-        replayBar.addEventListener("click", () => {
-            let idleTimer = setTimeout(() => {
-                clearTimeout(idleTimer);
-                addCryptoBtnToSimpleReply(template, replayBar).then();
-            }, 1000);
-        })
+        observeForElementDirect(replayBar, 1000, () => {
+            return replayBar.querySelector(".mail-replay-editor-wrap")
+        }, async () => {
+            const contentOfReply = replayBar.querySelector(".mail-replay-editor-wrap") as HTMLElement;
+            addCryptoBtnToSimpleReply(template, contentOfReply);
+        });
     }
 
     addDecryptBtnForAttachment(template);
@@ -406,43 +406,44 @@ function addDecryptBtnToAttachmentItem(downloadBtn: HTMLElement, clone: HTMLElem
     });
 }
 
-async function addCryptoBtnToSimpleReply(template: HTMLTemplateElement, replayBar: HTMLElement) {
-
-    const mailBody = replayBar.querySelector(".reply-editor") as HTMLElement | null;
-    if (!mailBody) {
-        console.log("------>>> no simple reply content found");
+function addCryptoBtnToSimpleReply(template: HTMLTemplateElement, replyContentDiv: HTMLElement) {
+    const toolbar = replyContentDiv.querySelector(".reply-footer");
+    if (!toolbar) {
+        console.log("----->>>no tool bar found in  quick reply ==> qq new version ")
+        return;
+    }
+    const cryptBtn = toolbar.querySelector(".bmail-crypto-btn")
+    if (cryptBtn) {
+        console.log("----->>> crypt button already added for quick reply ===> qq new version")
+        return;
+    }
+    const sendDiv = toolbar.children[0] as HTMLElement | null;
+    if (!sendDiv) {
+        console.log("----->>> send button not found in quick reply ==> qq new version ");
         return;
     }
 
-    let iframe = mailBody.querySelector(".editor_iframe") as HTMLIFrameElement | null;
-    const iframeDocument = iframe?.contentDocument || iframe?.contentWindow?.document;
-    if (!iframeDocument) {
-        console.log("----->>> no frame body found in simple replay area:=>");
-        return null;
+    const receiverDiv = replyContentDiv.querySelector('.cmp-account-email') as HTMLElement;
+    const email = extractEmail(receiverDiv.textContent ?? "");
+    if (!email) {
+        console.log("----->>> email address not found in quick reply ==> qq new version ");
+        return;
     }
 
-    const toolbar = replayBar.querySelector(".mail-reader-page-reply-footer");
-    const sendDiv = toolbar?.children[0] as HTMLElement | null;
-    if (!sendDiv) {
-        console.log("------>>> send button not found for simple reply area");
+    const mailContentDiv = replyContentDiv.querySelector(".reply-editor") as HTMLElement;
+    if (!mailContentDiv) {
+        console.log("------>>> mail body not found in quick reply ==> qq new version ");
         return;
     }
 
     const title = browser.i18n.getMessage('crypto_and_send');
-    const mailContentDiv = iframeDocument.querySelector(".rooster-content-body") as HTMLElement;
-    const receiverDiv = replayBar.querySelector('.cmp-account-email') as HTMLElement;
-    const email = extractEmail(receiverDiv.textContent ?? "");
-    if (!email) {
-        console.log("------>>> no receiver in simple reply");
-        return;
-    }
-
     const cryptoBtnDiv = parseCryptoMailBtn(template, 'file/logo_48.png', ".bmail-crypto-btn",
         title, 'bmail_crypto_btn_in_compose_qq_simple', async _ => {
             await encryptSimpleMailReplyQQ(mailContentDiv, email, sendDiv);
         }
     ) as HTMLElement;
-    toolbar?.insertBefore(cryptoBtnDiv, toolbar?.children[1]);
+
+    toolbar.insertBefore(cryptoBtnDiv, toolbar.children[1]);
 }
 
 async function encryptSimpleMailReplyQQ(mailBody: HTMLElement, email: string, sendDiv: HTMLElement) {
