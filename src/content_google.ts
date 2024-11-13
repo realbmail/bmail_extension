@@ -73,6 +73,9 @@ async function prepareMailContent(composeDiv: HTMLElement): Promise<HTMLElement>
     const div = document.createElement("div");
     div.classList.add(__bmailComposeDivId);
     const replayArea = mailBodyDiv.querySelector(".gmail_quote");
+    if (replayArea) {
+        mailBodyDiv.appendChild(replayArea);
+    }
 
     const childrenArray = Array.from(mailBodyDiv.childNodes);
     childrenArray.forEach((subNode) => {
