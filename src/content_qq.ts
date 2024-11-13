@@ -108,7 +108,7 @@ async function addCryptoBtnToComposeDivQQ(template: HTMLTemplateElement, compose
         console.log("----->>> mail body not found in compose");
         return;
     }
-    const aekID = prepareAttachmentForCompose(template);
+    const aekID = prepareAttachmentForCompose(template, composeDiv);
     const title = browser.i18n.getMessage('crypto_and_send');
     const receiverTable = composeDiv.querySelector('.receiver-editor') as HTMLElement;
     if (!receiverTable) {
@@ -128,16 +128,21 @@ async function addCryptoBtnToComposeDivQQ(template: HTMLTemplateElement, compose
     await checkIfEditAgainContent(mailBodyDiv);
 }
 
-function prepareAttachmentForCompose(template: HTMLTemplateElement): string {
+function prepareAttachmentForCompose(template: HTMLTemplateElement, composeDiv: HTMLElement): string {
 
     const overlayButton = template.content.getElementById('attachmentOverlayBtnQQ') as HTMLButtonElement | null;
     if (!overlayButton) {
         console.log("----->>> overlayButton not found");
         return "";
     }
+    const attachAreaDiv = composeDiv.querySelector(".mail-compose-attaches") as HTMLElement;
+    if (!attachAreaDiv) {
+        console.log("----->>> attach area not found in compose");
+        return "";
+    }
 
-    const fileInput = document.getElementById("attachUploadBtn") as HTMLInputElement;
-    const attachmentDiv = document.querySelector(".toolbar") as HTMLElement;
+    const fileInput = attachAreaDiv.querySelector("input.attach-file-input") as HTMLInputElement;
+    const attachmentDiv = composeDiv.querySelector(".mail-compose-content-toolbar .ui-ellipsis-toolbar-btns") as HTMLElement;
     if (!fileInput || !attachmentDiv) {
         console.log("----->>> file input or tool bar not found");
         return "";
@@ -147,7 +152,7 @@ function prepareAttachmentForCompose(template: HTMLTemplateElement): string {
         return "";
     }
 
-    const aekIDSet = findAttachmentKeyID();
+    const aekIDSet = findAttachmentKeyID(composeDiv);
     const overlyClone = overlayButton.cloneNode(true) as HTMLElement;
     overlyClone.textContent = browser.i18n.getMessage('bmail_attachment_encrypt_btn');
     const aekId = addAttachmentEncryptBtn(fileInput, overlyClone, aekIDSet);
@@ -157,18 +162,18 @@ function prepareAttachmentForCompose(template: HTMLTemplateElement): string {
 }
 
 
-function findAttachmentKeyID(): Set<string> {
+function findAttachmentKeyID(composeDiv: HTMLElement): Set<string> {
     const mySet = new Set<string>();
 
-    const allAttachDivs = document.querySelector(".compose_attach_list")?.querySelectorAll(".compose_attach_item.compose_attach_item_complete");
+    const allAttachDivs = composeDiv.querySelector(".mail-compose-attach-cards")?.querySelectorAll(".attach-card.attach-card-success");
     if (!allAttachDivs || allAttachDivs.length === 0) {
         return mySet;
     }
 
     for (let i = 0; i < allAttachDivs.length; i++) {
         const element = allAttachDivs[i];
-        const fileName = element.querySelector(".compose_attach_item_name.ml8")?.textContent;
-        const fileSuffix = element.querySelector(".compose_attach_item_name.no_shrink")?.textContent;
+        const fileName = element.querySelector(".attach-name")?.textContent;
+        const fileSuffix = element.querySelector(".attach-suffix")?.textContent;
         if (!fileSuffix || !fileName) {
             continue;
         }
@@ -199,9 +204,8 @@ async function checkIfEditAgainContent(querySelector: HTMLElement) {
     await decryptMailForEditionOfSentMail(editAgainContentDiv);
 }
 
-async function prepareMailContent(frameBody: HTMLElement): Promise<HTMLElement> {
+async function prepareMailContent(mailContentDiv: HTMLElement): Promise<HTMLElement> {
 
-    let mailContentDiv = frameBody.querySelector(".rooster-content-body") as HTMLElement;
     let newMailBody = mailContentDiv;
 
     const replyOrQuoteDiv = mailContentDiv.querySelector(".xm_compose_origin_mail_container");
