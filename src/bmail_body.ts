@@ -44,11 +44,11 @@ export class BMailBody {
     toJSON() {
         return {
             version: this.version,
+            mailFlag: this.mailFlag,
             receivers: Array.from(this.receivers.entries()),
             cryptoBody: this.cryptoBody,
             nonce: encodeHex(this.nonce),
             sender: this.sender,
-            mailFlag: this.mailFlag,
             attachment: this.attachment,
         };
     }
