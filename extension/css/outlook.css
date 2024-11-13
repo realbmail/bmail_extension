@@ -34,6 +34,7 @@
     justify-content: flex-start;
     align-items: center;
     margin: 0 8px;
+    background-color: white;
 }
 
 .bmail-decrypt-div-outlook img {
