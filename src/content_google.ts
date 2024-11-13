@@ -202,16 +202,20 @@ async function encryptMailAndSendGoogle(mailBody: HTMLElement, titleForm: HTMLEl
 
 async function monitorReadingActionGoogle(template: HTMLTemplateElement) {
     const mainArea = document.querySelector(".nH.bkK") as HTMLElement;
-    let oldDivNo = 0;
+    let oldDivElm: Element;
     observeForElement(mainArea, 1000, () => {
-        const div = mainArea.querySelectorAll(".a3s.aiL");
-        if (div.length === oldDivNo) {
-            console.log("-------->>>null-------------------------------->>>", div, oldDivNo)
+        const divs = mainArea.querySelectorAll(".a3s.aiL");
+        if (divs.length === 0) {
             return null;
         }
-        oldDivNo = div.length;
-        console.log("-------->>>div-------------------------------->>>", div)
-        return div[0] as HTMLElement;
+        const lastDiv = divs[divs.length - 1];
+        if (oldDivElm === lastDiv) {
+            // console.log("-------->>>null-------------------------------->>>", lastDiv)
+            return null;
+        }
+        oldDivElm = lastDiv;
+        // console.log("-------->>>div-------------------------------->>>", lastDiv)
+        return lastDiv as HTMLElement;
     }, async () => {
         addCryptoBtnToReadingMailGoogle(template, mainArea).then();
     }, true);
