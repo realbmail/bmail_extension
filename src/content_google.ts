@@ -27,7 +27,7 @@ function appendForGoogle(template: HTMLTemplateElement) {
         () => {
             return document.querySelector('.TK') as HTMLElement;
         }, async () => {
-            // console.log("------>>>start to populate google area");
+            console.log("------>>>start to monitor google area");
             monitorReadingActionGoogle(template).then();
             addBMailInboxToMenu(clone).then();
         });
@@ -107,9 +107,6 @@ function _addCryptoBtnForComposeDiv(template: HTMLTemplateElement, composeDiv: H
             const aekId = composeDiv.dataset.attachmentKeyId ?? "";
             const mailBodyDiv = await prepareMailContent(composeDiv);
             await encryptMailAndSendGoogle(mailBodyDiv, titleForm, sendDiv, aekId);
-            setTimeout(() => {
-                addCryptoBtnToReadingMailGoogle(template).then();
-            }, 1200);
         });
     if (!clone) {
         console.log("------>>> crypt button not found");
