@@ -119,6 +119,7 @@ async function addCryptoBtnToComposeDivQQ(template: HTMLTemplateElement, compose
     const cryptoBtnDiv = parseCryptoMailBtn(template, 'file/logo_48.png', ".bmail-crypto-btn",
         title, 'bmail_crypto_btn_in_compose_qq', async _ => {
             const mailContentDiv = await prepareMailContent(mailBodyDiv);
+            await prepareContact(receiverTable);
             mailContentDiv.dataset.attachmentKeyId = aekID;
             await encryptMailAndSendQQ(mailContentDiv, receiverTable, sendDiv);
         }
@@ -228,6 +229,10 @@ async function prepareMailContent(mailContentDiv: HTMLElement): Promise<HTMLElem
     return newMailBody;
 }
 
+function arrayToNodeList<T extends HTMLElement>(array: T[]): NodeListOf<T> {
+    return array as unknown as NodeListOf<T>;
+}
+
 async function encryptMailAndSendQQ(mailBody: HTMLElement, receiverTable: HTMLElement, sendDiv: HTMLElement) {
     showLoading();
     try {
@@ -241,9 +246,17 @@ async function encryptMailAndSendQQ(mailBody: HTMLElement, receiverTable: HTMLEl
             showTipsDialog("Tips", browser.i18n.getMessage("encrypt_mail_body"));
             return;
         }
-        const allEmailAddressDiv = receiverTable?.querySelectorAll(".new_compose_mailAddress_item") as NodeListOf<HTMLElement>;
-        const receiver = await processReceivers(allEmailAddressDiv, (div) => {
-            return extractEmail(div.title);
+
+        const allEmailAddressDiv = receiverTable.querySelectorAll(".cmp-account-nick") as NodeListOf<HTMLElement>;
+        const visibleNickElementsArray = Array.from(allEmailAddressDiv).filter((nickElement) => {
+            return !nickElement.closest('.cmp-hide-accounts');
+        });
+        const visibleNickElements = arrayToNodeList(visibleNickElementsArray);
+        const receiver = await processReceivers(visibleNickElements, (div) => {
+            const nickName = div.innerText.trim();
+            const email = __cacheContactGet(nickName);
+            console.log("------>>> nick name:=>", nickName, " email:", email);
+            return email;
         });
         if (!receiver || receiver.length <= 0) {
             return;
@@ -477,6 +490,91 @@ async function encryptSimpleMailReplyQQ(mailBody: HTMLElement, email: string, se
     }
 }
 
+const __dbkey_qq_contact = "__db_key_qq_contact_"
+
+function __cacheContactSet(k: string, v: string) {
+    localStorage.setItem(__dbkey_qq_contact + k, v);
+}
+
+function __cacheContactGet(k: string): string | null {
+    return localStorage.getItem(__dbkey_qq_contact + k);
+}
+
+function addMouseEnter(targetDiv: HTMLElement) {
+    const mouseEnterEvent = new MouseEvent('mouseenter', {
+        bubbles: true,
+        cancelable: true,
+        view: window
+    });
+    targetDiv.dispatchEvent(mouseEnterEvent);
+
+    setTimeout(() => {
+        const rect = targetDiv.getBoundingClientRect();
+        const mouseMoveEvent = new MouseEvent('mousemove', {
+            bubbles: true,
+            cancelable: true,
+            clientX: rect.left + rect.width / 2,
+            clientY: rect.top + rect.height / 2,
+            view: window
+        });
+        targetDiv.dispatchEvent(mouseMoveEvent);
+    }, 100);
+}
+
+function addMouseLeaveAction(contact: HTMLElement) {
+    const mouseLeaveEvent = new MouseEvent('mouseleave', {
+        bubbles: true,
+        cancelable: true,
+        view: window
+    });
+    contact.dispatchEvent(mouseLeaveEvent);
+}
+
+async function prepareContact(receiverTable: HTMLElement): Promise<string[]> {
+    const receivers: string[] = [];
+    const contactListDiv = receiverTable.querySelectorAll(".cmp-account-wrap");
+
+    const visibleNickElementsArray = Array.from(contactListDiv).filter((nickElement) => {
+        return !nickElement.closest('.cmp-hide-accounts');
+    });
+
+    for (let i = 0; i < visibleNickElementsArray.length; i++) {
+        const contact = visibleNickElementsArray[i] as HTMLElement;
+        const work = new Promise<string>((resolve) => {
+            resolveContactDetailStack.push(resolve); // 将 resolve 函数压入栈顶
+        });
+        addMouseEnter(contact);
+        const contactDetail = await work;
+        console.log("-------->>>Received contact detail:", contactDetail);
+        addMouseLeaveAction(contact);
+    }
+
+    return receivers;
+}
+
+const resolveContactDetailStack: Array<(value: string) => void> = [];
+
+function monitorQQContact() {
+    observeForElementDirect(document.body, 0, () => {
+        return document.querySelector(".xmail-cmp-contact-card")
+    }, async () => {
+
+        const contactDetail = document.querySelector(".xmail-cmp-contact-card");
+        let email = ""
+        const emailDiv = contactDetail?.querySelector(".cmp-card-email span") as HTMLElement
+        if (emailDiv) {
+            console.log("------>>>current email:=>", emailDiv.innerText);
+            email = emailDiv.innerText.trim();
+        }
+
+        const resolve = resolveContactDetailStack.pop();
+        if (resolve) {
+            resolve(email);
+        }
+
+    }, true);
+}
+
 
 async function monitorComposeAction(template: HTMLTemplateElement) {
     let frameMainDiv = document.querySelector(".frame-main") as HTMLElement;
@@ -484,6 +582,9 @@ async function monitorComposeAction(template: HTMLTemplateElement) {
         console.log("------>>>compose action: this is not for qq new version");
         return;
     }
+
+    monitorQQContact();
+
     let oldComposeDiv: HTMLElement | null = null;
     observeForElement(frameMainDiv, 800, () => {
 
