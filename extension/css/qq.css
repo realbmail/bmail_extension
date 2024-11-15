@@ -75,14 +75,17 @@
     width: 98px;
 }
 
-#bmail_crypto_btn_in_compose_qq:hover {
+#bmail_crypto_btn_in_compose_qq:hover,
+#bmail_crypto_btn_in_compose_qq_simple:hover{
     background-color: rgba(242, 133, 82, 0.4);
 }
 .bmail-crypto-action-qq:hover,
 .bmail-crypto-logo:hover,
-#bmail_crypto_and_send_btn_lbl_qq:hover{
+.bmail-crypto-btn:hover,
+.bmail-crypto-action-qq_simple:hover{
     background-color: transparent !important;
 }
+
 .bmail-decrypt-div-qq {
     display: flex;
     flex-direction: column;
