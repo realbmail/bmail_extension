@@ -35,7 +35,7 @@
 .bmail-crypto-btn-div-qq {
     background-color: #04062E;
     border-radius: 4px;
-    margin-left: 16px;
+    margin-right: 8px;
     cursor: pointer;
     height: 32px;
     font-size: 14px;
@@ -45,7 +45,7 @@
     user-select: none;
     color: #F28552;
     width: 98px;
-    display: flex;
+    display: flex !important;
     justify-content: center;
     align-items: center;
 }
