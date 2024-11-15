@@ -267,6 +267,22 @@ async function encryptMailAndSendQQ(mailBody: HTMLElement, receiverTable: HTMLEl
     }
 }
 
+function MonitorReadingArea(template: HTMLTemplateElement, mainArea: HTMLElement) {
+    let oldElement: HTMLElement | null;
+    observeForElement(mainArea, 200, () => {
+        const readerElm = mainArea.querySelector(".mail-list-page-reader-body.reader-body-children") as HTMLElement;
+        if (oldElement === readerElm) {
+            return null;
+        }
+        oldElement = readerElm;
+        return readerElm;
+    }, async () => {
+        const readerElm = mainArea.querySelector(".mail-list-page-reader-body.reader-body-children");
+        console.log("------>>> reader element:", readerElm);
+        addCryptoBtnToReadingMailQQ(template, mainArea);
+    }, true);
+}
+
 async function monitorQQMailReading(template: HTMLTemplateElement) {
     const mainArea = document.querySelector(".frame-main") as HTMLElement | null;
     if (!mainArea) {
@@ -274,24 +290,25 @@ async function monitorQQMailReading(template: HTMLTemplateElement) {
         return;
     }
 
-    monitorMsgTip(template, mainArea);
-
-    mainArea.addEventListener("click", (event) => {
-        const targetElement = event.target as HTMLElement;
-        const mailItemDiv = targetElement.closest('div.mail-list-page-item') as HTMLElement | null;
-        const nextOrPreviousMailBtn = targetElement.closest(".mail-list-page-toolbar.toolbar-only-reader")
-        if (!mailItemDiv && !nextOrPreviousMailBtn) {
-            // console.log("------>>> this is not a mail reading action");
-            return;
-        }
-
-        let idleTimer = setTimeout(() => {
-            console.log("------>>> target hint, check elements and add bmail buttons");
-            clearTimeout(idleTimer);
-
-            addCryptoBtnToReadingMailQQ(template, mainArea);
-        }, 1200);
-    });
+    // monitorMsgTip(template, mainArea);
+    MonitorReadingArea(template, mainArea);
+    //
+    // mainArea.addEventListener("click", (event) => {
+    //     const targetElement = event.target as HTMLElement;
+    //     const mailItemDiv = targetElement.closest('div.mail-list-page-item') as HTMLElement | null;
+    //     const nextOrPreviousMailBtn = targetElement.closest(".mail-list-page-toolbar.toolbar-only-reader")
+    //     if (!mailItemDiv && !nextOrPreviousMailBtn) {
+    //         // console.log("------>>> this is not a mail reading action");
+    //         return;
+    //     }
+    //
+    //     let idleTimer = setTimeout(() => {
+    //         console.log("------>>> target hint, check elements and add bmail buttons");
+    //         clearTimeout(idleTimer);
+    //
+    //         addCryptoBtnToReadingMailQQ(template, mainArea);
+    //     }, 1200);
+    // });
 }
 
 function addCryptoBtnToReadingMailQQ(template: HTMLTemplateElement, mainArea?: HTMLElement) {
