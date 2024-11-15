@@ -11,7 +11,8 @@ import {
     encryptMailInComposing,
     extractAesKeyId,
     findAllTextNodesWithEncryptedDiv,
-    observeForElement, observeForElementDirect,
+    observeForElement,
+    observeForElementDirect,
     observeFrame,
     parseBmailInboxBtn,
     parseContentHtml,
@@ -110,7 +111,7 @@ async function addCryptoBtnToComposeDivQQ(template: HTMLTemplateElement, compose
     }
     const aekID = prepareAttachmentForCompose(template, composeDiv);
     const title = browser.i18n.getMessage('crypto_and_send');
-    const receiverTable = composeDiv.querySelector('.receiver-editor') as HTMLElement;
+    const receiverTable = composeDiv.querySelector('.mail-compose-receivers') as HTMLElement;
     if (!receiverTable) {
         console.log("----->>> receiver table not found in compose");
         return;
@@ -189,17 +190,9 @@ function findAttachmentKeyID(composeDiv: HTMLElement): Set<string> {
     return mySet;
 }
 
-async function checkIfEditAgainContent(querySelector: HTMLElement) {
-    const editAgainContentDiv = querySelector.querySelector(`.${__bmail_mail_body_class_name}`) as HTMLElement;
-    if (!editAgainContentDiv) {
-        return;
-    }
-    if (!editAgainContentDiv.innerText.includes(MailFlag)) {
-        return;
-    }
-
-    const quotedContentDiv = querySelector.querySelector(".xm_compose_origin_mail_container");
-    if (quotedContentDiv && quotedContentDiv.contains(editAgainContentDiv)) {
+async function checkIfEditAgainContent(mailBody: HTMLElement) {
+    const editAgainContentDiv = mailBody.firstElementChild as HTMLElement;
+    if (!mailBody.innerText.includes(MailFlag)) {
         return;
     }
     await decryptMailForEditionOfSentMail(editAgainContentDiv);
@@ -207,24 +200,22 @@ async function checkIfEditAgainContent(querySelector: HTMLElement) {
 
 async function prepareMailContent(mailContentDiv: HTMLElement): Promise<HTMLElement> {
 
-    let newMailBody = mailContentDiv;
-
-    const replyOrQuoteDiv = mailContentDiv.querySelector(".xm_compose_origin_mail_container");
-    if (replyOrQuoteDiv) {
-        mailContentDiv = replyOrQuoteDiv.parentElement as HTMLElement;
-        if (mailContentDiv.childNodes.length === 2) {
-            newMailBody = mailContentDiv.children[0] as HTMLElement;
-        } else {
-            newMailBody = document.createElement("div");
-            newMailBody.classList.add(__bmailComposeDivId);
-            Array.from(mailContentDiv.children).forEach((child) => {
-                if (child !== replyOrQuoteDiv) {
-                    newMailBody.appendChild(child); // 将子节点移入 newMailBody
-                }
-            });
-            mailContentDiv.insertBefore(newMailBody, replyOrQuoteDiv);
-        }
+    let newMailBody = mailContentDiv.firstElementChild as HTMLElement;
+    if (newMailBody.classList.contains(__bmailComposeDivId)) {
+        return newMailBody;
     }
+
+    newMailBody = document.createElement("div");
+    newMailBody.classList.add(__bmailComposeDivId);
+
+    const replyOrQuoteDiv = mailContentDiv.querySelector("article");
+    Array.from(mailContentDiv.children).forEach((child) => {
+        if (child !== replyOrQuoteDiv) {
+            newMailBody.appendChild(child); // 将子节点移入 newMailBody
+        }
+    });
+
+    mailContentDiv.insertBefore(newMailBody, mailContentDiv.firstChild);
 
     return newMailBody;
 }
@@ -245,9 +236,8 @@ async function encryptMailAndSendQQ(mailBody: HTMLElement, receiverTable: HTMLEl
 
         const allEmailAddressDiv = receiverTable.querySelectorAll("div[data-email]") as NodeListOf<HTMLElement>;
         const receiver = await processReceivers(allEmailAddressDiv, (div) => {
-            const email = div.dataset.email ?? "";
-            console.log("------>>> nick email:", email);
-            return email;
+            // console.log("------>>> nick email:", email);
+            return div.dataset.email ?? "";
         });
         if (!receiver || receiver.length <= 0) {
             return;
@@ -267,7 +257,7 @@ async function encryptMailAndSendQQ(mailBody: HTMLElement, receiverTable: HTMLEl
     }
 }
 
-function MonitorReadingArea(template: HTMLTemplateElement, mainArea: HTMLElement) {
+function monitorReadingArea(template: HTMLTemplateElement, mainArea: HTMLElement) {
     let oldElement: HTMLElement | null;
     observeForElement(mainArea, 200, () => {
         const readerElm = mainArea.querySelector(".mail-list-page-reader-body.reader-body-children") as HTMLElement;
@@ -277,8 +267,8 @@ function MonitorReadingArea(template: HTMLTemplateElement, mainArea: HTMLElement
         oldElement = readerElm;
         return readerElm;
     }, async () => {
-        const readerElm = mainArea.querySelector(".mail-list-page-reader-body.reader-body-children");
-        console.log("------>>> reader element:", readerElm);
+        // const readerElm = mainArea.querySelector(".mail-list-page-reader-body.reader-body-children");
+        // console.log("------>>> reader element:", readerElm);
         addCryptoBtnToReadingMailQQ(template, mainArea);
     }, true);
 }
@@ -291,7 +281,7 @@ async function monitorQQMailReading(template: HTMLTemplateElement) {
     }
 
     // monitorMsgTip(template, mainArea);
-    MonitorReadingArea(template, mainArea);
+    monitorReadingArea(template, mainArea);
     //
     // mainArea.addEventListener("click", (event) => {
     //     const targetElement = event.target as HTMLElement;
@@ -541,9 +531,8 @@ async function prepareContact(receiverTable: HTMLElement): Promise<void> {
             resolveContactDetailStack.push(resolve); // 将 resolve 函数压入栈顶
         });
         addMouseEnter(contact);
-        const contactDetail = await work;
-        console.log("-------->>>Received contact detail:", contactDetail);
-        contact.dataset.email = contactDetail;
+        // console.log("-------->>>Received contact detail:", contactDetail);
+        contact.dataset.email = await work;
         addMouseLeaveAction(contact);
     }
 }
@@ -960,26 +949,26 @@ async function downloadAndDecryptAgain(attachmentData?: any) {
     // console.log("------->>>> data size:=>", attachmentData.length);
 }
 
-function monitorMsgTip(template: HTMLTemplateElement, mainArea: HTMLElement) {
-    const mainAppDiv = document.getElementById("mailMainApp") as HTMLElement;
-    const messageTipDiv = Array.from(mainAppDiv.querySelectorAll(".xm_mailPushTip_containerBox"));
-
-    if (!messageTipDiv || messageTipDiv.length === 0) {
-        const div = document.createElement('div')
-        div.classList.add('xm_mailPushTip_containerBox');
-        mainAppDiv.appendChild(div);
-        console.log("-------->>>add a push message tips box");
-        messageTipDiv.push(div);
-    }
-
-    messageTipDiv.forEach(message => {
-        message.addEventListener("click", () => {
-            setTimeout(() => {
-                addCryptoBtnToReadingMailQQ(template, mainArea);
-            }, 1000)
-        });
-    });
-}
+// function monitorMsgTip(template: HTMLTemplateElement, mainArea: HTMLElement) {
+//     const mainAppDiv = document.getElementById("mailMainApp") as HTMLElement;
+//     const messageTipDiv = Array.from(mainAppDiv.querySelectorAll(".xm_mailPushTip_containerBox"));
+//
+//     if (!messageTipDiv || messageTipDiv.length === 0) {
+//         const div = document.createElement('div')
+//         div.classList.add('xm_mailPushTip_containerBox');
+//         mainAppDiv.appendChild(div);
+//         console.log("-------->>>add a push message tips box");
+//         messageTipDiv.push(div);
+//     }
+//
+//     messageTipDiv.forEach(message => {
+//         message.addEventListener("click", () => {
+//             setTimeout(() => {
+//                 addCryptoBtnToReadingMailQQ(template, mainArea);
+//             }, 1000)
+//         });
+//     });
+// }
 
 
 (window as any).contentPageProvider = new Provider();
