@@ -26,6 +26,7 @@ export const __decrypt_button_css_name = '.bmail-decrypt-btn'
 
 export interface ContentPageProvider {
     readCurrentMailAddress(): string;
+
     processAttachmentDownload(filePath?: string, attachmentData?: any): Promise<void>
 }
 
@@ -286,7 +287,7 @@ export async function queryContactFromSrv(emailToQuery: string[], receiver: stri
     }
 
     if (mailRsp.success < 0) {
-        showTipsDialog("Warning", "no blockchain address for:" + emailToQuery);
+        showTipsDialog("Warning", emailToQuery + "=>" + mailRsp.message);
         return null;
     }
 

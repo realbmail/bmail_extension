@@ -300,7 +300,7 @@ async function signData(message: Uint8Array) {
 
 async function searchAccountByEmails(emails: string[], sendResponse: (response: any) => void) {
     if (emails.length <= 0) {
-        sendResponse({success: -1, message: "no valid email addresses"});
+        sendResponse({success: -1, message: "invalid email addresses"});
         return;
     }
     const mKey = await checkWalletStatus(sendResponse);
@@ -311,7 +311,7 @@ async function searchAccountByEmails(emails: string[], sendResponse: (response: 
     try {
         const addr = await sessionGet(__dbKey_cur_addr) as MailAddress | null;
         if (!addr) {
-            sendResponse({success: -1, message: "open wallet first"});
+            sendResponse({success: -2, message: "open wallet first"});
             return;
         }
 
@@ -322,20 +322,20 @@ async function searchAccountByEmails(emails: string[], sendResponse: (response: 
         const signature = await signData(message);
         if (!signature) {
             console.log("[service worker] sign data failed");
-            sendResponse({success: -1, message: "sign data failed"});
+            sendResponse({success: -3, message: "sign data failed"});
             return;
         }
         const rspData = await BMRequestToSrv("/query_by_email_array", addr.bmail_address, message, signature);
         if (!rspData) {
             console.log("[service worker] no contact data");
-            sendResponse({success: -1, message: "no valid data"});
+            sendResponse({success: -4, message: "no blockchain address found"});
             return;
         }
         const result = EmailReflects.decode(rspData) as EmailReflects
         sendResponse({success: 1, data: result});
     } catch (e) {
         console.log("[service worker] search bmail accounts failed:", e)
-        sendResponse({success: -1, message: "network failed"});
+        sendResponse({success: -5, message: "network failed:" + e});
     }
 }
 
