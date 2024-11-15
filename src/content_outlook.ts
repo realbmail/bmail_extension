@@ -55,7 +55,7 @@ const __nameToEmailMap = new Map();
 function cacheContactContent(contactDiv: HTMLElement) {
     const ulElement = contactDiv.querySelector('ul.ms-FloatingSuggestionsList-container') as HTMLElement;
     if (!ulElement) {
-        console.log("------>>>  contact list should not be null:");
+        console.log("------>>>  contact list should not be null:",contactDiv);
         return;
     }
 
@@ -74,7 +74,7 @@ function cacheContactContent(contactDiv: HTMLElement) {
         if (!emailName || !emailAddress) {
             console.log("------>>> need query later");
             setTimeout(() => {
-                cacheContactContent(contactItem);
+                cacheContactContent(contactDiv);
             }, 500);
             break;
         }
@@ -85,7 +85,7 @@ function cacheContactContent(contactDiv: HTMLElement) {
 async function monitorContactAction() {
     const div = document.getElementById("fluent-default-layer-host") as HTMLElement;
     let oldDiv: HTMLElement | null = null;
-    console.log("------>>> start to monitor contact list:", div);
+    // console.log("------>>> start to monitor contact list:", div);
     observeForElement(div, 300, () => {
         const ulElement = div.querySelector('ul.ms-FloatingSuggestionsList-container') as HTMLElement | null;
         if (oldDiv === ulElement) {
