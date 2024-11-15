@@ -455,7 +455,7 @@ export async function processReceivers(allEmailAddressDiv: NodeListOf<HTMLElemen
         const emailAddressDiv = allEmailAddressDiv[i] as HTMLElement;
         const email = callback(emailAddressDiv)
         if (!email || email === "") {
-            showTipsDialog("Tips", emailAddressDiv.innerText.trim() + " is not valid email address")
+            showTipsDialog("Tips", emailAddressDiv.innerText.trim() + browser.i18n.getMessage("invalid_email_address"))
             return null;
         }
         console.log("------>>> email address found:", email);

@@ -379,5 +379,8 @@
   },
   "attachment_download_error": {
     "message": "Netzwerkantwort fehlgeschlagen, Statuscode:"
+  },
+  "invalid_email_address": {
+    "message": "Ungültige E-Mail-Adresse"
   }
 }

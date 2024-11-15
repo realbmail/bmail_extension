@@ -379,5 +379,8 @@
   },
   "attachment_download_error": {
     "message": "ネットワーク応答に失敗しました。ステータスコード:"
+  },
+  "invalid_email_address": {
+    "message": "無効なメールアドレスです"
   }
 }

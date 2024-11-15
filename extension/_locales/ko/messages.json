@@ -379,5 +379,8 @@
   },
   "attachment_download_error": {
     "message": "네트워크 응답 실패, 상태 코드:"
+  },
+  "invalid_email_address": {
+    "message": "유효하지 않은 이메일 주소입니다"
   }
 }

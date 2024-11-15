@@ -379,5 +379,8 @@
   },
   "attachment_download_error": {
     "message": "Échec de la réponse réseau, code d'état:"
+  },
+  "invalid_email_address": {
+    "message": "Adresse e-mail non valide"
   }
 }

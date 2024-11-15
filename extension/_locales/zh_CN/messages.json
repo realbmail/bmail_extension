@@ -373,5 +373,8 @@
   },
   "attachment_download_error": {
     "message": "网络响应失败，状态码:"
+  },
+  "invalid_email_address": {
+    "message": "是无效的邮箱地址"
   }
 }

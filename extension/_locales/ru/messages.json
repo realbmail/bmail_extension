@@ -379,5 +379,8 @@
   },
   "attachment_download_error": {
     "message": "Ошибка сети, код состояния:"
+  },
+  "invalid_email_address": {
+    "message": "Неверный адрес электронной почты"
   }
 }

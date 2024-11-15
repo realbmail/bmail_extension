@@ -379,5 +379,8 @@
   },
   "attachment_download_error": {
     "message": "Risposta di rete fallita, codice di stato:"
+  },
+  "invalid_email_address": {
+    "message": "Indirizzo email non valido"
   }
 }

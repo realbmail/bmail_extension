@@ -229,10 +229,6 @@ async function prepareMailContent(mailContentDiv: HTMLElement): Promise<HTMLElem
     return newMailBody;
 }
 
-function arrayToNodeList<T extends HTMLElement>(array: T[]): NodeListOf<T> {
-    return array as unknown as NodeListOf<T>;
-}
-
 async function encryptMailAndSendQQ(mailBody: HTMLElement, receiverTable: HTMLElement, sendDiv: HTMLElement) {
     showLoading();
     try {
@@ -247,15 +243,10 @@ async function encryptMailAndSendQQ(mailBody: HTMLElement, receiverTable: HTMLEl
             return;
         }
 
-        const allEmailAddressDiv = receiverTable.querySelectorAll(".cmp-account-nick") as NodeListOf<HTMLElement>;
-        const visibleNickElementsArray = Array.from(allEmailAddressDiv).filter((nickElement) => {
-            return !nickElement.closest('.cmp-hide-accounts');
-        });
-        const visibleNickElements = arrayToNodeList(visibleNickElementsArray);
-        const receiver = await processReceivers(visibleNickElements, (div) => {
-            const nickName = div.innerText.trim();
-            const email = __cacheContactGet(nickName);
-            console.log("------>>> nick name:=>", nickName, " email:", email);
+        const allEmailAddressDiv = receiverTable.querySelectorAll("div[data-email]") as NodeListOf<HTMLElement>;
+        const receiver = await processReceivers(allEmailAddressDiv, (div) => {
+            const email = div.dataset.email ?? "";
+            console.log("------>>> nick email:", email);
             return email;
         });
         if (!receiver || receiver.length <= 0) {
@@ -490,16 +481,6 @@ async function encryptSimpleMailReplyQQ(mailBody: HTMLElement, email: string, se
     }
 }
 
-const __dbkey_qq_contact = "__db_key_qq_contact_"
-
-function __cacheContactSet(k: string, v: string) {
-    localStorage.setItem(__dbkey_qq_contact + k, v);
-}
-
-function __cacheContactGet(k: string): string | null {
-    return localStorage.getItem(__dbkey_qq_contact + k);
-}
-
 function addMouseEnter(targetDiv: HTMLElement) {
     const mouseEnterEvent = new MouseEvent('mouseenter', {
         bubbles: true,
@@ -530,8 +511,7 @@ function addMouseLeaveAction(contact: HTMLElement) {
     contact.dispatchEvent(mouseLeaveEvent);
 }
 
-async function prepareContact(receiverTable: HTMLElement): Promise<string[]> {
-    const receivers: string[] = [];
+async function prepareContact(receiverTable: HTMLElement): Promise<void> {
     const contactListDiv = receiverTable.querySelectorAll(".cmp-account-wrap");
 
     const visibleNickElementsArray = Array.from(contactListDiv).filter((nickElement) => {
@@ -546,10 +526,9 @@ async function prepareContact(receiverTable: HTMLElement): Promise<string[]> {
         addMouseEnter(contact);
         const contactDetail = await work;
         console.log("-------->>>Received contact detail:", contactDetail);
+        contact.dataset.email = contactDetail;
         addMouseLeaveAction(contact);
     }
-
-    return receivers;
 }
 
 const resolveContactDetailStack: Array<(value: string) => void> = [];

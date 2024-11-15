@@ -109,5 +109,8 @@
   "recover_error_message": {
     "message": "عبارت بازیابی نامعتبر",
     "description": ""
+  },
+  "invalid_email_address": {
+    "message": "آدرس ایمیل نامعتبر است"
   }
 }

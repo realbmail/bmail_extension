@@ -109,5 +109,8 @@
   "recover_error_message": {
     "message": "عبارة سرية غير صالحة",
     "description": ""
+  },
+  "invalid_email_address": {
+    "message": "عنوان بريد إلكتروني غير صالح"
   }
 }

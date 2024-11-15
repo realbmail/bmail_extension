@@ -373,5 +373,8 @@
   },
   "attachment_download_error": {
     "message": "Network response failed, status code:"
+  },
+  "invalid_email_address": {
+    "message": "Invalid email address"
   }
 }

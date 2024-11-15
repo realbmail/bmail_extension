@@ -38,7 +38,6 @@ function appendForOutLook(template: HTMLTemplateElement) {
         () => {
             return document.querySelector(".DPg26 .xKrjQ");
         }, async () => {
-            // console.log("------->>>start to populate outlook mail menu");
             appendBmailInboxMenuOutLook(template).then();
             monitorContactAction().then();
         });
@@ -53,22 +52,40 @@ function appendForOutLook(template: HTMLTemplateElement) {
 
 const __nameToEmailMap = new Map();
 
-function handleSelection(selectedLi: HTMLElement | null) {
-    if (!selectedLi) {
+function cacheContactContent(contactDiv: HTMLElement) {
+    const ulElement = contactDiv.querySelector('ul.ms-FloatingSuggestionsList-container') as HTMLElement;
+    if (!ulElement) {
+        console.log("------>>>  contact list should not be null:");
         return;
     }
-    const emailName = selectedLi.querySelector('.MwdHX')?.textContent;
-    const emailAddress = selectedLi.querySelector('.Umn8G.MwdHX')?.textContent;
-    console.log('-------->>>name:', emailName, "------>>> address:", emailAddress);
-    if (!emailName || !emailAddress) {
+
+    const contactItems = ulElement.querySelectorAll("li");
+    if (contactItems.length === 0) {
+        console.log("------>>> contact list is empty")
         return;
     }
-    __nameToEmailMap.set(emailName, emailAddress);
+
+    for (let i = 0; i < contactItems.length; i++) {
+        const contactItem = contactItems[i];
+
+        const emailName = contactItem.querySelector('.MwdHX') as HTMLElement
+        const emailAddress = contactItem.querySelector('.Umn8G.MwdHX') as HTMLElement;
+        console.log('-------->>>name:', emailName, "------>>> address:", emailAddress);
+        if (!emailName || !emailAddress) {
+            console.log("------>>> need query later");
+            setTimeout(() => {
+                cacheContactContent(contactItem);
+            }, 500);
+            break;
+        }
+        __nameToEmailMap.set(emailName.innerText.trim(), emailAddress.innerText.trim());
+    }
 }
 
 async function monitorContactAction() {
     const div = document.getElementById("fluent-default-layer-host") as HTMLElement;
     let oldDiv: HTMLElement | null = null;
+    console.log("------>>> start to monitor contact list:", div);
     observeForElement(div, 300, () => {
         const ulElement = div.querySelector('ul.ms-FloatingSuggestionsList-container') as HTMLElement | null;
         if (oldDiv === ulElement) {
@@ -77,16 +94,7 @@ async function monitorContactAction() {
         oldDiv = ulElement;
         return ulElement;
     }, async () => {
-        const ulElement = div.querySelector('ul.ms-FloatingSuggestionsList-container') as HTMLElement;
-
-        if (!ulElement) {
-            console.log("------>>>  contact list should not be null:");
-            return;
-        }
-
-        ulElement.querySelectorAll("li").forEach((el: HTMLElement) => {
-            handleSelection(el);
-        })
+        cacheContactContent(div);
     }, true);
 }
 
@@ -134,17 +142,9 @@ function monitorReceiverChanges(composeArea: HTMLElement) {
         console.log("----->>> this is not full page of mail composition");
         return
     }
-    const validEmailDiv = new Map();
     let currentReceiverNo = 0;
     observeForElement(receiverTable, 600, () => {
         const receivers = receiverTable.querySelectorAll("._EType_RECIPIENT_ENTITY") as NodeListOf<HTMLElement>;
-        for (let i = 0; i < receivers.length; i++) {
-            const div = receivers[i];
-            const emailAddr = extractEmail(div.textContent ?? "");
-            if (emailAddr) {
-                validEmailDiv.set(i, emailAddr);
-            }
-        }
         if (currentReceiverNo === receivers.length) {
             return null;
         }
@@ -154,18 +154,15 @@ function monitorReceiverChanges(composeArea: HTMLElement) {
         const receivers = receiverTable.querySelectorAll("._EType_RECIPIENT_ENTITY") as NodeListOf<HTMLElement>;
         // console.log("----->>> all nodes:", receivers);
         for (let i = 0; i < receivers.length; i++) {
-            const div = receivers[i];
-            const divTxt = div.textContent ?? ""
+            const div = receivers[i] as HTMLElement;
+            const divTxt = div.innerText
             const emailAddr = extractEmail(divTxt);
             if (emailAddr) {
                 continue;
             }
             const matchingSpans = div.querySelector('span[class^="textContainer-"], span[class^="individualText-"]') as HTMLElement;
             const emailName = matchingSpans.innerText.trim()
-            console.log("------>>> receivers area found when compose mail=>", emailName, validEmailDiv.get(i));
-            if (!__nameToEmailMap.get(emailName)) {
-                __nameToEmailMap.set(emailName, validEmailDiv.get(i));
-            }
+            console.log("------>>> receivers area found when compose mail=>", emailName, __nameToEmailMap.get(emailName));
         }
     }, true)
 }
@@ -204,6 +201,7 @@ async function addCryptButtonToComposeDivOutLook(template: HTMLTemplateElement) 
 }
 
 const __bmailComposeDivId = "bmail-mail-body-for-outlook";
+
 async function encryptMailAndSendOutLook(composeArea: HTMLElement, sendDiv: HTMLElement) {
     showLoading();
     try {
@@ -218,10 +216,12 @@ async function encryptMailAndSendOutLook(composeArea: HTMLElement, sendDiv: HTML
                 console.log("------>>> email address:", emailAddr);
                 return emailAddr;
             }
-            let emailAddr = extractEmail(matchingSpans.innerText.trim() ?? "");
+            const nickName = matchingSpans.innerText.trim() ?? ""
+            console.log("------>>> nick name:", nickName);
+            let emailAddr = extractEmail(nickName);
             if (!emailAddr) {
-                emailAddr = __nameToEmailMap.get(matchingSpans.innerText.trim());
-                console.log("-------->>>>>>name:", matchingSpans.innerText.trim(), "email:", emailAddr);
+                emailAddr = __nameToEmailMap.get(nickName);
+                console.log("-------->>>>>>name:", nickName, "email:", emailAddr);
             }
             return emailAddr;
         });
