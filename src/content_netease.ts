@@ -133,7 +133,7 @@ async function parseMailBodyToCheckCryptoButtonStatus(composeDiv: HTMLElement, b
     if (mailEditAgainDiv) {
         const targetElement = mailEditAgainDiv.closest('#isReplyContent, #isForwardContent, .cm_quote_msg');
         if (!targetElement) {
-            await decryptMailForEditionOfSentMail(mailEditAgainDiv);
+            await decryptMailForEditionOfSentMail(mailEditAgainDiv, true);
             let nextSibling = mailEditAgainDiv.nextSibling;
             while (nextSibling && (nextSibling as HTMLElement).tagName === 'BR') {
                 mailEditAgainDiv.appendChild(nextSibling);

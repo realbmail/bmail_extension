@@ -61,7 +61,10 @@ export class AttachmentEncryptKey {
         localStorage.setItem(wrapKeyID(this.id), AttachmentEncryptKey.toJson(this));
     }
 
-    cacheAkForReading() {
+    cacheAkForReading(isEditAgain?: boolean) {
+        if (isEditAgain) {
+            this.cacheAKForCompose();
+        }
         let keyStr = sessionStorage.getItem(wrapKeyID(this.id));
         if (keyStr) {
             return;

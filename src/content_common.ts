@@ -562,7 +562,7 @@ export function findAllTextNodesWithEncryptedDiv(mailArea: HTMLElement): Node[] 
     return matchingNodes;
 }
 
-export async function decryptMailForEditionOfSentMail(originalTxtDiv: HTMLElement) {
+export async function decryptMailForEditionOfSentMail(originalTxtDiv: HTMLElement, isEditAgain?: boolean) {
     const statusRsp = await sendMessageToBackground('', MsgType.CheckIfLogin)
     if (statusRsp.success < 0) {
         return;
@@ -583,7 +583,7 @@ export async function decryptMailForEditionOfSentMail(originalTxtDiv: HTMLElemen
     originalTxtDiv.innerHTML = replaceTextInRange(originalTxtDiv.innerHTML, bmailContent.offset, bmailContent.endOffset, mailRsp.data);
     if (mailRsp.attachment) {
         const attachmentKey = AttachmentEncryptKey.fromJson(mailRsp.attachment);
-        attachmentKey.cacheAkForReading();
+        attachmentKey.cacheAkForReading(isEditAgain);
     }
 }
 

@@ -109,6 +109,9 @@ async function addCryptoBtnToComposeDivQQ(template: HTMLTemplateElement, compose
         console.log("----->>> mail body not found in compose");
         return;
     }
+
+    await checkIfEditAgainContent(mailBodyDiv);
+
     const aekID = prepareAttachmentForCompose(template, composeDiv);
     const title = browser.i18n.getMessage('crypto_and_send');
     const receiverTable = composeDiv.querySelector('.mail-compose-receivers') as HTMLElement;
@@ -126,8 +129,6 @@ async function addCryptoBtnToComposeDivQQ(template: HTMLTemplateElement, compose
         }
     ) as HTMLElement;
     toolBar.insertBefore(cryptoBtnDiv, sendDiv.nextSibling as HTMLElement);
-
-    await checkIfEditAgainContent(mailBodyDiv);
 }
 
 function prepareAttachmentForCompose(template: HTMLTemplateElement, composeDiv: HTMLElement): string {
@@ -195,7 +196,7 @@ async function checkIfEditAgainContent(mailBody: HTMLElement) {
     if (!mailBody.innerText.includes(MailFlag)) {
         return;
     }
-    await decryptMailForEditionOfSentMail(editAgainContentDiv);
+    await decryptMailForEditionOfSentMail(editAgainContentDiv, true);
 }
 
 async function prepareMailContent(mailContentDiv: HTMLElement): Promise<HTMLElement> {
@@ -723,7 +724,7 @@ async function prepareMailContentOldVersion(frameDoc: Document): Promise<HTMLEle
         const encryptedArea = bmailContentDiv.querySelector(`.${__bmail_mail_body_class_name}`) as HTMLElement | null;
         const hasEncryptedRawData = encryptedArea?.innerText.includes(MailFlag);
         if (encryptedArea && hasEncryptedRawData) {
-            await decryptMailForEditionOfSentMail(encryptedArea);
+            await decryptMailForEditionOfSentMail(encryptedArea, true);
         }
     }
 
