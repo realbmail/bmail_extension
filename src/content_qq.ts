@@ -819,7 +819,14 @@ function addListenerForQuickReplyOldVersion(template: HTMLTemplateElement, doc: 
                     decryptMailInReading(bmailBody, cryptoBtn).then();
                 })
 
-                const success = await encryptMailInComposing(mailContentDiv, receiver);
+                const newMailBody = document.createElement("div");
+                newMailBody.classList.add(__bmailComposeDivId);
+                Array.from(mailContentDiv.children).forEach((child) => {
+                    newMailBody.appendChild(child);
+                });
+                mailContentDiv.insertBefore(newMailBody, mailContentDiv.firstChild);
+
+                const success = await encryptMailInComposing(newMailBody, receiver);
                 if (!success) {
                     return;
                 }
