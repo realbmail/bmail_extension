@@ -3,6 +3,7 @@ import nacl from "tweetnacl";
 import {decodePubKey, generateRandomKey, MailKey} from "./wallet";
 import {decodeHex, encodeHex} from "./utils";
 import {ed2CurvePub} from "./edwards25519";
+import pako from "pako";
 
 export let MailBodyVersion = '1.2.6';
 export const MailFlag = "0be465716ad37c9119253196f921e677";
@@ -20,8 +21,9 @@ export class BMailBody {
     sender: string;
     mailFlag: string;
     attachment: string = "";
+    isCompressed: boolean = false; // 新增属性
 
-    constructor(version: string, secrets: Map<string, string>, body: string, nonce: Uint8Array, sender: string, attachment?: string) {
+    constructor(version: string, secrets: Map<string, string>, body: string, nonce: Uint8Array, sender: string, attachment?: string, isCompressed: boolean = false) {
         this.version = version;
         this.receivers = secrets;
         this.cryptoBody = body;
@@ -29,6 +31,7 @@ export class BMailBody {
         this.sender = sender;
         this.mailFlag = MailFlag;
         this.attachment = attachment ?? "";
+        this.isCompressed = isCompressed;
     }
 
     static fromJSON(jsonStr: string): BMailBody {
@@ -38,7 +41,8 @@ export class BMailBody {
         const cryptoBody = json.cryptoBody;
         const nonce = decodeHex(json.nonce);
         const sender = json.sender;
-        return new BMailBody(version, receivers, cryptoBody, nonce, sender, json.attachment);
+        const isCompressed = json.isCompressed ?? false;
+        return new BMailBody(version, receivers, cryptoBody, nonce, sender, json.attachment, isCompressed);
     }
 
     toJSON() {
@@ -50,6 +54,7 @@ export class BMailBody {
             nonce: encodeHex(this.nonce),
             sender: this.sender,
             attachment: this.attachment,
+            isCompressed: this.isCompressed,
         };
     }
 
@@ -81,9 +86,10 @@ export function encodeMail(peers: string[], data: string, key: MailKey, attachme
         const sharedKey = nacl.scalarMult(key.curvePriKey, peerCurvePub!);
         const encryptedKey = nacl.secretbox(aesKey, nonce, sharedKey);
         secrets.set(peer, encodeHex(encryptedKey));
-    })
+    });
 
-    const encryptedBody = nacl.secretbox(naclUtil.decodeUTF8(data), nonce, aesKey);
+    const compressedBody = pako.gzip(data);
+    const encryptedBody = nacl.secretbox(compressedBody, nonce, aesKey);
 
     let encodedAttachmentKey: string | undefined;
     if (attachment) {
@@ -91,10 +97,17 @@ export function encodeMail(peers: string[], data: string, key: MailKey, attachme
         encodedAttachmentKey = naclUtil.encodeBase64(attData);
     }
 
-    return new BMailBody(MailBodyVersion, secrets,
+    return new BMailBody(
+        MailBodyVersion,
+        secrets,
         naclUtil.encodeBase64(encryptedBody),
-        nonce, key.address.bmail_address, encodedAttachmentKey);
+        nonce,
+        key.address.bmail_address,
+        encodedAttachmentKey,
+        true
+    );
 }
+
 
 export class PlainMailBody {
     version: string;
@@ -107,12 +120,10 @@ export class PlainMailBody {
         this.attachment = attachment ?? "";
     }
 }
-
 export function decodeMail(mailData: string, key: MailKey): PlainMailBody {
-
     const mail = BMailBody.fromJSON(mailData);
     const address = key.address;
-    const encryptedKey = mail.receivers.get(address.bmail_address)
+    const encryptedKey = mail.receivers.get(address.bmail_address);
     if (!encryptedKey) {
         throw new Error("address isn't in receiver list");
     }
@@ -133,6 +144,10 @@ export function decodeMail(mailData: string, key: MailKey): PlainMailBody {
         throw new Error("decrypt mail body failed");
     }
 
+    const body = mail.isCompressed
+        ? pako.ungzip(bodyBin, {to: "string"})
+        : naclUtil.encodeUTF8(bodyBin);
+
     let attachment: string | undefined;
     if (mail.attachment) {
         const attachmentBin = nacl.secretbox.open(naclUtil.decodeBase64(mail.attachment), mail.nonce, aesKey);
@@ -142,5 +157,5 @@ export function decodeMail(mailData: string, key: MailKey): PlainMailBody {
         attachment = naclUtil.encodeUTF8(attachmentBin);
     }
 
-    return new PlainMailBody(MailBodyVersion, naclUtil.encodeUTF8(bodyBin), attachment);
+    return new PlainMailBody(MailBodyVersion, body, attachment);
 }
