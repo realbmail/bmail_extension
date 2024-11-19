@@ -5,7 +5,7 @@ import {decodeHex, encodeHex} from "./utils";
 import {ed2CurvePub} from "./edwards25519";
 import pako from "pako";
 
-export let MailBodyVersion = '0.0.0';
+let MailBodyVersion = '0.0.0';
 export const MailFlag = "0be465716ad37c9119253196f921e677";
 
 export function initMailBodyVersion(version: string) {
