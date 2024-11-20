@@ -1,6 +1,9 @@
-import {__currentDatabaseVersion, __tableSystemSetting, databaseUpdate, getMaxIdRecord} from "./database";
-import {sessionGet, sessionRemove, sessionSet} from "./session_storage";
-import {__dbKey_cur_account_details} from "./consts";
+import {
+    __tableSystemSetting,
+    databaseGetByID,
+    databaseUpdate
+} from "./database";
+import {sessionGet, sessionSet} from "./session_storage";
 
 const __dbSystemSetting = "__db_key_system_setting__"
 
@@ -20,18 +23,20 @@ export class SysSetting {
     }
 }
 
+const __systemSettingVersion = 8;
+
 export async function getSystemSetting(): Promise<SysSetting> {
     let ss = await sessionGet(__dbSystemSetting);
     if (ss) {
         return new SysSetting(ss.id, ss.contactSrv, ss.contactList);
     }
 
-    ss = await getMaxIdRecord(__tableSystemSetting);
+    ss = await databaseGetByID(__tableSystemSetting, __systemSettingVersion);
     let sObj;
     if (ss) {
         sObj = new SysSetting(ss.id, ss.contactSrv, ss.contactList);
     } else {
-        sObj = new SysSetting(__currentDatabaseVersion, __officialContactSrv, [__officialContactSrv]);
+        sObj = new SysSetting(__systemSettingVersion, __officialContactSrv, [__officialContactSrv]);
     }
 
     await sessionSet(__dbSystemSetting, sObj);
@@ -89,7 +94,7 @@ export async function removeContractSrv(srv: string): Promise<boolean> {
 
 // const httpServerUrl = "https://sharp-happy-grouse.ngrok-free.app"
 // const httpServerUrl = "http://127.0.0.1:8001"
-export const __officialContactSrv = "https://bmail.simplenets.org:8443"
+export const __officialContactSrv = "https://bc.simplenets.org"
 
 export async function getContactSrv(): Promise<string> {
     const ss = await getSystemSetting();

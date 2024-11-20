@@ -316,9 +316,9 @@ async function activeCurrentAccount(actBtn: HTMLButtonElement) {
 }
 
 export async function prepareDashboardElm(force?: boolean): Promise<void> {
+    // console.log("------------->>>>>prepareDashboardElm");
     const accountData = await loadAndSetupAccount(force);
     if (!accountData) {
-
         return;
     }
     setupElementByAccountData(accountData);
