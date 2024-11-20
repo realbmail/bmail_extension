@@ -1,6 +1,6 @@
 let __databaseObj: IDBDatabase | null = null;
 const __databaseName = 'bmail-database';
-export const __currentDatabaseVersion = 6;
+export const __currentDatabaseVersion = 7;
 export const __tableNameWallet = '__table_wallet__v1';
 export const __tableSystemSetting = '__table_system_setting__v1';
 
