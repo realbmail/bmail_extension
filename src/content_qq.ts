@@ -350,7 +350,7 @@ function addCryptoBtnToReadingMailQQ(template: HTMLTemplateElement, mainArea?: H
             return replayBar.querySelector(".mail-replay-editor-wrap")
         }, async () => {
             const contentOfReply = replayBar.querySelector(".mail-replay-editor-wrap") as HTMLElement;
-            addCryptoBtnToSimpleReply(template, contentOfReply);
+            addCryptoBtnToQuickReply(template, contentOfReply);
         });
     }
 
@@ -413,7 +413,7 @@ function addDecryptBtnToAttachmentItem(downloadBtn: HTMLElement, clone: HTMLElem
     });
 }
 
-function addCryptoBtnToSimpleReply(template: HTMLTemplateElement, replyContentDiv: HTMLElement) {
+function addCryptoBtnToQuickReply(template: HTMLTemplateElement, replyContentDiv: HTMLElement) {
     const toolbar = replyContentDiv.querySelector(".reply-footer");
     if (!toolbar) {
         console.log("----->>>no tool bar found in  quick reply ==> qq new version ")
@@ -430,9 +430,8 @@ function addCryptoBtnToSimpleReply(template: HTMLTemplateElement, replyContentDi
         return;
     }
 
-    const receiverDiv = replyContentDiv.querySelector('.cmp-account-email') as HTMLElement;
-    const email = extractEmail(receiverDiv.textContent ?? "");
-    if (!email) {
+    const mailNickNameDiv = replyContentDiv.querySelector('.cmp-account-wrap') as HTMLElement;
+    if (!mailNickNameDiv) {
         console.log("----->>> email address not found in quick reply ==> qq new version ");
         return;
     }
@@ -446,6 +445,14 @@ function addCryptoBtnToSimpleReply(template: HTMLTemplateElement, replyContentDi
     const title = browser.i18n.getMessage('crypto_and_send');
     const cryptoBtnDiv = parseCryptoMailBtn(template, 'file/logo_48.png', ".bmail-crypto-btn",
         title, 'bmail_crypto_btn_in_compose_qq_simple', async _ => {
+
+            const work = new Promise<string>((resolve) => {
+                resolveContactDetailStack.push(resolve); // 将 resolve 函数压入栈顶
+            });
+            addMouseEnter(mailNickNameDiv);
+            const email = await work;
+            addMouseLeaveAction(mailNickNameDiv);
+
             await encryptSimpleMailReplyQQ(mailContentDiv, email, sendDiv);
         }
     ) as HTMLElement;
