@@ -828,7 +828,7 @@ function addListenerForQuickReplyOldVersion(template: HTMLTemplateElement, doc: 
 
                 const newMailBody = document.createElement("div");
                 newMailBody.classList.add(__bmailComposeDivId);
-                Array.from(mailContentDiv.children).forEach((child) => {
+                Array.from(mailContentDiv.childNodes).forEach((child) => {
                     newMailBody.appendChild(child);
                 });
                 mailContentDiv.insertBefore(newMailBody, mailContentDiv.firstChild);
