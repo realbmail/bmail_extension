@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google 应用专用密码通知</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .email-container {
+      background-color: #fff;
+      max-width: 600px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .email-body {
+      padding: 24px;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .email-body h1 {
+      font-size: 22px;
+      color: #04062E;
+      margin: 24px 0 0;
+    }
+
+    .email-body p {
+      font-size: 14px;
+      color: #98989A;
+      line-height: 1.6;
+      margin: 8px 0 12px 0;
+    }
+
+    .email-logo {
+      width: 72px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+    }
+
+    .email-logo img {
+      width: 100%;
+      height: auto;
+    }
+
+    .email-body a {
+      color: #F28552;
+      text-decoration: none;
+    }
+
+    .mail-account-bind {
+      padding: 8px 32px;
+      font-size: 18px;
+      font-weight: 600;
+      border-radius: 6px;
+    }
+
+    .mail-account-bind p {
+      margin: 0;
+      font-size: 24px;
+      color: #F28552;
+    }
+
+    .bmail-account-bind {
+      padding: 12px 16px;
+      font-size: 16px;
+      font-weight: 400;
+      border-radius: 6px;
+      background-color: #EEF0F1;
+    }
+    .bmail-account-bind p {
+      margin: 0;
+      font-size: 14px;
+      color: rgba(4, 6, 46, 0.8);
+    }
+
+    .email-button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 24px;
+      background-color: #F28552;
+      color: #fff;
+      text-align: center;
+      border-radius: 4px;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+    }
+    .email-button:hover{
+      background-color: #04062E;
+      color: #F28552;
+    }
+    .email-footer {
+      padding: 16px;
+      font-size: 12px;
+      color: #777;
+      border-top: 1px solid #ddd;
+      text-align: center;
+    }
+    .underline {
+      margin: 32px auto 24px;
+      height: 1px;
+      width: 100%; /* 下划线宽度 */
+      background-color: #EEF0F1; /* 下划线颜色 */
+    }
+  </style>
+</head>
+<body>
+<div class="email-container">
+  <div class="email-body">
+    <div class="email-logo">
+      <img src="../file/logo_128.png" alt="Bmail Logo">
+    </div>
+    <h1>Thank you for registering BMail!</h1>
+    <p>
+      Click the button below to activate your account:
+    </p>
+    <div class="mail-account-bind">
+      <p>udou0821@gmail.com</p>
+    </div>
+    <div class="bmail-account-bind">
+      <p>BMCPSXUvB4kU8GyhG4JghA83wnxq4qjuRY74SBDkaXYUoY</p>
+    </div>
+    <button class="email-button">Activate Account</button>
+    <div class="underline"></div>
+    <p>
+      If you have any questions, please contact us at <strong style="color: #F28552;font-weight: 600">support@example.com</strong>
+    </p>
+  </div>
+
+  <div class="email-footer">
+    If the button above doesn't work, copy and paste this link into your browser
+    <br>
+    <a href="https://myaccount.google.com/notifications">https://mail.simplenets.org</a>
+  </div>
+</div>
+</body>
+</html>
