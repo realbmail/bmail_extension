@@ -84,7 +84,6 @@ export function translateHomePage() {
 
     document.getElementById("view-recovery-phrase-copy-seed")!.textContent = browser.i18n.getMessage('copy_to_clipboard');
     document.getElementById("view-recovery-phrase-hide-seed")!.textContent = browser.i18n.getMessage('reveal_seed_phrase');
-    document.getElementById("supported-target-title")!.textContent = browser.i18n.getMessage('supported_mail_service');
 }
 
 export function translateMainPage() {
@@ -94,6 +93,7 @@ export function translateMainPage() {
     document.getElementById('login_unlock_btn')!.textContent = browser.i18n.getMessage('login_unlock_btn');
     document.getElementById('login_new_account')!.textContent = browser.i18n.getMessage('login_new_account');
     document.getElementById('login_forget_password')!.textContent = browser.i18n.getMessage('login_forget_password');
+    document.getElementById("supported-target-title")!.textContent = browser.i18n.getMessage('supported_mail_service');
 
     document.getElementById('bmail-account-level-lbl')!.textContent = browser.i18n.getMessage('address_level');
     document.getElementById('bmail-active-account')!.textContent = browser.i18n.getMessage('active_account');
