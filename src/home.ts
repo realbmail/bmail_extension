@@ -275,13 +275,11 @@ async function actionOfWalletImport(): Promise<void> {
     passwordInput.value = '';
     const importedConfirmPassword = document.getElementById("imported-confirm-password") as HTMLInputElement;
     importedConfirmPassword.value = '';
-    //TODO: skip buy vip page
     // navigateTo('#onboarding/account-home');
 
     const address = wallet.address.bmail_address;
     await freeActiveAccount(address);
-    navigateTo('#onboarding/account-success');
-
+    navigateTo('#onboarding/account-to-active');
 }
 
 
@@ -460,7 +458,7 @@ async function confirmUserInputPhrase(): Promise<void> {
 
     const wallet = await queryCurWallet();
     await freeActiveAccount(wallet?.address.bmail_address);
-    navigateTo('#onboarding/account-success');
+    navigateTo('#onboarding/account-to-active');
 }
 
 function confirmImportedWallet(): void {
@@ -578,7 +576,7 @@ async function freeActiveAccount(address?: string) {
 
         const srvRsp = await BMRequestToSrv("/account_create", address, message, signature)
         console.log("------->>>fetch success:=>", srvRsp);
-        navigateTo('#onboarding/account-success');
+        navigateTo('#onboarding/account-to-active');
     } catch (error) {
         console.log("------->>>fetch failed:=>", error);
         errorDiv.innerText = "fetch failed:" + error;
