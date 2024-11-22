@@ -179,6 +179,21 @@
 </div>
 <div class="account-home view" id="view-account-success" style="display:none;">
     <main>
+        <h2>请选择邮件帐户</h2>
+        <div class="email-input-container">
+            <input type="email" class="email-input" id="emailAddress" placeholder="输入邮件地址" required>
+            <select class="email-select" id="emailService">
+                <option value="gmail.com">@gmail.com</option>
+                <option value="outlook.com">@outlook.com</option>
+                <option value="qq.com">@qq.com</option>
+                <option value="163.com">@163.com</option>
+                <option value="163.com">@126.com</option>
+            </select>
+        </div>
+        <button>绑定并激活</button>
+        <p id="des_pin_title">How to Pin a Browser Extension to the Toolbar >></p>
+    </main>
+    <main style="display: none">
         <h1 id="des_pin_title">How to Pin a Browser Extension to the Toolbar</h1>
         <uL>
             <li>

@@ -176,12 +176,12 @@ button:hover {
 }
 
 .supported-emails {
-    width: calc(100% - 24px);
+    width: 100%;
     border: 2px solid #EEEFF0;
     padding-top: 24px;
     position: relative;
     margin: auto;
-
+    bottom: -38px;
 }
 
 .supported-emails p {
@@ -190,7 +190,6 @@ button:hover {
     padding: 0 16px;
     position: absolute;
     top: -10px;
-    left: calc(50% - 109px);
 }
 
 .supported-emails-grid {
