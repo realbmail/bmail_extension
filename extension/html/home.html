@@ -178,7 +178,7 @@
     <div class="account-home-error" id="account-home-error" style="display: none"></div>
 </div>
 <div class="account-home view" id="view-account-success" style="display:none;">
-    <main>
+    <main style="display: block">
         <h2>请选择邮件帐户</h2>
         <div class="email-input-container">
             <input type="email" class="email-input" id="emailAddress" placeholder="输入邮件地址" required>
@@ -191,10 +191,13 @@
             </select>
         </div>
         <button>绑定并激活</button>
-        <p id="des_pin_title">How to Pin a Browser Extension to the Toolbar >></p>
+        <p id="des_pin_link">How to Pin a Browser Extension to the Toolbar >> </p>
     </main>
     <main style="display: none">
-        <h1 id="des_pin_title">How to Pin a Browser Extension to the Toolbar</h1>
+        <button class="pin-back-page">
+            <img alt="pin-back-icon" src="../file/int-back.png">
+        </button>
+        <h1 id="des_pin_title"> How to Pin a Browser Extension to the Toolbar </h1>
         <uL>
             <li>
                 <p id="des_pin_step1">Click the extension icon at the top right corner of the browser to open the
