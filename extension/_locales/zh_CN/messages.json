@@ -379,5 +379,8 @@
   },
   "supported_mail_service": {
     "message": "该插件支持以下邮箱服"
+  },
+  "Email_Verify_Title": {
+    "message": "激活您的 BMail 服务 - 开始安全通信之旅"
   }
 }

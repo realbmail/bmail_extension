@@ -379,5 +379,8 @@
   },
   "supported_mail_service": {
     "message": "This plugin supports the following email services"
+  },
+  "Email_Verify_Title": {
+    "message": "Activate Your BMail Service - Start Your Secure Communication Journey"
   }
 }
