@@ -382,5 +382,8 @@
   },
   "invalid_email_address": {
     "message": "Indirizzo email non valido"
+  },
+  "supported_mail_service": {
+    "message": "Questo plugin supporta i seguenti servizi di posta elettronica"
   }
 }

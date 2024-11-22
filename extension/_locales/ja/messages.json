@@ -382,5 +382,8 @@
   },
   "invalid_email_address": {
     "message": "無効なメールアドレスです"
+  },
+  "supported_mail_service": {
+    "message": "このプラグインは以下のメールサービスをサポートしています"
   }
 }

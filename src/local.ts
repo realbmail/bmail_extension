@@ -84,6 +84,7 @@ export function translateHomePage() {
 
     document.getElementById("view-recovery-phrase-copy-seed")!.textContent = browser.i18n.getMessage('copy_to_clipboard');
     document.getElementById("view-recovery-phrase-hide-seed")!.textContent = browser.i18n.getMessage('reveal_seed_phrase');
+    document.getElementById("supported-target-title")!.textContent = browser.i18n.getMessage('supported_mail_service');
 }
 
 export function translateMainPage() {

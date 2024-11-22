@@ -376,5 +376,8 @@
   },
   "invalid_email_address": {
     "message": "Invalid email address"
+  },
+  "supported_mail_service": {
+    "message": "This plugin supports the following email services"
   }
 }

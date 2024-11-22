@@ -382,5 +382,8 @@
   },
   "invalid_email_address": {
     "message": "Dirección de correo no válida"
+  },
+  "supported_mail_service": {
+    "message": "Este complemento es compatible con los siguientes servicios de correo electrónico"
   }
 }

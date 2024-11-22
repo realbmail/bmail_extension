@@ -382,5 +382,8 @@
   },
   "invalid_email_address": {
     "message": "유효하지 않은 이메일 주소입니다"
+  },
+  "supported_mail_service": {
+    "message": "이 플러그인은 다음 이메일 서비스를 지원합니다"
   }
 }

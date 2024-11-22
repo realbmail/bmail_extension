@@ -376,5 +376,8 @@
   },
   "invalid_email_address": {
     "message": "是无效的邮箱地址"
+  },
+  "supported_mail_service": {
+    "message": "该插件支持以下邮箱服"
   }
 }

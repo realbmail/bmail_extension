@@ -112,5 +112,8 @@
   },
   "invalid_email_address": {
     "message": "آدرس ایمیل نامعتبر است"
+  },
+  "supported_mail_service": {
+    "message": "این افزونه از خدمات ایمیل زیر پشتیبانی می‌کند"
   }
 }

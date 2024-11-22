@@ -112,5 +112,8 @@
   },
   "invalid_email_address": {
     "message": "عنوان بريد إلكتروني غير صالح"
+  },
+  "supported_mail_service": {
+    "message": "يدعم هذا الملحق خدمات البريد الإلكتروني التالية"
   }
 }

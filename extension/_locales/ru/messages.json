@@ -382,5 +382,8 @@
   },
   "invalid_email_address": {
     "message": "Неверный адрес электронной почты"
+  },
+  "supported_mail_service": {
+    "message": "Этот плагин поддерживает следующие почтовые сервисы"
   }
 }
