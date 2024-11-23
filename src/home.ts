@@ -1,15 +1,16 @@
 import {initDatabase} from "./database";
 import {
-    createQRCodeImg, showView, sprintf
+    BMRequestToSrv,
+    createQRCodeImg, encodeHex, showView, signDataByMessage, sprintf
 } from "./utils";
 import {translateHomePage} from "./local";
 import {generateMnemonic, validateMnemonic, wordlists} from 'bip39';
 import browser from "webextension-polyfill";
 import {loadWalletJsonFromDB, MailAddress} from "./wallet";
 import {createNewWallet} from "./wallet_util";
-import {showDialog} from "./main_common";
 import {sessionGet} from "./session_storage";
 import {__dbKey_cur_addr} from "./consts";
+import {EMailActive} from "./proto/bmail_srv";
 
 document.addEventListener("DOMContentLoaded", initWelcomePage as EventListener);
 let ___mnemonic_in_mem: string | null = null;
@@ -599,6 +600,51 @@ async function bindAndActive() {
         browser.i18n.getMessage("active_mail_question"),
         browser.i18n.getMessage("active_mail_footer"),
     );
-    console.log("----->>> mail body:", mailBody);
+    // console.log("----->>> mail body:", mailBody);
     const subject = browser.i18n.getMessage("Email_Verify_Subject");
+
+    showLoading();
+    try {
+        const payload: EMailActive = EMailActive.create({
+            email: email,
+            subject: subject,
+            body: mailBody
+        });
+
+        const message = EMailActive.encode(payload).finish()
+        const signature = await signDataByMessage(encodeHex(message));
+        if (!signature) {
+            alert("sign data failed");
+            return;
+        }
+
+        const srvRsp = await BMRequestToSrv("/active_by_email", addr.bmail_address, message, signature)
+        console.log("------->>>fetch success:=>", srvRsp);
+        //TODO::
+        let mailServerLink = "";
+        switch (emailService) {
+            case "gmail.com":
+                mailServerLink = "https://mail.google.com/mail/u/0/#inbox";
+                break;
+            case "outlook.com":
+                mailServerLink = "https://outlook.live.com/mail/0/";
+                break;
+            case "qq.com":
+                mailServerLink = "https://wx.mail.qq.com/";
+                break;
+            case "163.com":
+                mailServerLink = "https://mail.163.com/";
+                break;
+            case "126.com":
+                mailServerLink = "https://mail.126.com/";
+                break;
+        }
+
+        window.open(mailServerLink, "_blank");
+    } catch (e) {
+        console.log(e)
+        alert(e);
+    } finally {
+        hideLoading();
+    }
 }

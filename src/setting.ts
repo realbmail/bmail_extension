@@ -93,8 +93,8 @@ export async function removeContractSrv(srv: string): Promise<boolean> {
 }
 
 // const httpServerUrl = "https://sharp-happy-grouse.ngrok-free.app"
-// const httpServerUrl = "http://127.0.0.1:8001"
-export const __officialContactSrv = "https://bc.simplenets.org"
+// export const __officialContactSrv = "https://bc.simplenets.org"
+export const __officialContactSrv = "http://127.0.0.1:8001"
 
 export async function getContactSrv(): Promise<string> {
     const ss = await getSystemSetting();
