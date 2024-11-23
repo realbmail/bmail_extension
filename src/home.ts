@@ -1,15 +1,15 @@
 import {initDatabase} from "./database";
 import {
-    BMRequestToSrv,
-    createQRCodeImg, encodeHex,
-    showView, signDataByMessage
+    createQRCodeImg, showView, sprintf
 } from "./utils";
 import {translateHomePage} from "./local";
 import {generateMnemonic, validateMnemonic, wordlists} from 'bip39';
 import browser from "webextension-polyfill";
-import {queryCurWallet} from "./wallet";
-import {AccountOperation} from "./proto/bmail_srv";
+import {loadWalletJsonFromDB, MailAddress} from "./wallet";
 import {createNewWallet} from "./wallet_util";
+import {showDialog} from "./main_common";
+import {sessionGet} from "./session_storage";
+import {__dbKey_cur_addr} from "./consts";
 
 document.addEventListener("DOMContentLoaded", initWelcomePage as EventListener);
 let ___mnemonic_in_mem: string | null = null;
@@ -26,6 +26,7 @@ async function initWelcomePage(): Promise<void> {
     initMnemonicConfirmDiv();
     initImportPasswordDiv();
     initCreateSuccessDiv();
+    initFinalActiveDiv();
 
     window.addEventListener('hashchange', function () {
         showView(window.location.hash, router);
@@ -83,7 +84,6 @@ function router(path: string): void {
 
 function importWallet(): void {
     navigateTo('#onboarding/import-wallet');
-    // generateRecoveryPhraseInputs();
 }
 
 async function createWalletAction(): Promise<void> {
@@ -275,13 +275,9 @@ async function actionOfWalletImport(): Promise<void> {
     passwordInput.value = '';
     const importedConfirmPassword = document.getElementById("imported-confirm-password") as HTMLInputElement;
     importedConfirmPassword.value = '';
-    // navigateTo('#onboarding/account-home');
 
-    const address = wallet.address.bmail_address;
-    await freeActiveAccount(address);
     navigateTo('#onboarding/account-to-active');
 }
-
 
 function checkImportPassword(this: HTMLInputElement): void {
     const parent = document.getElementById("view-password-for-imported") as HTMLElement;//
@@ -432,7 +428,7 @@ function changeInputType(this: HTMLElement): void {
 }
 
 function prepareAccountData() {
-    queryCurWallet().then((data) => {
+    loadWalletJsonFromDB().then((data) => {
         console.log("------>>> new account details:", data, data?.address.bmail_address)
         const address = data?.address.bmail_address;
         if (!address) {
@@ -454,10 +450,6 @@ function initMnemonicConfirmDiv(): void {
 async function confirmUserInputPhrase(): Promise<void> {
     ___mnemonic_in_mem = null;
     sessionStorage.removeItem(__key_for_mnemonic_temp);
-    // navigateTo('#onboarding/account-home');
-
-    const wallet = await queryCurWallet();
-    await freeActiveAccount(wallet?.address.bmail_address);
     navigateTo('#onboarding/account-to-active');
 }
 
@@ -489,7 +481,6 @@ function initCreateSuccessDiv() {
 
     const freeAccountBtn = parentDiv.querySelector(".confirm-button.free-active") as HTMLButtonElement;
     freeAccountBtn.addEventListener('click', async () => {
-        await freeActiveAccount();
     });
 
     const allCards = parentDiv.querySelectorAll(".membership") as NodeListOf<HTMLElement>;
@@ -546,47 +537,6 @@ async function generateQrCodeForVipBuying() {
     qrImg.src = qrUrl;
 }
 
-async function freeActiveAccount(address?: string) {
-    const errorDiv = document.getElementById("account-home-error") as HTMLDivElement;
-    errorDiv.style.display = "none";
-    errorDiv.innerText = "";
-    showLoading();
-    try {
-        if (!address) {
-            const walletAddrDiv = document.querySelector(".current-wallet-address-val") as HTMLElement;
-            address = walletAddrDiv.innerText;
-        }
-
-        if (!address) {
-            console.log("------>>> no valid account address found")
-            return
-        }
-
-        const payload: AccountOperation = AccountOperation.create({
-            isDel: false,
-            address: address
-        });
-
-        const message = AccountOperation.encode(payload).finish()
-        const signature = await signDataByMessage(encodeHex(message));
-        if (!signature) {
-            errorDiv.innerText = "sign data failed";
-            return;
-        }
-
-        const srvRsp = await BMRequestToSrv("/account_create", address, message, signature)
-        console.log("------->>>fetch success:=>", srvRsp);
-        navigateTo('#onboarding/account-to-active');
-    } catch (error) {
-        console.log("------->>>fetch failed:=>", error);
-        errorDiv.innerText = "fetch failed:" + error;
-        errorDiv.style.display = "block";
-    } finally {
-        hideLoading();
-    }
-}
-
-
 function showLoading(): void {
     document.body.classList.add('loading');
     document.getElementById("dialog-waiting-overlay")!.style.display = 'flex';
@@ -595,4 +545,60 @@ function showLoading(): void {
 function hideLoading(): void {
     document.body.classList.remove('loading');
     document.getElementById("dialog-waiting-overlay")!.style.display = 'none';
+}
+
+function initFinalActiveDiv() {
+    const div = document.getElementById("view-account-to-active") as HTMLDivElement;
+    const showPinBtn = document.getElementById("des_pin_link") as HTMLButtonElement;
+
+    const howToPinPage = document.getElementById("how-to-pin-browser-extension") as HTMLElement;
+    showPinBtn.addEventListener('click', () => {
+        howToPinPage.style.display = 'block';
+    })
+    const pinBackBtn = div.querySelector(".pin-back-page") as HTMLButtonElement;
+    pinBackBtn.addEventListener('click', () => {
+        howToPinPage.style.display = 'none';
+    })
+
+    const activeBtn = document.getElementById("account-active-btn") as HTMLButtonElement;
+    activeBtn.addEventListener('click', bindAndActive);
+}
+
+async function bindAndActive() {
+    const serviceSelDiv = document.getElementById("account-active-mail-service") as HTMLSelectElement
+    const emailService = serviceSelDiv.value;
+    const emailNameInput = document.getElementById("account-active-mail-name") as HTMLInputElement;
+    const emailName = emailNameInput.value.trim();
+    if (!emailName) {
+        alert("Invalid email address");
+        return;
+    }
+
+    const email = emailName + '@' + emailService;
+    const addr = await sessionGet(__dbKey_cur_addr) as MailAddress | null;
+    if (!addr) {
+        alert("wallet lost");
+        return;
+    }
+
+    const response = await fetch(browser.runtime.getURL('html/verify2.html'));
+    if (!response.ok) {
+        alert(`Failed to fetch mail html content: ${response.statusText}`);
+        return;
+    }
+
+    const htmlContent = await response.text();
+    const mailBody = sprintf(htmlContent,
+        browser.i18n.getMessage("active_mail_title"),
+        browser.i18n.getMessage("active_mail_subtitle"),
+        browser.i18n.getMessage("active_mail_description"),
+        email,
+        addr.bmail_address,
+        browser.i18n.getMessage("active_mail_active_btn"),
+        browser.i18n.getMessage("active_mail_active_tips"),
+        browser.i18n.getMessage("active_mail_question"),
+        browser.i18n.getMessage("active_mail_footer"),
+    );
+    console.log("----->>> mail body:", mailBody);
+    const subject = browser.i18n.getMessage("Email_Verify_Subject");
 }

@@ -380,7 +380,37 @@
   "supported_mail_service": {
     "message": "This plugin supports the following email services"
   },
-  "Email_Verify_Title": {
+  "Email_Verify_Subject": {
     "message": "Activate Your BMail Service - Start Your Secure Communication Journey"
+  },
+  "active_home_title": {
+    "message": "Get activation link"
+  },
+  "active_home_mail_name": {
+    "message": "Please enter email address"
+  },
+  "active_home_active_btn": {
+    "message": "Bind and activate"
+  },
+  "active_mail_title": {
+    "message": "Thank you for registering BMail!"
+  },
+  "active_mail_subtitle": {
+    "message": "Click the button below to activate your account and enjoy a secure and decentralized communication experience."
+  },
+  "active_mail_description": {
+    "message": "<div class='bmail-container'> <h1>Why Choose BMail?</h1> <div class='bmail-feature'><span>\uD83D\uDD12</span>     <span><strong>Peer-to-Peer Encryption:</strong> Your data is always private and secure.</span> </div> <div class='bmail-feature'>     <span>\uD83C\uDF10</span>     <span><strong>Serverless Architecture:</strong> BMail operates without centralized servers for maximum reliability.</span> </div> <div class='bmail-feature'> <span>\uD83D\uDCC8</span> <span><strong>Blockchain-Powered:</strong> Built on blockchain technology for Bitcoin-level security.</span> </div></div>"
+  },
+  "active_mail_active_btn": {
+    "message": "Activate Account"
+  },
+  "active_mail_active_tips": {
+    "message": "Start enjoying secure, blockchain-powered email today!"
+  },
+  "active_mail_question": {
+    "message": "Questions? Contact us at"
+  },
+  "active_mail_footer": {
+    "message": "If the button above doesn't work, copy and paste this link into your browser"
   }
 }

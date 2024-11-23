@@ -260,3 +260,9 @@ export function isValidUrl(urlString: string): boolean {
         return false;
     }
 }
+
+export function sprintf(format: string, ...args: any[]): string {
+    return format.replace(/{(\d+)}/g, (match, index) => {
+        return typeof args[index] !== 'undefined' ? args[index] : match;
+    });
+}

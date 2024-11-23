@@ -385,5 +385,26 @@
   },
   "supported_mail_service": {
     "message": "Dieses Plugin unterstützt die folgenden E-Mail-Dienste"
+  },
+  "active_home_title": {
+    "message": "Aktivierungslink abrufen"
+  },
+  "active_home_mail_name": {
+    "message": "Bitte E-Mail-Adresse eingeben"
+  },
+  "active_home_active_btn": {
+    "message": "Binden und aktivieren"
+  },
+  "Email_Verify_Subject": {
+    "message": "Aktivieren Sie Ihren BMail-Dienst - Beginnen Sie Ihre sichere Kommunikationsreise"
+  },
+  "active_mail_title": {
+    "message": "Vielen Dank für Ihre Registrierung bei BMail!"
+  },
+  "active_mail_subtitle": {
+    "message": "Klicken Sie auf die Schaltfläche unten, um Ihr Konto zu aktivieren und eine sichere und dezentrale Kommunikation zu genießen."
+  },
+  "active_mail_description": {
+    "message": "<div class='bmail-container'> <h1>Warum BMail wählen?</h1> <div class='bmail-feature'><span>🔒</span> <span><strong>Peer-to-Peer-Verschlüsselung:</strong> Ihre Daten sind immer privat und sicher.</span> </div> <div class='bmail-feature'> <span>🌐</span> <span><strong>Serverlose Architektur:</strong> BMail funktioniert ohne zentrale Server für maximale Zuverlässigkeit.</span> </div> <div class='bmail-feature'> <span>📈</span> <span><strong>Blockchain-Technologie:</strong> Auf Blockchain-Technologie aufgebaut für Sicherheit auf Bitcoin-Niveau.</span> </div></div>"
   }
 }

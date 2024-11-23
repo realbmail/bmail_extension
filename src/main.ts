@@ -10,7 +10,7 @@ import {router} from "./main_common";
 import {initLoginDiv} from "./main_login";
 import {initDashBoard} from "./main_dashboard";
 import {WalletStatus} from "./consts";
-import {queryCurWallet} from "./wallet";
+import {loadWalletJsonFromDB} from "./wallet";
 import {__dbKey_cur_key, __key_wallet_status} from "./consts";
 import {initSetting} from "./main_setting";
 
@@ -54,7 +54,7 @@ async function checkWalletStatus(): Promise<WalletStatus> {
 
     let walletStatus = await sessionGet(__key_wallet_status) || WalletStatus.Init;
     if (walletStatus === WalletStatus.Init) {
-        const wallet = await queryCurWallet();
+        const wallet = await loadWalletJsonFromDB();
         if (!wallet) {
             return WalletStatus.NoWallet;
         }

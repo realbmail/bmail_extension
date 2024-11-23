@@ -84,6 +84,10 @@ export function translateHomePage() {
 
     document.getElementById("view-recovery-phrase-copy-seed")!.textContent = browser.i18n.getMessage('copy_to_clipboard');
     document.getElementById("view-recovery-phrase-hide-seed")!.textContent = browser.i18n.getMessage('reveal_seed_phrase');
+
+    document.getElementById("account-active-title")!.textContent = browser.i18n.getMessage('active_home_title');
+    (document.getElementById("account-active-mail-name") as HTMLInputElement).placeholder = browser.i18n.getMessage('active_home_mail_name');
+    document.getElementById("account-active-btn")!.textContent = browser.i18n.getMessage('active_home_active_btn');
 }
 
 export function translateMainPage() {

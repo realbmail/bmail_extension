@@ -380,7 +380,25 @@
   "supported_mail_service": {
     "message": "该插件支持以下邮箱服"
   },
-  "Email_Verify_Title": {
+  "Email_Verify_Subject": {
     "message": "激活您的 BMail 服务 - 开始安全通信之旅"
+  },
+  "active_home_title": {
+    "message": "获取激活链接"
+  },
+  "active_home_mail_name": {
+    "message": "请输入邮件地址"
+  },
+  "active_home_active_btn": {
+    "message": "绑定并激活"
+  },
+  "active_mail_title": {
+    "message": "感谢您注册 BMail！"
+  },
+  "active_mail_subtitle": {
+    "message": "点击下面的按钮激活您的账户，享受安全和去中心化的通信体验。"
+  },
+  "active_mail_description": {
+    "message": "<div class='bmail-container'> <h1>为什么选择 BMail？</h1> <div class='bmail-feature'><span>🔒</span> <span><strong>点对点加密：</strong> 您的数据始终是私密和安全的。</span> </div> <div class='bmail-feature'> <span>🌐</span> <span><strong>无服务器架构：</strong> BMail 无需集中式服务器即可操作，确保最大可靠性。</span> </div> <div class='bmail-feature'> <span>📈</span> <span><strong>基于区块链：</strong> 基于区块链技术构建，具有比特币级别的安全性。</span> </div></div>"
   }
 }

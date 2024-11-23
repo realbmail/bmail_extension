@@ -170,7 +170,7 @@ export function decryptAes(data: CipherData, password: string): string {
     return decrypted.toString(Utf8); // 将解密后的数据转换为UTF-8编码
 }
 
-export async function queryCurWallet(): Promise<DbWallet | null> {
+export async function loadWalletJsonFromDB(): Promise<DbWallet | null> {
     const walletObj = await getMaxIdRecord(__tableNameWallet);
     if (!walletObj) {
         return null;

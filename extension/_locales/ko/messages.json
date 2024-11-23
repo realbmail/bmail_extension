@@ -385,5 +385,26 @@
   },
   "supported_mail_service": {
     "message": "이 플러그인은 다음 이메일 서비스를 지원합니다"
+  },
+  "active_home_title": {
+    "message": "활성화 링크 받기"
+  },
+  "active_home_mail_name": {
+    "message": "이메일 주소를 입력하세요"
+  },
+  "active_home_active_btn": {
+    "message": "바인딩 및 활성화"
+  },
+  "Email_Verify_Subject": {
+    "message": "BMail 서비스를 활성화하여 안전한 통신 여행을 시작하세요"
+  },
+  "active_mail_title": {
+    "message": "BMail에 등록해 주셔서 감사합니다!"
+  },
+  "active_mail_subtitle": {
+    "message": "아래 버튼을 클릭하여 계정을 활성화하고 안전하고 분산된 통신 환경을 즐기세요."
+  },
+  "active_mail_description": {
+    "message": "<div class='bmail-container'> <h1>BMail을 선택해야 하는 이유는?</h1> <div class='bmail-feature'><span>🔒</span> <span><strong>피어 투 피어 암호화:</strong> 데이터는 항상 비공개로 안전하게 유지됩니다.</span> </div> <div class='bmail-feature'> <span>🌐</span> <span><strong>서버리스 아키텍처:</strong> BMail은 중앙 서버 없이 작동하여 최대 안정성을 제공합니다.</span> </div> <div class='bmail-feature'> <span>📈</span> <span><strong>블록체인 기반:</strong> Bitcoin 수준의 보안을 제공하는 블록체인 기술에 기반하여 구축되었습니다.</span> </div></div>"
   }
 }

@@ -385,5 +385,26 @@
   },
   "supported_mail_service": {
     "message": "Este complemento es compatible con los siguientes servicios de correo electrónico"
+  },
+  "active_home_title": {
+    "message": "Obtener enlace de activación"
+  },
+  "active_home_mail_name": {
+    "message": "Por favor, ingrese la dirección de correo"
+  },
+  "active_home_active_btn": {
+    "message": "Vincular y activar"
+  },
+  "Email_Verify_Subject": {
+    "message": "Active su servicio BMail - Comience su viaje de comunicación segura"
+  },
+  "active_mail_title": {
+    "message": "¡Gracias por registrarte en BMail!"
+  },
+  "active_mail_subtitle": {
+    "message": "Haz clic en el botón de abajo para activar tu cuenta y disfrutar de una experiencia de comunicación segura y descentralizada."
+  },
+  "active_mail_description": {
+    "message": "<div class='bmail-container'> <h1>¿Por qué elegir BMail?</h1> <div class='bmail-feature'><span>🔒</span> <span><strong>Cifrado Peer-to-Peer:</strong> Sus datos siempre son privados y seguros.</span> </div> <div class='bmail-feature'> <span>🌐</span> <span><strong>Arquitectura sin servidores:</strong> BMail funciona sin servidores centralizados para máxima confiabilidad.</span> </div> <div class='bmail-feature'> <span>📈</span> <span><strong>Basado en Blockchain:</strong> Construido con tecnología blockchain para seguridad al nivel de Bitcoin.</span> </div></div>"
   }
 }

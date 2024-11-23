@@ -1,4 +1,4 @@
-import {castToMemWallet, DbWallet, MailAddress, newWallet, queryCurWallet} from "./wallet";
+import {castToMemWallet, DbWallet, MailAddress, newWallet, loadWalletJsonFromDB} from "./wallet";
 import {__tableNameWallet, checkAndInitDatabase, databaseAddItem} from "./database";
 import {sessionRemove, sessionSet} from "./session_storage";
 import {__dbKey_cur_addr, __dbKey_cur_key, __key_wallet_status, WalletStatus} from "./consts";
@@ -35,7 +35,7 @@ export async function createNewWallet(mnemonic: string, password: string): Promi
 
 export async function openWallet(pwd: string): Promise<MailAddress | null> {
     await checkAndInitDatabase();
-    const wallet = await queryCurWallet();
+    const wallet = await loadWalletJsonFromDB();
     if (!wallet) {
         await sessionSet(__key_wallet_status, WalletStatus.NoWallet);
         return null;

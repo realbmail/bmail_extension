@@ -32,10 +32,11 @@
       align-items: center;
     }
 
-    .email-body h1 {
+    h1 {
       font-size: 22px;
       color: #04062E;
-      margin: 24px 0 0;
+      margin: 16px 0 0;
+      text-align: center;
     }
 
     .email-body p {
@@ -43,6 +44,8 @@
       color: #98989A;
       line-height: 1.6;
       margin: 8px 0 12px 0;
+      width: 436px;
+      text-align: center;
     }
 
     .email-logo {
@@ -65,31 +68,24 @@
     }
 
     .mail-account-bind {
-      padding: 8px 32px;
+      padding: 12px 16px;
       font-size: 18px;
-      font-weight: 600;
+      font-weight: 500;
       border-radius: 6px;
+      background-color: #f2f2f4;
+      width: 436px;
     }
 
     .mail-account-bind p {
       margin: 0;
-      font-size: 24px;
+      font-size: 16px;
       color: #F28552;
     }
 
-    .bmail-account-bind {
-      padding: 12px 16px;
-      font-size: 16px;
-      font-weight: 400;
-      border-radius: 6px;
-      background-color: #EEF0F1;
-    }
-    .bmail-account-bind p {
-      margin: 0;
+    .mail-account-bind .bmail-account-bind {
+      color: #04062E;
       font-size: 14px;
-      color: rgba(4, 6, 46, 0.8);
     }
-
     .email-button {
       display: inline-block;
       margin-top: 20px;
@@ -114,12 +110,36 @@
       border-top: 1px solid #ddd;
       text-align: center;
     }
+
     .underline {
       margin: 32px auto 24px;
       height: 1px;
       width: 100%; /* 下划线宽度 */
       background-color: #EEF0F1; /* 下划线颜色 */
     }
+
+    .account-underline {
+      height: 1px;
+      width: 100%; /* 下划线宽度 */
+      background-color: rgba(205, 208, 209, 0.5); /* 下划线颜色 */
+      margin: 12px auto;
+    }
+
+    .bmail-container {
+      width: 436px;
+      background-color: #f2f2f4;
+      padding: 8px 16px;
+      border-radius: 5px;
+      margin-bottom: 18px;
+    }
+
+    .bmail-container div {
+      margin: 12px 0;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 18px;
+    }
+
   </style>
 </head>
 <body>
@@ -130,18 +150,33 @@
     </div>
     <h1>Thank you for registering BMail!</h1>
     <p>
-      Click the button below to activate your account:
+      "Click the button below to activate your account and enjoy a secure and decentralized communication experience."
     </p>
+    <div class="bmail-container">
+      <h1>Why Choose BMail?</h1>
+      <div class="bmail-feature">
+        <span>🔒</span>
+        <span><strong>Peer-to-Peer Encryption:</strong> Your data is always private and secure.</span>
+      </div>
+      <div class="bmail-feature">
+        <span>🌐</span>
+        <span><strong>Serverless Architecture:</strong> BMail operates without centralized servers for maximum reliability.</span>
+      </div>
+      <div class="bmail-feature">
+        <span>📈</span>
+        <span><strong>Blockchain-Powered:</strong> Built on blockchain technology for Bitcoin-level security.</span>
+      </div>
+    </div>
     <div class="mail-account-bind">
       <p>udou0821@gmail.com</p>
-    </div>
-    <div class="bmail-account-bind">
-      <p>BMCPSXUvB4kU8GyhG4JghA83wnxq4qjuRY74SBDkaXYUoY</p>
+      <div class="account-underline"></div>
+      <p class="bmail-account-bind">BMCPSXUvB4kU8GyhG4JghA83wnxq4qjuRY74SBDkaXYUoY</p>
     </div>
     <button class="email-button">Activate Account</button>
+    <p style="margin: 12px auto 0;text-align:center">"Start enjoying secure, blockchain-powered email today!"</p>
     <div class="underline"></div>
     <p>
-      If you have any questions, please contact us at <strong style="color: #F28552;font-weight: 600">bmailservice02@gmail.com</strong>
+      "Questions? Contact us at <strong style="color: #F28552;font-weight: 600">bmailservice02@gmail.com</strong>
     </p>
   </div>
 

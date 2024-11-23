@@ -59,3 +59,14 @@ message ContactItem{
 message EmailReflects {
   map<string, EmailReflect> reflects = 1;
 }
+
+message WalletAddress{
+  string address = 1;
+  string ethAddr = 2;
+}
+
+message EMailActive{
+  string email = 1;
+  string subject = 2;
+  string body = 3;
+}

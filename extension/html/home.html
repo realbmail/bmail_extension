@@ -177,14 +177,12 @@
     <button class="confirm-button free-active" id="active_account" style="display: block">免费激活</button>
     <div class="account-home-error" id="account-home-error" style="display: none"></div>
 </div>
-<div class="account-home view" id="view-account-success" style="display:none;">
+<div class="account-to-active view" id="view-account-to-active" style="display:none;">
     <main style="display: block">
-        <h2>请选择邮件帐户</h2>
+        <h2 id="account-active-title">请选择邮件帐户</h2>
         <div class="email-input-container">
-            <label for="emailAddress"></label>
-            <input type="email" class="email-input" id="emailAddress" placeholder="输入邮件地址" required>
-            <label for="emailService"></label>
-            <select class="email-select" id="emailService">
+            <input class="email-input" id="account-active-mail-name" placeholder="输入邮件地址" required type="email">
+            <select class="email-select" id="account-active-mail-service">
                 <option value="gmail.com">@gmail.com</option>
                 <option value="outlook.com">@outlook.com</option>
                 <option value="qq.com">@qq.com</option>
@@ -192,10 +190,10 @@
                 <option value="163.com">@126.com</option>
             </select>
         </div>
-        <button>绑定并激活</button>
+        <button id="account-active-btn">绑定并激活</button>
         <p id="des_pin_link">How to Pin a Browser Extension to the Toolbar >> </p>
     </main>
-    <main style="display: none">
+    <main id="how-to-pin-browser-extension" style="display: none">
         <button class="pin-back-page">
             <img alt="pin-back-icon" src="../file/int-back.png">
         </button>
