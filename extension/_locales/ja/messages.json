@@ -408,6 +408,6 @@
     "message": "<div class='bmail-container'> <h1>BMail を選ぶ理由は？</h1> <div class='bmail-feature'><span>🔒</span> <span><strong>ピアツーピア暗号化:</strong> あなたのデータは常にプライベートで安全です。</span> </div> <div class='bmail-feature'> <span>🌐</span> <span><strong>サーバーレスアーキテクチャ:</strong> BMail は集中管理型のサーバーなしで動作し、信頼性を最大化します。</span> </div> <div class='bmail-feature'> <span>📈</span> <span><strong>ブロックチェーン技術を活用:</strong> Bitcoin レベルのセキュリティを備えたブロックチェーン技術に基づいて構築されています。</span> </div></div>"
   },
   "active_success_message": {
-    "message": "以下のボタンをクリックしてアカウントを有効化し、安全で分散化された通信体験をお楽しみください。"
+    "message": "メール内のアクティベーションリンクを確認して、プラグインを有効化してください。"
   }
 }

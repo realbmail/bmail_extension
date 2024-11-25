@@ -402,6 +402,6 @@
     "message": "<div class='bmail-container'> <h1>为什么选择 BMail？</h1> <div class='bmail-feature'><span>🔒</span> <span><strong>点对点加密：</strong> 您的数据始终是私密和安全的。</span> </div> <div class='bmail-feature'> <span>🌐</span> <span><strong>无服务器架构：</strong> BMail 无需集中式服务器即可操作，确保最大可靠性。</span> </div> <div class='bmail-feature'> <span>📈</span> <span><strong>基于区块链：</strong> 基于区块链技术构建，具有比特币级别的安全性。</span> </div></div>"
   },
   "active_success_message": {
-    "message": "点击下面的按钮激活您的账户，享受安全和去中心化的通信体验。"
+    "message": "请检查您邮箱的激活链接以激活插件。"
   }
 }

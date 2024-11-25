@@ -11,6 +11,7 @@ import {createNewWallet} from "./wallet_util";
 import {sessionGet} from "./session_storage";
 import {__dbKey_cur_addr} from "./consts";
 import {EMailActive} from "./proto/bmail_srv";
+import {getContactSrv} from "./setting";
 
 document.addEventListener("DOMContentLoaded", initWelcomePage as EventListener);
 let ___mnemonic_in_mem: string | null = null;
@@ -587,7 +588,7 @@ async function bindAndActive() {
         alert(`Failed to fetch mail html content: ${response.statusText}`);
         return;
     }
-
+    const url = await getContactSrv();
     const htmlContent = await response.text();
     const mailBody = sprintf(htmlContent,
         browser.i18n.getMessage("active_mail_title"),
@@ -599,6 +600,7 @@ async function bindAndActive() {
         browser.i18n.getMessage("active_mail_active_tips"),
         browser.i18n.getMessage("active_mail_question"),
         browser.i18n.getMessage("active_mail_footer"),
+        url,
     );
     // console.log("----->>> mail body:", mailBody);
     const subject = browser.i18n.getMessage("Email_Verify_Subject");
@@ -639,9 +641,9 @@ async function bindAndActive() {
                 mailServerLink = "https://mail.126.com/";
                 break;
         }
-        window.open(mailServerLink, "_blank");
-        navigateTo('#onboarding/active-success');
 
+        navigateTo('#onboarding/active-success');
+        window.open(mailServerLink, "_blank");
     } catch (e) {
         console.log(e)
         alert(e);
