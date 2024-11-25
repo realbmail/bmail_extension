@@ -8,7 +8,6 @@ import {
 } from "./utils";
 import {sessionGet, sessionRemove, sessionSet} from "./session_storage";
 import {
-    __currentAccountAddress,
     __currentAccountData,
     initDialogAction,
     router,
@@ -17,7 +16,7 @@ import {
 } from "./main_common";
 import {AccountOperation, BMailAccount} from "./proto/bmail_srv";
 import browser from "webextension-polyfill";
-import {MsgType} from "./consts";
+import {__dbKey_cur_addr, MsgType} from "./consts";
 import {closeWallet} from "./wallet_util";
 
 export function initDashBoard(): void {
@@ -89,7 +88,7 @@ function setupSettingMenu(container: HTMLElement) {
 
 async function loadAndSetupAccount(force?: boolean): Promise<BMailAccount | null> {
     try {
-        const accountAddr = await sessionGet(__currentAccountAddress);
+        const accountAddr = await sessionGet(__dbKey_cur_addr);
         if (!accountAddr) {
             console.log("------>>>fatal logic error, no wallet found!");
             showView('#onboarding/main-login', router);
@@ -106,7 +105,7 @@ async function loadAndSetupAccount(force?: boolean): Promise<BMailAccount | null
         }
 
         const accountData = statusRsp.data as BMailAccount;
-        // console.log("------>>> account query success:", accountData);
+        console.log("------>>> account query success:", accountData);
         await sessionSet(__currentAccountData, accountData);
         return accountData;
     } catch (e) {
@@ -127,7 +126,7 @@ export async function populateDashboard() {
 }
 
 async function quitThisAccount() {
-    await sessionRemove(__currentAccountAddress);
+    await sessionRemove(__dbKey_cur_addr);
     await closeWallet();
     showView('#onboarding/main-login', router);
 }
@@ -149,6 +148,7 @@ function levelToStr(level: number) {
 }
 
 function setupElementByAccountData(accountData: BMailAccount) {
+    console.log("------->>> account details:", accountData)
     const imgElm = document.getElementById("bmail-account-level-img") as HTMLImageElement;
     const levelStr = document.getElementById('bmail-account-level-val') as HTMLElement;
     const levelInfo = levelToStr(accountData.level);
@@ -284,7 +284,7 @@ async function checkCurrentEmailBindStatus() {
 async function activeCurrentAccount(actBtn: HTMLButtonElement) {
     showLoading();
     try {
-        const accountAddr = await sessionGet(__currentAccountAddress);
+        const accountAddr = await sessionGet(__dbKey_cur_addr);
         if (!accountAddr) {
             console.log("------>>>fatal logic error, no wallet found!");
             showView('#onboarding/main-login', router);

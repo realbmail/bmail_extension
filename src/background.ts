@@ -240,7 +240,7 @@ async function SigDataInBackground(data: any, sendResponse: (response: any) => v
 }
 
 async function getAccount(address: string, force: boolean, sendResponse: (response: any) => void) {
-    console.log("[service worker] loading account info from server", address);
+    console.log("[service worker] loading account info from server", address, force);
     let account = await sessionGet(__dbKey_cur_account_details);
     if (account && !force) {
         sendResponse({success: 1, data: account});

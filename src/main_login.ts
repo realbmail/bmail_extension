@@ -1,9 +1,10 @@
 import browser from "webextension-polyfill";
 import {hideLoading, showLoading, showView} from "./utils";
 import {sessionSet} from "./session_storage";
-import {__currentAccountAddress, router, showDialog} from "./main_common";
+import {router, showDialog} from "./main_common";
 import {__tableNameWallet, databaseDeleteByFilter} from "./database";
 import {openWallet} from "./wallet_util";
+import {__dbKey_cur_addr} from "./consts";
 
 export function initLoginDiv(): void {
     const unlock = document.querySelector(".view-main-login .primary-button") as HTMLButtonElement;
@@ -35,7 +36,7 @@ async function openAllWallets(): Promise<void> {
             return;
         }
 
-        await sessionSet(__currentAccountAddress, mAddr);
+        await sessionSet(__dbKey_cur_addr, mAddr);
         inputElement.value = '';
         showView('#onboarding/main-dashboard', router);
 

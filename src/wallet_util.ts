@@ -1,7 +1,13 @@
 import {castToMemWallet, DbWallet, MailAddress, newWallet, loadWalletJsonFromDB} from "./wallet";
 import {__tableNameWallet, checkAndInitDatabase, databaseAddItem} from "./database";
 import {sessionRemove, sessionSet} from "./session_storage";
-import {__dbKey_cur_addr, __dbKey_cur_key, __key_wallet_status, WalletStatus} from "./consts";
+import {
+    __dbKey_cur_account_details,
+    __dbKey_cur_addr,
+    __dbKey_cur_key,
+    __key_wallet_status,
+    WalletStatus
+} from "./consts";
 import browser from "webextension-polyfill";
 
 const ICON_PATHS = {
@@ -26,6 +32,8 @@ export async function createNewWallet(mnemonic: string, password: string): Promi
         await sessionSet(__key_wallet_status, WalletStatus.Unlocked);
         await sessionSet(__dbKey_cur_key, mKey.rawPriKey());
         await sessionSet(__dbKey_cur_addr, mKey.address);
+        await sessionRemove(__dbKey_cur_account_details)
+        updateIcon(true);
         return wallet;
     } catch (error) {
         console.log("------>>>creating wallet failed:", error);

@@ -1,7 +1,6 @@
 import {populateDashboard} from "./main_dashboard";
 import {populateSystemSetting} from "./main_setting";
 
-export const __currentAccountAddress = "__current_wallet_storage_key_"
 export const __currentAccountData = "__current_account_data_";
 
 export enum UserLevel {
