@@ -564,6 +564,10 @@ function initFinalActiveDiv() {
 
     const activeBtn = document.getElementById("account-active-btn") as HTMLButtonElement;
     activeBtn.addEventListener('click', bindAndActive);
+    const skipBtn = div.querySelector(".skip-activation-btn") as HTMLButtonElement;
+    skipBtn.addEventListener('click', () => {
+        window.close();
+    })
 }
 
 async function bindAndActive() {
