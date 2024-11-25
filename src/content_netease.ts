@@ -25,12 +25,16 @@ function appendForNetEase(template: HTMLTemplateElement) {
         console.warn("------>>> failed to parse bmail inbox button");
         return
     }
+    const dvContainer = document.getElementById("dvContainer") as HTMLElement;
+    if (!dvContainer) {
+        console.warn("---->> failed to find main container");
+        return;
+    }
 
     appendBmailInboxMenu(clone);
     checkBmailInboxMenuAgain(clone);
     checkHasMailContent(template);
 
-    const dvContainer = document.getElementById("dvContainer") as HTMLElement;
     observeForElementDirect(dvContainer, 500, () => {
         return document.querySelector("[id^='_dvModuleContainer_read.ReadModule']") as HTMLElement;
     }, async () => {
