@@ -398,10 +398,10 @@
   "active_mail_subtitle": {
     "message": "点击下面的按钮激活您的账户，享受安全和去中心化的通信体验。"
   },
-  "active_mail_description": {
-    "message": "<div class='bmail-container'> <h1>为什么选择 BMail？</h1> <div class='bmail-feature'><span>🔒</span> <span><strong>点对点加密：</strong> 您的数据始终是私密和安全的。</span> </div> <div class='bmail-feature'> <span>🌐</span> <span><strong>无服务器架构：</strong> BMail 无需集中式服务器即可操作，确保最大可靠性。</span> </div> <div class='bmail-feature'> <span>📈</span> <span><strong>基于区块链：</strong> 基于区块链技术构建，具有比特币级别的安全性。</span> </div></div>"
-  },
   "active_success_message": {
     "message": "请检查您邮箱的激活链接以激活插件。"
+  },
+  "active_mail_description": {
+    "message": "<table style='width: 100%; margin: 20px 0;'> <tr>   <td style='background-color: #f2f2f4; border-radius: 5px; padding: 16px; text-align: center;'> <h2 style='font-size: 16px; color: #04062E; margin: 0; text-align: center;'>Why Choose BMail?</h2>     <div style='text-align: left; margin-top: 12px;'>  <p style='font-size: 14px; color: #04062E; margin: 12px 0;'>\uD83D\uDD12<strong>Peer-to-Peer Encryption:</strong> Your data is always private and secure.</p>  <p style='font-size: 14px; color: #04062E; margin: 12px 0;'>\uD83C\uDF10 <strong>Serverless Architecture:</strong> BMail operates without centralized servers for maximum reliability.</p>  <p style='font-size: 14px; color: #04062E; margin: 12px 0;'>\uD83D\uDCC8 <strong>Blockchain-Powered:</strong> Built on blockchain technology for Bitcoin-level security.</p> </div> </td> </tr>   </table>"
   }
 }

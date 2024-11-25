@@ -398,9 +398,6 @@
   "active_mail_subtitle": {
     "message": "Click the button below to activate your account and enjoy a secure and decentralized communication experience."
   },
-  "active_mail_description": {
-    "message": "<div class='bmail-container'> <h1>Why Choose BMail?</h1> <div class='bmail-feature'><span>\uD83D\uDD12</span>     <span><strong>Peer-to-Peer Encryption:</strong> Your data is always private and secure.</span> </div> <div class='bmail-feature'>     <span>\uD83C\uDF10</span>     <span><strong>Serverless Architecture:</strong> BMail operates without centralized servers for maximum reliability.</span> </div> <div class='bmail-feature'> <span>\uD83D\uDCC8</span> <span><strong>Blockchain-Powered:</strong> Built on blockchain technology for Bitcoin-level security.</span> </div></div>"
-  },
   "active_mail_active_btn": {
     "message": "Activate Account"
   },
@@ -415,5 +412,8 @@
   },
   "active_success_message": {
     "message": "Please check the activation link in your email to activate the plugin."
+  },
+  "active_mail_description": {
+    "message": "<table style='width: 100%; margin: 20px 0;'> <tr>   <td style='background-color: #f2f2f4; border-radius: 5px; padding: 16px; text-align: center;'> <h2 style='font-size: 16px; color: #04062E; margin: 0; text-align: center;'>Why Choose BMail?</h2>     <div style='text-align: left; margin-top: 12px;'>  <p style='font-size: 14px; color: #04062E; margin: 12px 0;'>\uD83D\uDD12<strong>Peer-to-Peer Encryption:</strong> Your data is always private and secure.</p>  <p style='font-size: 14px; color: #04062E; margin: 12px 0;'>\uD83C\uDF10 <strong>Serverless Architecture:</strong> BMail operates without centralized servers for maximum reliability.</p>  <p style='font-size: 14px; color: #04062E; margin: 12px 0;'>\uD83D\uDCC8 <strong>Blockchain-Powered:</strong> Built on blockchain technology for Bitcoin-level security.</p> </div> </td> </tr>   </table>"
   }
 }
