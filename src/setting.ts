@@ -4,6 +4,7 @@ import {
     databaseUpdate
 } from "./database";
 import {sessionGet, sessionSet} from "./session_storage";
+import {httpApiGet} from "./utils";
 
 const __dbSystemSetting = "__db_key_system_setting__"
 
@@ -95,8 +96,24 @@ export async function removeContractSrv(srv: string): Promise<boolean> {
 export const __officialContactSrv = "https://sharp-happy-grouse.ngrok-free.app"
 // export const __officialContactSrv = "https://bc.simplenets.org"
 // export const __officialContactSrv = "http://127.0.0.1:8001"
+const DefaultAdminAddress = "BMpUW4QkjjZ22aYXejv66y3sTu21GgEEoKN78nsqZuZ9k"
+const _db_admin_key_ = "_db_admin_key_"
 
 export async function getContactSrv(): Promise<string> {
     const ss = await getSystemSetting();
     return ss.contactSrv ?? __officialContactSrv;
+}
+
+export async function getAdminAddress(force?: boolean): Promise<string> {
+    try {
+        let multiAddress = await sessionGet(_db_admin_key_);
+        if (!multiAddress || force) {
+            multiAddress = await httpApiGet('/admin_address');
+            await sessionSet(_db_admin_key_, multiAddress);
+        }
+        console.log("----->>> query admin address success:", multiAddress.address);
+        return multiAddress.address;
+    } catch (e) {
+        return DefaultAdminAddress;
+    }
 }

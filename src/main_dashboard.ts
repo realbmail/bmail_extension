@@ -18,12 +18,14 @@ import {AccountOperation, BMailAccount} from "./proto/bmail_srv";
 import browser from "webextension-polyfill";
 import {__dbKey_cur_addr, MsgType} from "./consts";
 import {closeWallet} from "./wallet_util";
+import {getAdminAddress} from "./setting";
 
 export function initDashBoard(): void {
     const container = document.getElementById("view-main-dashboard") as HTMLDivElement;
     initDialogAction();
     setupDashboardHeader(container);
     setupSettingMenu(container);
+    getAdminAddress(false).then();
 }
 
 function setupDashboardHeader(container: HTMLDivElement) {

@@ -44,27 +44,6 @@ export async function createQRCodeImg(data: string) {
     }
 }
 
-export async function httpApi(path: string, param: any) {
-    const url = await getContactSrv();
-    const response = await fetch(url + path, {
-        method: 'POST', // 设置方法为POST
-        headers: {
-            'Content-Type': 'application/x-protobuf'
-        },
-        body: param,
-    });
-    const buffer = await response.arrayBuffer();
-    const uint8Array = new Uint8Array(buffer);
-
-    const decodedResponse = BMRsp.decode(uint8Array) as BMRsp;
-    if (decodedResponse.success) {
-        console.log("------>>>httpApi success")
-        return decodedResponse.payload;
-    } else {
-        throw new Error(decodedResponse.msg);
-    }
-}
-
 export async function sendMessageToBackground(data: any, actTyp: string): Promise<any> {
     try {
         return await browser.runtime.sendMessage({
@@ -265,4 +244,48 @@ export function sprintf(format: string, ...args: any[]): string {
     return format.replace(/{(\d+)}/g, (match, index) => {
         return typeof args[index] !== 'undefined' ? args[index] : match;
     });
+}
+
+export async function httpApi(path: string, param: any) {
+    const url = await getContactSrv();
+    const response = await fetch(url + path, {
+        method: 'POST', // 设置方法为POST
+        headers: {
+            'Content-Type': 'application/x-protobuf'
+        },
+        body: param,
+    });
+    const buffer = await response.arrayBuffer();
+    const uint8Array = new Uint8Array(buffer);
+
+    const decodedResponse = BMRsp.decode(uint8Array) as BMRsp;
+    if (decodedResponse.success) {
+        console.log("------>>>httpApi success")
+        return decodedResponse.payload;
+    } else {
+        throw new Error(decodedResponse.msg);
+    }
+}
+
+export async function httpApiGet(path: string, params?: Record<string, any>) {
+    const url = await getContactSrv();
+
+    const queryString = params
+        ? '?' + new URLSearchParams(params).toString()
+        : '';
+
+    const response = await fetch(url + path + queryString, {
+        method: 'GET', // 设置方法为GET
+        headers: {
+            'Content-Type': 'application/json', // 设置Content-Type为JSON
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const jsonResponse = await response.json(); // 解析JSON结果
+    console.log("------>>>httpApiGet success:", jsonResponse);
+    return jsonResponse;
 }
