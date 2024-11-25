@@ -1,6 +1,13 @@
 import {hideLoading, isValidUrl, showLoading, showView} from "./utils";
 import {showToastMessage} from "./main_common";
-import {__officialContactSrv, addContactSrv, changeCurrentSrv, getSystemSetting, removeContractSrv} from "./setting";
+import {
+    __officialContactSrv,
+    addContactSrv,
+    changeCurrentSrv,
+    getAdminAddress,
+    getSystemSetting,
+    removeContractSrv
+} from "./setting";
 import {prepareDashboardElm} from "./main_dashboard";
 
 export function initSetting() {
@@ -70,6 +77,8 @@ async function populateServerMenu() {
         }
         dropdownMenu.appendChild(optionDiv);
     });
+
+    document.getElementById("contact-server-address")!.innerText = await getAdminAddress();
 }
 
 async function removeContactItem(event: MouseEvent, srv: string) {
