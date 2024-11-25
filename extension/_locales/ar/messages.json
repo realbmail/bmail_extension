@@ -134,10 +134,10 @@
   "active_mail_subtitle": {
     "message": "انقر على الزر أدناه لتفعيل حسابك والاستمتاع بتجربة تواصل آمنة ولامركزية."
   },
-  "active_mail_description": {
-    "message": "<div class='bmail-container'> <h1>لماذا تختار BMail؟</h1> <div class='bmail-feature'><span>🔒</span> <span><strong>تشفير من نظير إلى نظير:</strong> بياناتك دائمًا خاصة وآمنة.</span> </div> <div class='bmail-feature'> <span>🌐</span> <span><strong>بنية بدون خادم:</strong> يعمل BMail بدون خوادم مركزية لضمان أقصى قدر من الموثوقية.</span> </div> <div class='bmail-feature'> <span>📈</span> <span><strong>مدعوم بتقنية البلوك تشين:</strong> يعتمد على تقنية البلوك تشين لتوفير أمان على مستوى البيتكوين.</span> </div></div>"
-  },
   "active_success_message": {
     "message": "يرجى التحقق من رابط التفعيل في بريدك الإلكتروني لتفعيل الإضافة."
+  },
+  "active_mail_description": {
+    "message": "<table style='width: 100%; margin: 20px 0;'> <tr> <td style='background-color: #f2f2f4; border-radius: 5px; padding: 16px; text-align: center;'> <h2 style='font-size: 16px; color: #04062E; margin: 0; text-align: center;'>لماذا تختار BMail؟</h2> <div style='text-align: left; margin-top: 12px;'> <p style='font-size: 14px; color: #04062E; margin: 12px 0;'>🔒<strong>تشفير من نظير إلى نظير:</strong> بياناتك دائمًا خاصة وآمنة.</p> <p style='font-size: 14px; color: #04062E; margin: 12px 0;'>🌐 <strong>بنية بدون خادم:</strong> يعمل BMail بدون خوادم مركزية لضمان أقصى قدر من الموثوقية.</p> <p style='font-size: 14px; color: #04062E; margin: 12px 0;'>📈 <strong>مدعوم بتقنية البلوك تشين:</strong> يعتمد على تقنية البلوك تشين لتوفير أمان على مستوى البيتكوين.</p> </div> </td> </tr> </table>"
   }
 }

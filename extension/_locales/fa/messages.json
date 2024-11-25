@@ -134,10 +134,10 @@
   "active_mail_subtitle": {
     "message": "روی دکمه زیر کلیک کنید تا حساب کاربری خود را فعال کنید و از یک تجربه ارتباطی امن و غیرمتمرکز لذت ببرید."
   },
-  "active_mail_description": {
-    "message": "<div class='bmail-container'> <h1>چرا BMail را انتخاب کنیم؟</h1> <div class='bmail-feature'><span>🔒</span> <span><strong>رمزگذاری نظیر به نظیر:</strong> داده‌های شما همیشه خصوصی و امن هستند.</span> </div> <div class='bmail-feature'> <span>🌐</span> <span><strong>معماری بدون سرور:</strong> BMail بدون سرورهای متمرکز کار می‌کند تا حداکثر قابلیت اطمینان را ارائه دهد.</span> </div> <div class='bmail-feature'> <span>📈</span> <span><strong>بر پایه بلاکچین:</strong> مبتنی بر فناوری بلاکچین ساخته شده برای امنیت در سطح بیت‌کوین.</span> </div></div>"
-  },
   "active_success_message": {
     "message": "لطفاً لینک فعال‌سازی موجود در ایمیل خود را بررسی کنید تا افزونه را فعال کنید."
+  },
+  "active_mail_description": {
+    "message": "<table style='width: 100%; margin: 20px 0;'> <tr> <td style='background-color: #f2f2f4; border-radius: 5px; padding: 16px; text-align: center;'> <h2 style='font-size: 16px; color: #04062E; margin: 0; text-align: center;'>چرا BMail را انتخاب کنیم؟</h2> <div style='text-align: left; margin-top: 12px;'> <p style='font-size: 14px; color: #04062E; margin: 12px 0;'>🔒<strong>رمزگذاری نظیر به نظیر:</strong> داده‌های شما همیشه خصوصی و امن هستند.</p> <p style='font-size: 14px; color: #04062E; margin: 12px 0;'>🌐 <strong>معماری بدون سرور:</strong> BMail بدون سرورهای متمرکز کار می‌کند تا حداکثر قابلیت اطمینان را ارائه دهد.</p> <p style='font-size: 14px; color: #04062E; margin: 12px 0;'>📈 <strong>بر پایه بلاکچین:</strong> مبتنی بر فناوری بلاکچین ساخته شده برای امنیت در سطح بیت‌کوین.</p> </div> </td> </tr> </table>"
   }
 }

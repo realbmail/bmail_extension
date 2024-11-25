@@ -404,10 +404,10 @@
   "active_mail_subtitle": {
     "message": "Klicken Sie auf die Schaltfläche unten, um Ihr Konto zu aktivieren und eine sichere und dezentrale Kommunikation zu genießen."
   },
-  "active_mail_description": {
-    "message": "<div class='bmail-container'> <h1>Warum BMail wählen?</h1> <div class='bmail-feature'><span>🔒</span> <span><strong>Peer-to-Peer-Verschlüsselung:</strong> Ihre Daten sind immer privat und sicher.</span> </div> <div class='bmail-feature'> <span>🌐</span> <span><strong>Serverlose Architektur:</strong> BMail funktioniert ohne zentrale Server für maximale Zuverlässigkeit.</span> </div> <div class='bmail-feature'> <span>📈</span> <span><strong>Blockchain-Technologie:</strong> Auf Blockchain-Technologie aufgebaut für Sicherheit auf Bitcoin-Niveau.</span> </div></div>"
-  },
   "active_success_message": {
     "message": "Bitte überprüfen Sie den Aktivierungslink in Ihrer E-Mail, um das Plugin zu aktivieren."
+  },
+  "active_mail_description": {
+    "message": "<table style='width: 100%; margin: 20px 0;'> <tr> <td style='background-color: #f2f2f4; border-radius: 5px; padding: 16px; text-align: center;'> <h2 style='font-size: 16px; color: #04062E; margin: 0; text-align: center;'>Warum BMail wählen?</h2> <div style='text-align: left; margin-top: 12px;'> <p style='font-size: 14px; color: #04062E; margin: 12px 0;'>🔒<strong>Peer-to-Peer-Verschlüsselung:</strong> Ihre Daten sind immer privat und sicher.</p> <p style='font-size: 14px; color: #04062E; margin: 12px 0;'>🌐 <strong>Serverlose Architektur:</strong> BMail funktioniert ohne zentrale Server für maximale Zuverlässigkeit.</p> <p style='font-size: 14px; color: #04062E; margin: 12px 0;'>📈 <strong>Blockchain-Technologie:</strong> Auf Blockchain-Technologie aufgebaut für Sicherheit auf Bitcoin-Niveau.</p> </div> </td> </tr> </table>"
   }
 }
