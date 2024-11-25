@@ -88,6 +88,7 @@ export function translateHomePage() {
     document.getElementById("account-active-title")!.textContent = browser.i18n.getMessage('active_home_title');
     (document.getElementById("account-active-mail-name") as HTMLInputElement).placeholder = browser.i18n.getMessage('active_home_mail_name');
     document.getElementById("account-active-btn")!.textContent = browser.i18n.getMessage('active_home_active_btn');
+    document.getElementById("active-success-message")!.textContent = browser.i18n.getMessage('active_success_message');
 }
 
 export function translateMainPage() {

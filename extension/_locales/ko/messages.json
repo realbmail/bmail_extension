@@ -406,5 +406,8 @@
   },
   "active_mail_description": {
     "message": "<div class='bmail-container'> <h1>BMail을 선택해야 하는 이유는?</h1> <div class='bmail-feature'><span>🔒</span> <span><strong>피어 투 피어 암호화:</strong> 데이터는 항상 비공개로 안전하게 유지됩니다.</span> </div> <div class='bmail-feature'> <span>🌐</span> <span><strong>서버리스 아키텍처:</strong> BMail은 중앙 서버 없이 작동하여 최대 안정성을 제공합니다.</span> </div> <div class='bmail-feature'> <span>📈</span> <span><strong>블록체인 기반:</strong> Bitcoin 수준의 보안을 제공하는 블록체인 기술에 기반하여 구축되었습니다.</span> </div></div>"
+  },
+  "active_success_message": {
+    "message": "아래 버튼을 클릭하여 계정을 활성화하고 안전하고 분산된 통신 환경을 즐기세요."
   }
 }

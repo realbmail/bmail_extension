@@ -406,5 +406,8 @@
   },
   "active_mail_description": {
     "message": "<div class='bmail-container'> <h1>Perché scegliere BMail?</h1> <div class='bmail-feature'><span>🔒</span> <span><strong>Crittografia Peer-to-Peer:</strong> I tuoi dati sono sempre privati e sicuri.</span> </div> <div class='bmail-feature'> <span>🌐</span> <span><strong>Architettura senza server:</strong> BMail funziona senza server centralizzati per la massima affidabilità.</span> </div> <div class='bmail-feature'> <span>📈</span> <span><strong>Basato su Blockchain:</strong> Costruito sulla tecnologia blockchain per la sicurezza a livello Bitcoin.</span> </div></div>"
+  },
+  "active_success_message": {
+    "message": "Fai clic sul pulsante qui sotto per attivare il tuo account e goderti un'esperienza di comunicazione sicura e decentralizzata."
   }
 }

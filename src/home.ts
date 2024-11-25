@@ -639,8 +639,9 @@ async function bindAndActive() {
                 mailServerLink = "https://mail.126.com/";
                 break;
         }
-
         window.open(mailServerLink, "_blank");
+        navigateTo('#onboarding/active-success');
+
     } catch (e) {
         console.log(e)
         alert(e);
