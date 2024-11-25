@@ -28,7 +28,8 @@ button:hover {
 .contain_view,
 .password-container,
 .account-to-active,
-.view-import-wallet{
+.view-import-wallet,
+.active-success {
     background-color: white;
     width: 430px;
     padding: 48px 24px;
