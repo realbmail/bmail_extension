@@ -105,7 +105,7 @@ async function loadAndSetupAccount(force?: boolean): Promise<BMailAccount | null
         }
 
         const accountData = statusRsp.data as BMailAccount;
-        console.log("------>>> account query success:", accountData);
+        // console.log("------>>> account query success:", accountData);
         await sessionSet(__currentAccountData, accountData);
         return accountData;
     } catch (e) {
@@ -148,7 +148,7 @@ function levelToStr(level: number) {
 }
 
 function setupElementByAccountData(accountData: BMailAccount) {
-    console.log("------->>> account details:", accountData)
+    // console.log("------->>> account details:", accountData)
     const imgElm = document.getElementById("bmail-account-level-img") as HTMLImageElement;
     const levelStr = document.getElementById('bmail-account-level-val') as HTMLElement;
     const levelInfo = levelToStr(accountData.level);
@@ -253,17 +253,17 @@ async function checkCurrentEmailBindStatus() {
             return;
         }
 
-        console.log('------>>>Element Value:', response.value);
+        // console.log('------>>>Element Value:', response.value);
         const currentEmail = response.value;
         document.getElementById('bmail-email-address-val')!.textContent = currentEmail;
         const hasBind = await hashEmailAddr(currentEmail);
+        const bindOrUnbindBtn = document.getElementById('current-email-bind-btn') as HTMLElement;
         if (hasBind) {
+            bindOrUnbindBtn.style.display = 'none';
             return;
         }
 
-        const bindOrUnbindBtn = document.getElementById('current-email-bind-btn') as HTMLElement;
         bindOrUnbindBtn.style.display = "block";
-
         if (bindOrUnbindBtn.dataset.hasAddBinding === 'true') {
             return;
         }
