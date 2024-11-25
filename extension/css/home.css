@@ -430,9 +430,12 @@ h1 {
     font-size: 14px;
 
 }
-#des_pin_link:hover{
+
+#des_pin_link:hover,
+.skip-activation-btn:hover {
     color: #F28552;
     text-decoration: underline;
+    background-color: transparent;
 }
 .pin-back-page {
     background-color: transparent;
@@ -452,4 +455,9 @@ h1 {
 .pin-back-page:hover {
     background-color: #eff0f1;
     padding: 4px;
+}
+.skip-activation-btn {
+    background-color: transparent;
+    color: #98989A;
+    padding: 0;
 }

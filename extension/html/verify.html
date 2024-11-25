@@ -27,9 +27,6 @@
     .email-body {
       padding: 24px;
       margin: auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
     }
 
     h1 {
@@ -62,11 +59,6 @@
       height: auto;
     }
 
-    .email-body a {
-      color: #F28552;
-      text-decoration: none;
-    }
-
     .mail-account-bind {
       padding: 12px 16px;
       font-size: 18px;
@@ -86,6 +78,7 @@
       color: #04062E;
       font-size: 14px;
     }
+
     .email-button {
       display: inline-block;
       margin-top: 20px;
@@ -98,7 +91,11 @@
       font-size: 16px;
       font-weight: 600;
       border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease; /* 鼠标悬停时的背景效果 */
+      user-select: none; /* 禁止选择文本 */
     }
+
     .email-button:hover{
       background-color: #04062E;
       color: #F28552;
@@ -144,7 +141,7 @@
 </head>
 <body>
 <div class="email-container">
-  <div class="email-body">
+  <div class="email-body" style=" display: flex; flex-direction: column; align-items: center">
     <div class="email-logo">
       <img src="../file/logo_128.png" alt="Bmail Logo">
     </div>
@@ -172,7 +169,7 @@
       <div class="account-underline"></div>
       <p class="bmail-account-bind">BMCPSXUvB4kU8GyhG4JghA83wnxq4qjuRY74SBDkaXYUoY</p>
     </div>
-    <button class="email-button">Activate Account</button>
+    <a class="email-button">Activate Account</a>
     <p style="margin: 12px auto 0;text-align:center">"Start enjoying secure, blockchain-powered email today!"</p>
     <div class="underline"></div>
     <p>
