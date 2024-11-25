@@ -476,7 +476,7 @@ async function encryptSimpleMailReplyQQ(mailBody: HTMLElement, email: string, se
 
         let address = __localContactMap.get(email);
         if (!address) {
-            const receiver = await queryContactFromSrv([email], []);
+            const receiver = await queryContactFromSrv([email], new Map<string, boolean>());
             if (!receiver || receiver.length <= 0) {
                 showTipsDialog("Warning", "no blockchain address found for email:" + email);
                 return;

@@ -120,6 +120,7 @@ export class PlainMailBody {
         this.attachment = attachment ?? "";
     }
 }
+
 export function decodeMail(mailData: string, key: MailKey): PlainMailBody {
     const mail = BMailBody.fromJSON(mailData);
     const address = key.address;

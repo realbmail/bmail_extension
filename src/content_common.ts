@@ -271,14 +271,14 @@ export function observeForElementDirect(target: HTMLElement, idleThreshold: numb
 
 export let __localContactMap = new Map<string, string>();
 
-export async function queryContactFromSrv(emailToQuery: string[], receiver: string[]): Promise<string[] | null> {
+export async function queryContactFromSrv(emailToQuery: string[], receiver: Map<string, boolean>): Promise<string[] | null> {
 
     if (emailToQuery.length <= 0) {
-        if (receiver.length <= 0) {
+        if (receiver.size <= 0) {
             showTipsDialog("Tips", browser.i18n.getMessage("encrypt_mail_receiver"));
             return null;
         }
-        return receiver;
+        return Array.from(receiver.keys());
     }
 
     const mailRsp = await sendMessageToBackground(emailToQuery, MsgType.EmailAddrToBmailAddr);
@@ -301,15 +301,14 @@ export async function queryContactFromSrv(emailToQuery: string[], receiver: stri
             continue;
         }
         __localContactMap.set(email, contact.address);
-        receiver.push(contact.address);
+        receiver.set(contact.address, true);
         console.log("----->>>from server email address:", email, "bmail address:", contact.address);
     }
     if (invalidReceiver.length > 0) {
         showTipsDialog("Warning", "no blockchain address found for email:" + invalidReceiver);
         return null;
     }
-
-    return receiver;
+    return Array.from(receiver.keys());
 }
 
 export function EncryptedMailDivSearch(mailArea: HTMLElement): HTMLElement[] {
@@ -430,7 +429,7 @@ export async function processReceivers(allEmailAddressDiv: NodeListOf<HTMLElemen
         return null;
     }
 
-    let receiver: string[] = [];
+    let receiver = new Map<string, boolean>();
     let emailToQuery: string[] = [];
 
     const currentEmailAddress = readCurrentMailAddress();
@@ -463,7 +462,7 @@ export async function processReceivers(allEmailAddressDiv: NodeListOf<HTMLElemen
 
         const address = __localContactMap.get(email);
         if (address) {
-            receiver.push(address);
+            receiver.set(address, true);
             console.log("------>>> from cache:", email, " address:=>", address);
             continue;
         }
