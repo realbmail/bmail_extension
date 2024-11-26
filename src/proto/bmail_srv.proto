@@ -70,3 +70,11 @@ message EMailActive{
   string subject = 2;
   string body = 3;
 }
+
+message DecryptRequest{
+  string mailStr = 1;
+}
+message DecryptResponse{
+  string mailBody = 1;
+  string attachment = 2;
+}

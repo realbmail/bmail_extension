@@ -188,13 +188,14 @@ async function encryptData(peerAddr: string[], plainTxt: string, sendResponse: (
     }
 }
 
-async function decryptData(mail: string, sendResponse: (response: any) => void) {
+async function decryptData(mailData: string, sendResponse: (response: any) => void) {
     try {
         const mKey = await checkWalletStatus(sendResponse);
         if (!mKey) {
             return;
         }
-        const mailBody = decodeMail(mail, mKey);
+        const adminAddress = await getAdminAddress();
+        const mailBody = await decodeMail(mailData, mKey, adminAddress);
         sendResponse({success: 1, data: mailBody.body, attachment: mailBody.attachment});
     } catch (err) {
         console.log("[service worker] decrypt data failed:", err)

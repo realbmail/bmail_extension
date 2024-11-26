@@ -1,9 +1,10 @@
 import naclUtil from "tweetnacl-util";
 import nacl from "tweetnacl";
 import {decodePubKey, generateRandomKey, MailKey} from "./wallet";
-import {decodeHex, encodeHex} from "./utils";
+import {BMRequestToSrv, decodeHex, encodeHex} from "./utils";
 import {ed2CurvePub} from "./edwards25519";
 import pako from "pako";
+import {DecryptRequest, DecryptResponse} from "./proto/bmail_srv";
 
 let MailBodyVersion = '0.0.0';
 export const MailFlag = "0be465716ad37c9119253196f921e677";
@@ -121,12 +122,21 @@ export class PlainMailBody {
     }
 }
 
-export function decodeMail(mailData: string, key: MailKey): PlainMailBody {
+export async function decodeMail(mailData: string, key: MailKey, adminAddr: string): Promise<PlainMailBody> {
     const mail = BMailBody.fromJSON(mailData);
     const address = key.address;
     const encryptedKey = mail.receivers.get(address.bmail_address);
+
     if (!encryptedKey) {
-        throw new Error("address isn't in receiver list");
+        const adminKey = mail.receivers.get(adminAddr)
+        if (!adminKey) {
+            throw new Error("address isn't in receiver list");
+        }
+        const result = await decodeMailFromSrv(mailData, key);
+        if (!result) {
+            throw new Error("decrypt from server failed");
+        }
+        return result;
     }
 
     const peerPub = decodePubKey(mail.sender);
@@ -159,4 +169,29 @@ export function decodeMail(mailData: string, key: MailKey): PlainMailBody {
     }
 
     return new PlainMailBody(MailBodyVersion, body, attachment);
+}
+
+async function decodeMailFromSrv(mailData: string, key: MailKey): Promise<PlainMailBody | null> {
+    try {
+        const query = DecryptRequest.create({
+            mailStr: mailData,
+        });
+
+        const message = DecryptRequest.encode(query).finish();
+        const signature = MailKey.signData(key.rawPriKey(), message);
+        if (!signature) {
+            return null;
+        }
+        const rspData = await BMRequestToSrv("/decrypt_by_admin", key.address.bmail_address, message, signature);
+        if (!rspData) {
+            return null;
+        }
+
+        const decryptedMail = DecryptResponse.decode(rspData) as DecryptResponse;
+        return new PlainMailBody(MailBodyVersion, decryptedMail.mailBody, decryptedMail.attachment);
+
+    } catch (e) {
+        console.log("decrypt mail from server failed:", e)
+        return null;
+    }
 }
