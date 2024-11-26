@@ -409,5 +409,8 @@
   },
   "active_mail_description": {
     "message": "<table style='width: 100%; margin: 20px 0;'> <tr> <td style='background-color: #f2f2f4; border-radius: 5px; padding: 16px; text-align: center;'> <h2 style='font-size: 16px; color: #04062E; margin: 0; text-align: center;'>BMail を選ぶ理由は？</h2> <div style='text-align: left; margin-top: 12px;'> <p style='font-size: 14px; color: #04062E; margin: 12px 0;'>🔒<strong>ピアツーピア暗号化:</strong> あなたのデータは常にプライベートで安全です。</p> <p style='font-size: 14px; color: #04062E; margin: 12px 0;'>🌐 <strong>サーバーレスアーキテクチャ:</strong> BMail は集中管理型のサーバーなしで動作し、信頼性を最大化します。</p> <p style='font-size: 14px; color: #04062E; margin: 12px 0;'>📈 <strong>ブロックチェーン技術を活用:</strong> Bitcoin レベルのセキュリティを備えたブロックチェーン技術に基づいて構築されています。</p> </div> </td> </tr> </table>"
+  },
+  "download_tips": {
+    "message": "このメールを復号するには、BMail をダウンロードしてください。"
   }
 }

@@ -409,5 +409,8 @@
   },
   "active_mail_description": {
     "message": "<table style='width: 100%; margin: 20px 0;'> <tr> <td style='background-color: #f2f2f4; border-radius: 5px; padding: 16px; text-align: center;'> <h2 style='font-size: 16px; color: #04062E; margin: 0; text-align: center;'>Почему стоит выбрать BMail?</h2> <div style='text-align: left; margin-top: 12px;'> <p style='font-size: 14px; color: #04062E; margin: 12px 0;'>🔒<strong>Шифрование «от точки к точке»:</strong> Ваши данные всегда конфиденциальны и защищены.</p> <p style='font-size: 14px; color: #04062E; margin: 12px 0;'>🌐 <strong>Архитектура без серверов:</strong> BMail работает без централизованных серверов, обеспечивая максимальную надежность.</p> <p style='font-size: 14px; color: #04062E; margin: 12px 0;'>📈 <strong>На основе блокчейна:</strong> Построен на технологии блокчейн для обеспечения уровня безопасности Bitcoin.</p> </div> </td> </tr> </table>"
+  },
+  "download_tips": {
+    "message": "Скачайте BMail, чтобы расшифровать это письмо."
   }
 }

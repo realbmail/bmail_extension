@@ -392,7 +392,7 @@ function addEncryptBtnForQuickReply(mailArea: HTMLElement, template: HTMLTemplat
     });
 }
 
-async function encryptDataAndSendForQuickReplyNetEase(mailBody: HTMLTextAreaElement, receiver: string[] | null, sendDiv: HTMLElement): Promise<boolean> {
+async function encryptDataAndSendForQuickReplyNetEase(mailBody: HTMLTextAreaElement, receiver: Map<string, boolean> | null, sendDiv: HTMLElement): Promise<boolean> {
     showLoading();
     try {
         mailBody.textContent = mailBody.value;

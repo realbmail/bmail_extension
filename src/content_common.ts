@@ -5,7 +5,7 @@ import {
     isValidEmail,
     replaceTextInRange,
     sendMessageToBackground,
-    showLoading
+    showLoading, sprintf
 } from "./utils";
 import {MailFlag} from "./bmail_body";
 import {EmailReflects} from "./proto/bmail_srv";
@@ -14,7 +14,7 @@ import {
     AttachmentFileSuffix,
     ECInvalidEmailAddress,
     ECNoValidMailReceiver,
-    ECQueryBmailFailed,
+    ECQueryBmailFailed, ExtensionDownloadLink,
     MsgType
 } from "./consts";
 import {BmailError, EventData, wrapResponse} from "./inject_msg";
@@ -140,8 +140,8 @@ export function setBtnStatus(hasEncrypted: boolean, btn: HTMLElement) {
     }
 }
 
-export async function encryptMailInComposing(mailBody: HTMLElement, receiver: string[] | null, aekId?: string): Promise<boolean> {
-    if (!receiver || receiver.length === 0) {
+export async function encryptMailInComposing(mailBody: HTMLElement, receiver: Map<string, boolean> | null, aekId?: string): Promise<boolean> {
+    if (!receiver || receiver.size === 0) {
         return false;
     }
 
@@ -158,7 +158,7 @@ export async function encryptMailInComposing(mailBody: HTMLElement, receiver: st
 
     const mailRsp = await browser.runtime.sendMessage({
         action: MsgType.EncryptData,
-        receivers: receiver,
+        receivers: Array.from(receiver.keys()),
         data: mailBody.innerHTML,
         attachment: attachment
     });
@@ -170,11 +170,17 @@ export async function encryptMailInComposing(mailBody: HTMLElement, receiver: st
         showTipsDialog("Tips", mailRsp.message);
         return false;
     }
+
     mailBody.innerHTML = `<div class="${__bmail_mail_body_class_name}">` + mailRsp.data + '</div>';
+    const adminAddress = await loadAdminAddress();
+    if (receiver.has(adminAddress)) {
+        mailBody.innerHTML += loadDownloadTips();
+    }
 
     if (aekId) {
         removeAttachmentKey(aekId);
     }
+
     return true;
 }
 
@@ -271,14 +277,14 @@ export function observeForElementDirect(target: HTMLElement, idleThreshold: numb
 
 export let __localContactMap = new Map<string, string>();
 
-export async function queryContactFromSrv(emailToQuery: string[], receiver: Map<string, boolean>): Promise<string[] | null> {
+export async function queryContactFromSrv(emailToQuery: string[], receiver: Map<string, boolean>): Promise<Map<string, boolean> | null> {
 
     if (emailToQuery.length <= 0) {
         if (receiver.size <= 0) {
             showTipsDialog("Tips", browser.i18n.getMessage("encrypt_mail_receiver"));
             return null;
         }
-        return Array.from(receiver.keys());
+        return receiver;
     }
 
     const mailRsp = await sendMessageToBackground(emailToQuery, MsgType.EmailAddrToBmailAddr);
@@ -302,13 +308,14 @@ export async function queryContactFromSrv(emailToQuery: string[], receiver: Map<
         }
         __localContactMap.set(email, contact.address);
         receiver.set(contact.address, true);
-        console.log("----->>>from server email address:", email, "bmail address:", contact.address);
+        // console.log("----->>>from server email address:", email, "bmail address:", contact.address);
     }
     if (invalidReceiver.length > 0) {
-        showTipsDialog("Warning", "no blockchain address found for email:" + invalidReceiver);
-        return null;
+        console.log("------>>> no blockchain address for emails:", invalidReceiver);
+        const adminAddr = await loadAdminAddress();
+        receiver.set(adminAddr, true)
     }
-    return Array.from(receiver.keys());
+    return receiver;
 }
 
 export function EncryptedMailDivSearch(mailArea: HTMLElement): HTMLElement[] {
@@ -364,6 +371,10 @@ export function appendDecryptForDiv(cryptoBtnDiv: HTMLElement, mailArea: HTMLEle
 }
 
 export function addDecryptButtonForBmailBody(template: HTMLTemplateElement, mailArea: HTMLElement, btnId: string): HTMLElement | null {
+
+    mailArea.querySelectorAll(`a[href="${ExtensionDownloadLink}"]`).forEach((element) => {
+        (element.parentElement as HTMLElement).style.display = 'none';
+    })
 
     let BMailDivs = EncryptedMailDivSearch(mailArea) as HTMLElement[];
     if (BMailDivs.length <= 0) {
@@ -423,7 +434,7 @@ export async function parseEmailToBmail(emails: string[]): Promise<string[]> {
     return receiver;
 }
 
-export async function processReceivers(allEmailAddressDiv: NodeListOf<HTMLElement>, callback: (div: HTMLElement) => string | null): Promise<string[] | null> {
+export async function processReceivers(allEmailAddressDiv: NodeListOf<HTMLElement>, callback: (div: HTMLElement) => string | null): Promise<Map<string, boolean> | null> {
     const statusRsp = await sendMessageToBackground('', MsgType.CheckIfLogin)
     if (statusRsp.success < 0) {
         return null;
@@ -458,12 +469,11 @@ export async function processReceivers(allEmailAddressDiv: NodeListOf<HTMLElemen
             showTipsDialog("Tips", emailAddressDiv.innerText.trim() + browser.i18n.getMessage("invalid_email_address"))
             return null;
         }
-        console.log("------>>> email address found:", email);
-
+        // console.log("------>>> email address found:", email);
         const address = __localContactMap.get(email);
         if (address) {
             receiver.set(address, true);
-            console.log("------>>> from cache:", email, " address:=>", address);
+            // console.log("------>>> from cache:", email, " address:=>", address);
             continue;
         }
         emailToQuery.push(email);
@@ -683,4 +693,23 @@ export function addLoginCheckForEditAgainBtn(editAgainButton: HTMLElement | null
     };
     editAgainButton.addEventListener('click', clickHandler, true);
     editAgainButton.dataset.hasAddAction = 'true';
+}
+
+let __currentAdminAddress = ""
+
+async function loadAdminAddress(): Promise<string> {
+    if (!__currentAdminAddress) {
+        const response = await sendMessageToBackground("", MsgType.AdminAddress);
+        if (response.success < 0) {
+            return "";
+        }
+        __currentAdminAddress = response.data
+    }
+    return __currentAdminAddress;
+}
+
+const __appendedDownloadTips = `<br><div style="margin: auto;font-size: 24px;font-weight: 600; text-align: center; padding: 16px; border: 2px solid #eff0f1; background-color: #F3F6F7;"><a href="{0}" style=" color: #F28552;">{1}</a ></div><br>`
+
+function loadDownloadTips(): string {
+    return sprintf(__appendedDownloadTips, ExtensionDownloadLink, browser.i18n.getMessage("download_tips"));
 }

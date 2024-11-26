@@ -16,6 +16,7 @@ import {
 } from "./consts";
 import {extractAesKeyId} from "./content_common";
 import {openWallet, updateIcon} from "./wallet_util";
+import {getAdminAddress} from "./setting";
 
 const runtime = browser.runtime;
 const alarms = browser.alarms;
@@ -75,7 +76,14 @@ runtime.onMessage.addListener((request: any, _sender: Runtime.MessageSender, sen
 
         case MsgType.QueryCurBMail:
             queryCurrentBmailAddress(sendResponse).then();
-            return true
+            return true;
+
+        case MsgType.AdminAddress:
+            getAdminAddress().then(str => {
+                sendResponse({success: true, data: str});
+            })
+            return true;
+
         default:
             sendResponse({status: false, message: 'unknown action'});
             return;
@@ -172,7 +180,7 @@ async function encryptData(peerAddr: string[], plainTxt: string, sendResponse: (
         }
 
         const mail = encodeMail(peerAddr, plainTxt, mKey, attachment);
-        console.log("[service work] encrypted mail body =>", mail);
+        // console.log("[service work] encrypted mail body =>", mail);
         sendResponse({success: true, data: JSON.stringify(mail)});
     } catch (err) {
         console.log("[service worker]  encrypt data failed:", err)

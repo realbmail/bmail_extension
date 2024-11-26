@@ -109,9 +109,9 @@ export async function getAdminAddress(force?: boolean): Promise<string> {
         let multiAddress = await sessionGet(_db_admin_key_);
         if (!multiAddress || force) {
             multiAddress = await httpApiGet('/admin_address');
+            console.log("----->>> query admin address success:", multiAddress.address);
             await sessionSet(_db_admin_key_, multiAddress);
         }
-        console.log("----->>> query admin address success:", multiAddress.address);
         return multiAddress.address;
     } catch (e) {
         return DefaultAdminAddress;

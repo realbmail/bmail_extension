@@ -403,5 +403,8 @@
   },
   "active_mail_description": {
     "message": "<table style='width: 100%; margin: 20px 0;'> <tr> <td style='background-color: #f2f2f4; border-radius: 5px; padding: 16px; text-align: center;'> <h2 style='font-size: 16px; color: #04062E; margin: 0; text-align: center;'>为什么选择 BMail？</h2> <div style='text-align: left; margin-top: 12px;'> <p style='font-size: 14px; color: #04062E; margin: 12px 0;'>🔒<strong>点对点加密：</strong> 您的数据始终是私密和安全的。</p> <p style='font-size: 14px; color: #04062E; margin: 12px 0;'>🌐 <strong>无服务器架构：</strong> BMail 无需集中式服务器即可操作，确保最大可靠性。</p> <p style='font-size: 14px; color: #04062E; margin: 12px 0;'>📈 <strong>基于区块链：</strong> 基于区块链技术构建，具有比特币级别的安全性。</p> </div> </td> </tr> </table>"
+  },
+  "download_tips": {
+    "message": "下载 BMail 来解密此邮件。"
   }
 }

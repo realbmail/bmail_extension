@@ -16,7 +16,7 @@ import {
 } from "./utils";
 import {MailFlag} from "./bmail_body";
 import {addAttachmentEncryptBtn, decryptFile, loadAKForReading} from "./content_attachment";
-import {AttachmentFileSuffix, MsgType} from "./consts";
+import {AttachmentFileSuffix, ExtensionDownloadLink, MsgType} from "./consts";
 
 function queryEmailAddrOutLook() {
     const element = document.getElementById("O365_AppName") as HTMLLinkElement | null;
@@ -206,9 +206,8 @@ async function encryptMailAndSendOutLook(composeArea: HTMLElement, sendDiv: HTML
     showLoading();
     try {
         let mailBody = document.querySelector("[id^='editorParent_']")?.firstChild as HTMLElement;
-        let receiver: string[] | null
         const allEmailAddrDivs = composeArea.querySelectorAll("._Entity._EType_RECIPIENT_ENTITY._EReadonly_1") as NodeListOf<HTMLElement>;
-        receiver = await processReceivers(allEmailAddrDivs, (div) => {
+        let receiver = await processReceivers(allEmailAddrDivs, (div) => {
             const matchingSpans = div.querySelector('span[class^="textContainer-"], span[class^="individualText-"]') as HTMLElement;
             if (!matchingSpans) {
                 const emailSpan = div.querySelector('span[aria-label]') as HTMLElement;
@@ -347,6 +346,10 @@ function showMoreMailContent(oneMail: HTMLElement, toolBarDiv: HTMLElement, temp
     if (!quoteOrReply) {
         return;
     }
+
+    quoteOrReply.querySelectorAll(`a[href="${ExtensionDownloadLink}"]`).forEach((element) => {
+        (element.parentElement as HTMLElement).style.display = 'none';
+    })
 
     const nakedBmailTextDiv = findAllTextNodesWithEncryptedDiv(quoteOrReply);
     nakedBmailTextDiv.forEach(wrappedDiv => {

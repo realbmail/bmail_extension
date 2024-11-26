@@ -14,6 +14,7 @@ export enum MsgType {
     QueryCurBMail = 'QueryCurBMail',
     SetEmailByInjection = 'SetEmailByInjection',
     KeepAlive = 'KeepAlive',
+    AdminAddress = 'AdminAddress',
 }
 
 export enum WalletStatus {
@@ -41,3 +42,4 @@ export const __key_wallet_status: string = '__key_wallet_status';
 export const __dbKey_cur_key: string = '__dbKey_cur_key__';
 export const __dbKey_cur_addr: string = '__dbKey_cur_addr__';
 export const __bmail_mail_body_class_name = "bmail-encrypted-data-wrapper"
+export const ExtensionDownloadLink = "https://chromewebstore.google.com/detail/bmail/kjlhomfbkgfkkfdpcolkecfanmipiiic"

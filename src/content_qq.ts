@@ -240,7 +240,7 @@ async function encryptMailAndSendQQ(mailBody: HTMLElement, receiverTable: HTMLEl
             // console.log("------>>> nick email:", email);
             return div.dataset.email ?? "";
         });
-        if (!receiver || receiver.length <= 0) {
+        if (!receiver || receiver.size <= 0) {
             return;
         }
 
@@ -475,15 +475,17 @@ async function encryptSimpleMailReplyQQ(mailBody: HTMLElement, email: string, se
         }
 
         let address = __localContactMap.get(email);
+        const receiverEmail = new Map<string, boolean>();
         if (!address) {
             const receiver = await queryContactFromSrv([email], new Map<string, boolean>());
-            if (!receiver || receiver.length <= 0) {
+            if (!receiver || receiver.size <= 0) {
                 showTipsDialog("Warning", "no blockchain address found for email:" + email);
                 return;
             }
-            address = receiver[0];
+            address = Array.from(receiver.keys())[0];
         }
-        const success = await encryptMailInComposing(mailBody, [address]);
+        receiverEmail.set(address, true)
+        const success = await encryptMailInComposing(mailBody, receiverEmail);
         if (!success) {
             return;
         }
