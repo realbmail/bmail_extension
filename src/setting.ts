@@ -93,8 +93,8 @@ export async function removeContractSrv(srv: string): Promise<boolean> {
     return needUpdateSrv;
 }
 
-// export const __officialContactSrv = "https://sharp-happy-grouse.ngrok-free.app"
-export const __officialContactSrv = "https://bc.simplenets.org"
+export const __officialContactSrv = "https://sharp-happy-grouse.ngrok-free.app"
+// export const __officialContactSrv = "https://bc.simplenets.org"
 // export const __officialContactSrv = "http://127.0.0.1:8001"
 const DefaultAdminAddress = "BMpUW4QkjjZ22aYXejv66y3sTu21GgEEoKN78nsqZuZ9k"
 const _db_admin_key_ = "_db_admin_key_"

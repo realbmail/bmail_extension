@@ -69,6 +69,7 @@ message EMailActive{
   string email = 1;
   string subject = 2;
   string body = 3;
+  bool unbind = 4;
 }
 
 message DecryptRequest{

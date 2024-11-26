@@ -418,5 +418,11 @@
   },
   "download_tips": {
     "message": "Download BMail to decrypt this mail."
+  },
+  "unbind_confirm_subject": {
+    "message": "Unbind Email From BMail."
+  },
+  "active_mail_unbind_btn": {
+    "message": "Unbind Email"
   }
 }
