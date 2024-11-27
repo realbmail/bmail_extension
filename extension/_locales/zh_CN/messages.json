@@ -418,5 +418,11 @@
   },
   "bind_confirm_btn": {
     "message": "确认绑定"
+  },
+  "need_email_active": {
+    "message": "请在邮件中确认该绑定操作"
+  },
+  "user_bind_success": {
+    "message": "绑定成功"
   }
 }

@@ -120,7 +120,7 @@ async function loadAndSetupAccount(force?: boolean): Promise<BMailAccount | null
 export async function populateDashboard() {
     try {
         showLoading();
-        await prepareDashboardElm();
+        await prepareDashboardElm(true);
     } catch (err) {
         console.log("------>>> populate dashboard failed:", err);
     } finally {
@@ -211,6 +211,12 @@ async function mailBindingAction(isUnbind: boolean, email: string): Promise<bool
         }
         await prepareDashboardElm(true);
         console.log("------>>>rsp.message=>", rsp.message);
+        if (rsp.message === 2) {
+            showToastMessage(browser.i18n.getMessage('need_email_active'), 3);
+        }
+        if (rsp.message === 1) {
+            showToastMessage(browser.i18n.getMessage('user_bind_success'));
+        }
         return true;
     } catch (e) {
         showDialog("error", JSON.stringify(e));
@@ -277,7 +283,7 @@ async function checkCurrentEmailBindStatus() {
             if (success) {
                 bindOrUnbindBtn.style.display = 'none';
             }
-        }, {once: true});
+        });
 
     } catch (e) {
         console.log("------>>> query current email address error:=>", e);

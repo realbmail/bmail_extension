@@ -436,5 +436,11 @@
   },
   "bind_confirm_btn": {
     "message": "Confirm Binding"
+  },
+  "need_email_active": {
+    "message": "Please confirm the binding operation in the email."
+  },
+  "user_bind_success": {
+    "message": "Bind Success"
   }
 }
