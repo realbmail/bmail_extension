@@ -208,11 +208,7 @@ async function mailBindingAction(isUnbind: boolean, email: string): Promise<bool
             showDialog("error", rsp.message);
             return false;
         }
-
         await prepareDashboardElm(true);
-
-        showToastMessage("We will send email to finish this action");
-        
         return true;
     } catch (e) {
         showDialog("error", JSON.stringify(e));
