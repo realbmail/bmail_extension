@@ -369,7 +369,7 @@
     "message": "Netzwerkeinstellungen"
   },
   "network_item_placeholder": {
-    "message": "Geben Sie die richtige http://... ein"
+    "message": "Geben Sie die richtige https://... ein"
   },
   "network_item_add": {
     "message": "Hinzufügen"
@@ -412,5 +412,23 @@
   },
   "download_tips": {
     "message": "Laden Sie BMail herunter, um diese E-Mail zu entschlüsseln."
+  },
+  "bind_confirm_subject": {
+    "message": "Bestätigung der BMail-E-Mail-Adresse für die Bindung"
+  },
+  "bind_confirm_title": {
+    "message": "Bitte bestätigen Sie Ihre BMail-Aktion"
+  },
+  "bind_confirm_subtitle": {
+    "message": "Bitte bestätigen Sie, ob Sie die Bindung zwischen der BMail-Adresse und der E-Mail-Adresse vorgenommen haben. Wenn dies Ihre Aktion war, klicken Sie bitte auf die Schaltfläche 'Bestätigen', andernfalls ignorieren Sie diese E-Mail."
+  },
+  "bind_confirm_btn": {
+    "message": "Bindung bestätigen"
+  },
+  "need_email_active": {
+    "message": "Bitte bestätigen Sie diesen Bindungsvorgang in der E-Mail."
+  },
+  "user_bind_success": {
+    "message": "Bindung erfolgreich"
   }
 }

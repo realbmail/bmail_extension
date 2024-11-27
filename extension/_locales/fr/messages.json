@@ -412,5 +412,23 @@
   },
   "download_tips": {
     "message": "Téléchargez BMail pour décrypter ce mail."
+  },
+  "bind_confirm_subject": {
+    "message": "Vérification de l'opération de liaison de l'adresse e-mail BMail"
+  },
+  "bind_confirm_title": {
+    "message": "Veuillez confirmer votre opération BMail"
+  },
+  "bind_confirm_subtitle": {
+    "message": "Veuillez confirmer si vous avez effectué la liaison de votre adresse BMail avec votre adresse e-mail. Si c'était votre action, cliquez sur le bouton de confirmation ci-dessous. Sinon, ignorez cet e-mail."
+  },
+  "bind_confirm_btn": {
+    "message": "Confirmer la liaison"
+  },
+  "need_email_active": {
+    "message": "Veuillez confirmer cette opération de liaison dans votre e-mail."
+  },
+  "user_bind_success": {
+    "message": "Liaison réussie"
   }
 }

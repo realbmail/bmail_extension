@@ -412,5 +412,23 @@
   },
   "download_tips": {
     "message": "이 메일을 복호화하려면 BMail을 다운로드하세요."
+  },
+  "bind_confirm_subject": {
+    "message": "BMail 이메일 주소 바인딩 작업 확인"
+  },
+  "bind_confirm_title": {
+    "message": "BMail 작업을 확인하세요"
+  },
+  "bind_confirm_subtitle": {
+    "message": "BMail 주소와 이메일 주소를 바인딩하는 작업을 수행했는지 확인하세요. 본인의 작업이 맞다면 아래 확인 버튼을 클릭하세요. 그렇지 않다면 이 이메일을 무시하세요."
+  },
+  "bind_confirm_btn": {
+    "message": "바인딩 확인"
+  },
+  "need_email_active": {
+    "message": "이 바인딩 작업을 이메일에서 확인하세요."
+  },
+  "user_bind_success": {
+    "message": "바인딩 성공"
   }
 }

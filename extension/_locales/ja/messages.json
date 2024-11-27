@@ -412,5 +412,23 @@
   },
   "download_tips": {
     "message": "このメールを復号するには、BMail をダウンロードしてください。"
+  },
+  "bind_confirm_subject": {
+    "message": "BMail メールアドレスのバインド操作を確認してください"
+  },
+  "bind_confirm_title": {
+    "message": "BMail の操作を確認してください"
+  },
+  "bind_confirm_subtitle": {
+    "message": "BMail アドレスとメールアドレスをバインドする操作を行ったかどうかを確認してください。操作を行った場合は、下の確認ボタンをクリックしてください。操作を行っていない場合は、このメールを無視してください。"
+  },
+  "bind_confirm_btn": {
+    "message": "バインドを確認"
+  },
+  "need_email_active": {
+    "message": "このバインド操作をメールで確認してください。"
+  },
+  "user_bind_success": {
+    "message": "バインド成功"
   }
 }

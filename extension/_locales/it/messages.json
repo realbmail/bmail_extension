@@ -412,5 +412,23 @@
   },
   "download_tips": {
     "message": "Scarica BMail per decrittare questa email."
+  },
+  "bind_confirm_subject": {
+    "message": "Verifica l'operazione di associazione dell'indirizzo e-mail BMail"
+  },
+  "bind_confirm_title": {
+    "message": "Conferma la tua operazione su BMail"
+  },
+  "bind_confirm_subtitle": {
+    "message": "Conferma se hai eseguito l'associazione del tuo indirizzo BMail con il tuo indirizzo e-mail. Se è stata la tua azione, fai clic sul pulsante di conferma qui sotto. In caso contrario, ignora questa e-mail."
+  },
+  "bind_confirm_btn": {
+    "message": "Conferma associazione"
+  },
+  "need_email_active": {
+    "message": "Conferma questa operazione di associazione nella tua e-mail."
+  },
+  "user_bind_success": {
+    "message": "Associazione riuscita"
   }
 }

@@ -412,5 +412,23 @@
   },
   "download_tips": {
     "message": "Descargue BMail para descifrar este correo."
+  },
+  "bind_confirm_subject": {
+    "message": "Verifique la operación de vinculación de la dirección de correo de BMail"
+  },
+  "bind_confirm_title": {
+    "message": "Por favor confirme su operación de BMail"
+  },
+  "bind_confirm_subtitle": {
+    "message": "Confirme si ha realizado la vinculación de su dirección de BMail con su dirección de correo electrónico. Si fue su acción, haga clic en el botón de confirmar abajo. Si no, ignore este correo electrónico."
+  },
+  "bind_confirm_btn": {
+    "message": "Confirmar vinculación"
+  },
+  "need_email_active": {
+    "message": "Por favor confirme esta operación de vinculación en su correo electrónico."
+  },
+  "user_bind_success": {
+    "message": "Vinculación exitosa"
   }
 }
