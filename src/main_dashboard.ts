@@ -16,7 +16,7 @@ import {
 } from "./main_common";
 import {AccountOperation, BMailAccount} from "./proto/bmail_srv";
 import browser from "webextension-polyfill";
-import {__dbKey_cur_addr, MsgType} from "./consts";
+import {__dbKey_cur_addr, API_Active_Account, MsgType} from "./consts";
 import {closeWallet} from "./wallet_util";
 import {getAdminAddress} from "./setting";
 
@@ -209,6 +209,7 @@ async function mailBindingAction(isUnbind: boolean, email: string): Promise<bool
             return false;
         }
         await prepareDashboardElm(true);
+        console.log("------>>>rsp.message=>", rsp.message);
         return true;
     } catch (e) {
         showDialog("error", JSON.stringify(e));
@@ -304,7 +305,7 @@ async function activeCurrentAccount(actBtn: HTMLButtonElement) {
             return;
         }
 
-        const srvRsp = await BMRequestToSrv("/account_create", address, message, signature)
+        const srvRsp = await BMRequestToSrv(API_Active_Account, address, message, signature)
         console.log("------->>>fetch success:=>", srvRsp);
         actBtn.style.display = 'none';
         await prepareDashboardElm(true);

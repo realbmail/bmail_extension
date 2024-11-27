@@ -1,7 +1,7 @@
 import {initDatabase} from "./database";
 import {
     BMRequestToSrv,
-    createQRCodeImg, encodeHex, showView, signDataByMessage, sprintf
+    createQRCodeImg, encodeHex, showView, signDataByMessage
 } from "./utils";
 import {translateHomePage} from "./local";
 import {generateMnemonic, validateMnemonic, wordlists} from 'bip39';
@@ -9,9 +9,8 @@ import browser from "webextension-polyfill";
 import {loadWalletJsonFromDB, MailAddress} from "./wallet";
 import {createNewWallet} from "./wallet_util";
 import {sessionGet} from "./session_storage";
-import {__dbKey_cur_addr} from "./consts";
+import {__dbKey_cur_addr, API_Active_By_Email} from "./consts";
 import {EMailActive} from "./proto/bmail_srv";
-import {getContactSrv} from "./setting";
 import {parseEmailTemplate} from "./main_common";
 
 document.addEventListener("DOMContentLoaded", initWelcomePage as EventListener);
@@ -592,7 +591,12 @@ async function bindAndActive() {
 
     showLoading();
     try {
-        const mailBody = await parseEmailTemplate(email, addr.bmail_address, false);
+        const mailBody = await parseEmailTemplate(email, addr.bmail_address,
+            browser.i18n.getMessage("active_mail_title"),
+            browser.i18n.getMessage("active_mail_subtitle"),
+            browser.i18n.getMessage("active_mail_description"),
+            browser.i18n.getMessage("active_mail_active_btn"));
+
         const payload: EMailActive = EMailActive.create({
             email: email,
             subject: subject,
@@ -606,7 +610,7 @@ async function bindAndActive() {
             return;
         }
 
-        const srvRsp = await BMRequestToSrv("/active_by_email", addr.bmail_address, message, signature)
+        const srvRsp = await BMRequestToSrv(API_Active_By_Email, addr.bmail_address, message, signature)
         console.log("------->>>fetch success:=>", srvRsp);
         //TODO::
         let mailServerLink = "";

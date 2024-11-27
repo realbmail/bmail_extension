@@ -363,7 +363,7 @@
     "message": "Network Settings"
   },
   "network_item_placeholder": {
-    "message": "Enter the correct http://..."
+    "message": "Enter the correct https://..."
   },
   "network_item_add": {
     "message": "Add"
@@ -424,5 +424,17 @@
   },
   "active_mail_unbind_btn": {
     "message": "Unbind Email"
+  },
+  "bind_confirm_subject": {
+    "message": "Verify BMail Email Address Binding Operation"
+  },
+  "bind_confirm_title": {
+    "message": "Please Confirm Your BMail Operation"
+  },
+  "bind_confirm_subtitle": {
+    "message": "Please confirm whether you have bound your BMail address to your email address. If you have done so yourself, please click the confirmation button below. If not, please ignore this email."
+  },
+  "bind_confirm_btn": {
+    "message": "Confirm Binding"
   }
 }

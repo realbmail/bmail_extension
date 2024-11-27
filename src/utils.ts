@@ -260,7 +260,7 @@ export async function httpApi(path: string, param: any) {
 
     const decodedResponse = BMRsp.decode(uint8Array) as BMRsp;
     if (decodedResponse.success) {
-        console.log("------>>>httpApi success")
+        // console.log("------>>>httpApi success")
         return decodedResponse.payload;
     } else {
         throw new Error(decodedResponse.msg);

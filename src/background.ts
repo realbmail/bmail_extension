@@ -10,13 +10,14 @@ import {
     __dbKey_cur_account_details,
     __dbKey_cur_addr,
     __dbKey_cur_key,
-    __key_wallet_status,
+    __key_wallet_status, API_Bind_Email, API_Query_Bmail_Details, API_Query_By_EMails, API_Unbind_Email,
     MsgType,
     WalletStatus
 } from "./consts";
 import {extractAesKeyId} from "./content_common";
 import {openWallet, updateIcon} from "./wallet_util";
 import {getAdminAddress} from "./setting";
+import {parseEmailTemplate} from "./main_common";
 
 const runtime = browser.runtime;
 const alarms = browser.alarms;
@@ -280,7 +281,7 @@ async function loadAccountDetailsFromSrv(address: string): Promise<BMailAccount 
             return null;
         }
 
-        const srvRsp = await BMRequestToSrv("/query_account", address, message, sig)
+        const srvRsp = await BMRequestToSrv(API_Query_Bmail_Details, address, message, sig)
         if (!srvRsp) {
             console.log("[service work]  fetch failed no response data found");
             return null;
@@ -334,7 +335,7 @@ async function searchAccountByEmails(emails: string[], sendResponse: (response: 
             sendResponse({success: -3, message: "sign data failed"});
             return;
         }
-        const rspData = await BMRequestToSrv("/query_by_email_array", addr.bmail_address, message, signature);
+        const rspData = await BMRequestToSrv(API_Query_By_EMails, addr.bmail_address, message, signature);
         if (!rspData) {
             console.log("[service worker] no contact data");
             sendResponse({success: -4, message: "no blockchain address found"});
@@ -383,6 +384,17 @@ async function bindingAction(isUnbind: boolean, email: string, sendResponse: (re
             mail: email,
         });
 
+        let apiPath = isUnbind ? API_Unbind_Email : API_Bind_Email;
+        if (!isUnbind) {
+            const mailBody = await parseEmailTemplate(email, addr.bmail_address,
+                browser.i18n.getMessage("bind_confirm_title"),
+                browser.i18n.getMessage("bind_confirm_subtitle"),
+                "",
+                browser.i18n.getMessage("bind_confirm_btn"));
+            payload.subject = browser.i18n.getMessage("bind_confirm_subject");
+            payload.mailBody = mailBody;
+        }
+
         const message = BindAction.encode(payload).finish();
         const sig = await signData(message);
         if (!sig) {
@@ -390,14 +402,9 @@ async function bindingAction(isUnbind: boolean, email: string, sendResponse: (re
             return;
         }
 
-        let apiPath = "/bind_account"
-        if (isUnbind) {
-            apiPath = "/unbind_account"
-        }
-
         const srvRsp = await BMRequestToSrv(apiPath, addr.bmail_address, message, sig)
         console.log("[service worker] binding or unbind=", isUnbind, " action success:=>", srvRsp);
-        sendResponse({success: 1, message: "success"});
+        sendResponse({success: 1, message: (srvRsp as Uint8Array)[0]});
 
     } catch (e) {
         const err = e as Error;

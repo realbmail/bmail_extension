@@ -406,5 +406,17 @@
   },
   "download_tips": {
     "message": "下载 BMail 来解密此邮件。"
+  },
+  "bind_confirm_subject": {
+    "message": "验证BMail邮件地址绑定操作"
+  },
+  "bind_confirm_title": {
+    "message": "请确认您的BMail操作"
+  },
+  "bind_confirm_subtitle": {
+    "message": "请确认您是否进行了BMail地址与邮件地址的绑定操作，如果是您本人操作，请点击下面的确认按钮，如果不是请忽略本邮件"
+  },
+  "bind_confirm_btn": {
+    "message": "确认绑定"
   }
 }

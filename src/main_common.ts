@@ -94,29 +94,25 @@ export function showToastMessage(content: string): void {
     }
 }
 
-export async function parseEmailTemplate(email: string, address: string, isUnbind: boolean): Promise<string> {
+export async function parseEmailTemplate(email: string, address: string, title: string, subTitle: string, description: string, buttonTxt: string): Promise<string> {
     const response = await fetch(browser.runtime.getURL('html/verify2.html'));
     if (!response.ok) {
         throw response;
     }
     const url = await getContactSrv();
     const htmlContent = await response.text();
-    let btnTxt = browser.i18n.getMessage("active_mail_active_btn");
-    if (isUnbind) {
-        btnTxt = browser.i18n.getMessage("active_mail_unbind_btn");
-    }
     const mailBody = sprintf(htmlContent,
-        browser.i18n.getMessage("active_mail_title"),
-        browser.i18n.getMessage("active_mail_subtitle"),
-        browser.i18n.getMessage("active_mail_description"),
+        title,
+        subTitle,
+        description,
         email,
         address,
-        btnTxt,
+        buttonTxt,
         browser.i18n.getMessage("active_mail_active_tips"),
         browser.i18n.getMessage("active_mail_question"),
         browser.i18n.getMessage("active_mail_footer"),
         url,
     );
-    console.log("----->>> mail body:", mailBody);
+    // console.log("----->>> mail body:", mailBody);
     return mailBody;
 }
