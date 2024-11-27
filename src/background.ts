@@ -5,7 +5,7 @@ import {resetStorage, sessionGet, sessionSet} from "./session_storage";
 import {MailAddress, MailKey} from "./wallet";
 import {BMRequestToSrv, decodeHex, extractJsonString, extractNameFromUrl} from "./utils";
 import {BMailBody, decodeMail, encodeMail, initMailBodyVersion, MailFlag} from "./bmail_body";
-import {BMailAccount, QueryReq, EmailReflects, EMailActive, BindAction} from "./proto/bmail_srv";
+import {BMailAccount, QueryReq, EmailReflects, BindAction} from "./proto/bmail_srv";
 import {
     __dbKey_cur_account_details,
     __dbKey_cur_addr,
@@ -17,7 +17,6 @@ import {
 import {extractAesKeyId} from "./content_common";
 import {openWallet, updateIcon} from "./wallet_util";
 import {getAdminAddress} from "./setting";
-import {parseEmailTemplate} from "./main_common";
 
 const runtime = browser.runtime;
 const alarms = browser.alarms;
