@@ -103,6 +103,7 @@ async function loadAndSetupAccount(force?: boolean): Promise<BMailAccount | null
         }, MsgType.QueryAccountDetails);
         if (statusRsp.success < 0) {
             console.log("------>>> account detail load failed")
+            showToastMessage(statusRsp.message, 3);
             return null;
         }
 

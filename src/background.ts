@@ -256,13 +256,19 @@ async function getAccount(address: string, force: boolean, sendResponse: (respon
         sendResponse({success: 1, data: account});
         return;
     }
-
-    account = await loadAccountDetailsFromSrv(address);
-    if (!account) {
-        sendResponse({success: -1, message: "fetch account details failed"});
-        return;
+    try {
+        account = await loadAccountDetailsFromSrv(address);
+        if (!account) {
+            sendResponse({success: -1, message: "fetch account details failed"});
+            return;
+        }
+        sendResponse({success: 1, data: account});
+    } catch (err) {
+        const e = err as Error;
+        sendResponse({success: -1, message: e.message});
+        console.log("[service work] load account details from server =>", err);
+        return null;
     }
-    sendResponse({success: 1, data: account});
 }
 
 async function loadAccountDetailsFromSrv(address: string): Promise<BMailAccount | null> {
@@ -270,29 +276,26 @@ async function loadAccountDetailsFromSrv(address: string): Promise<BMailAccount 
         console.log("[service work] no address found locally =>");
         return null;
     }
-    try {
-        const payload = QueryReq.create({
-            address: address,
-        });
-        const message = QueryReq.encode(payload).finish();
-        const sig = await signData(message);
-        if (!sig) {
-            console.log("[service work]  signature not found");
-            return null;
-        }
 
-        const srvRsp = await BMRequestToSrv(API_Query_Bmail_Details, address, message, sig)
-        if (!srvRsp) {
-            console.log("[service work]  fetch failed no response data found");
-            return null;
-        }
-        const accountDetails = BMailAccount.decode(srvRsp) as BMailAccount;
-        await sessionSet(__dbKey_cur_account_details, accountDetails);
-        return accountDetails;
-    } catch (err) {
-        console.log("[service work] load account details from server =>", err);
+    const payload = QueryReq.create({
+        address: address,
+    });
+    const message = QueryReq.encode(payload).finish();
+    const sig = await signData(message);
+    if (!sig) {
+        console.log("[service work]  signature not found");
         return null;
     }
+
+    const srvRsp = await BMRequestToSrv(API_Query_Bmail_Details, address, message, sig)
+    if (!srvRsp) {
+        console.log("[service work]  fetch failed no response data found");
+        return null;
+    }
+    const accountDetails = BMailAccount.decode(srvRsp) as BMailAccount;
+    await sessionSet(__dbKey_cur_account_details, accountDetails);
+    return accountDetails;
+
 }
 
 async function signData(message: Uint8Array) {

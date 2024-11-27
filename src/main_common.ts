@@ -77,7 +77,7 @@ export function showDialog(title: string, message: string,
     dialogContainer.style.display = 'flex';
 }
 
-export function showToastMessage(content: string): void {
+export function showToastMessage(content: string, timeOut?: number): void {
     const tipElement = document.getElementById('toast-tip-dialog');
     const contentElement = tipElement?.getElementsByClassName('tip-content')[0] as HTMLElement;
 
@@ -87,10 +87,12 @@ export function showToastMessage(content: string): void {
 
     if (tipElement) {
         tipElement.style.display = 'block';
-
+        if (!timeOut) {
+            timeOut = 2;
+        }
         setTimeout(() => {
             tipElement.style.display = 'none';
-        }, 2000);
+        }, timeOut * 1000);
     }
 }
 
