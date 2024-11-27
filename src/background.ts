@@ -5,7 +5,7 @@ import {resetStorage, sessionGet, sessionSet} from "./session_storage";
 import {MailAddress, MailKey} from "./wallet";
 import {BMRequestToSrv, decodeHex, extractJsonString, extractNameFromUrl} from "./utils";
 import {BMailBody, decodeMail, encodeMail, initMailBodyVersion, MailFlag} from "./bmail_body";
-import {BMailAccount, QueryReq, EmailReflects, EMailActive} from "./proto/bmail_srv";
+import {BMailAccount, QueryReq, EmailReflects, EMailActive, BindAction} from "./proto/bmail_srv";
 import {
     __dbKey_cur_account_details,
     __dbKey_cur_addr,
@@ -371,7 +371,6 @@ async function checkIfAccountBound(email: string | null | undefined, sendRespons
     sendResponse({success: -1, message: browser.i18n.getMessage("curr_email_unbind")});
 }
 
-
 async function bindingAction(isUnbind: boolean, email: string, sendResponse: (response: any) => void) {
     try {
         const addr = await sessionGet(__dbKey_cur_addr) as MailAddress | null;
@@ -379,26 +378,25 @@ async function bindingAction(isUnbind: boolean, email: string, sendResponse: (re
             sendResponse({success: -1, message: "open wallet first"});
             return;
         }
-        let subject = browser.i18n.getMessage("Email_Verify_Subject");
-        if (isUnbind) {
-            subject = browser.i18n.getMessage("unbind_confirm_subject");
-        }
-        const mailBody = await parseEmailTemplate(email, addr.bmail_address, isUnbind);
-        const payload: EMailActive = EMailActive.create({
-            email: email,
-            subject: subject,
-            unbind: isUnbind,
-            body: mailBody,
+
+        const payload: BindAction = BindAction.create({
+            address: addr.bmail_address,
+            mail: email,
         });
 
-        const message = EMailActive.encode(payload).finish();
+        const message = BindAction.encode(payload).finish();
         const sig = await signData(message);
         if (!sig) {
             sendResponse({success: -1, message: "sign data failed"});
             return;
         }
 
-        const srvRsp = await BMRequestToSrv('/active_by_email', addr.bmail_address, message, sig)
+        let apiPath = "/bind_account"
+        if (isUnbind) {
+            apiPath = "/unbind_account"
+        }
+
+        const srvRsp = await BMRequestToSrv(apiPath, addr.bmail_address, message, sig)
         console.log("[service worker] binding or unbind=", isUnbind, " action success:=>", srvRsp);
         sendResponse({success: 1, message: "success"});
 
