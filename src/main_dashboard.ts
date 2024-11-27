@@ -19,6 +19,7 @@ import browser from "webextension-polyfill";
 import {__dbKey_cur_addr, API_Active_Account, MsgType} from "./consts";
 import {closeWallet} from "./wallet_util";
 import {getAdminAddress} from "./setting";
+import {initMailBodyVersion} from "./bmail_body";
 
 export function initDashBoard(): void {
     const container = document.getElementById("view-main-dashboard") as HTMLDivElement;
@@ -332,4 +333,7 @@ export async function prepareDashboardElm(force?: boolean): Promise<void> {
     setupElementByAccountData(accountData);
 
     await checkCurrentEmailBindStatus();
+
+    const manifestData = browser.runtime.getManifest();
+    document.getElementById("bmail-current-version")!.innerText = manifestData.version;
 }
