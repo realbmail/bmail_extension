@@ -1,11 +1,20 @@
 import {
-    __decrypt_button_css_name, addCustomStyles,
+    __decrypt_button_css_name,
+    addCustomStyles,
     addDecryptButtonForBmailBody,
     checkFrameBody,
-    encryptMailInComposing, extractAesKeyId, ContentPageProvider,
+    encryptMailInComposing,
+    extractAesKeyId,
+    ContentPageProvider,
     observeForElement,
-    parseBmailInboxBtn, parseContentHtml,
-    parseCryptoMailBtn, processInitialTextNodesForGoogle, processReceivers, showTipsDialog, setKeepAlive
+    parseBmailInboxBtn,
+    parseContentHtml,
+    parseCryptoMailBtn,
+    processInitialTextNodesForGoogle,
+    processReceivers,
+    showTipsDialog,
+    setKeepAlive,
+    removeBmailDownloadLink
 } from "./content_common";
 import {emailRegex, hideLoading, showLoading} from "./utils";
 import browser from "webextension-polyfill";
@@ -104,7 +113,7 @@ function _addCryptoBtnForComposeDiv(template: HTMLTemplateElement, composeDiv: H
     const sendDiv = toolBarTr.querySelector(".dC")?.firstChild as HTMLElement;
 
     _prepareAttachmentForCompose(template, toolBarTr, composeDiv);
-
+    removeBmailDownloadLink(composeDiv);
     const clone = parseCryptoMailBtn(template, 'file/logo_48.png', ".bmail-crypto-btn", title,
         "bmail_crypto_btn_in_compose_google", async _ => {
             const aekId = composeDiv.dataset.attachmentKeyId ?? "";
@@ -248,6 +257,7 @@ async function addCryptoBtnToReadingMailGoogle(template: HTMLTemplateElement, ma
             console.log("------>>> no mail content parent div found");
             return;
         }
+        removeBmailDownloadLink(oneMail);
         const bmailBtn = oneMail.querySelector(__decrypt_button_css_name) as HTMLElement;
         if (bmailBtn) {
             console.log("------>>> duplicate bmail button found for mail reading......")

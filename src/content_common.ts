@@ -377,7 +377,7 @@ export function appendDecryptForDiv(cryptoBtnDiv: HTMLElement, mailArea: HTMLEle
 export function removeBmailDownloadLink(mailArea: HTMLElement) {
     const downloadDivs = mailArea.querySelectorAll(`a[href="${ExtensionDownloadLink}"]`);
     downloadDivs.forEach((element) => {
-        (element.parentElement as HTMLElement).style.display = 'none';
+        (element.closest('div') as HTMLElement).style.display = 'none';
     })
 }
 

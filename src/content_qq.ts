@@ -18,7 +18,7 @@ import {
     parseContentHtml,
     parseCryptoMailBtn,
     processReceivers,
-    queryContactFromSrv,
+    queryContactFromSrv, removeBmailDownloadLink,
     replaceTextNodeWithDiv,
     setKeepAlive,
     showTipsDialog
@@ -111,6 +111,7 @@ async function addCryptoBtnToComposeDivQQ(template: HTMLTemplateElement, compose
     }
 
     await checkIfEditAgainContent(mailBodyDiv);
+    removeBmailDownloadLink(mailBodyDiv);
 
     const aekID = prepareAttachmentForCompose(template, composeDiv);
     const title = browser.i18n.getMessage('crypto_and_send');
@@ -720,7 +721,8 @@ function prepareAttachmentForComposeOldVersion(frameDoc: Document, template: HTM
 const __bmailComposeDivId = "bmail-mail-body-for-qq";
 
 async function prepareMailContentOldVersion(frameDoc: Document): Promise<HTMLElement> {
-    // let bmailContentDiv = frameDoc.body.firstElementChild as HTMLElement;
+    removeBmailDownloadLink(frameDoc.body);
+
     let bmailContentDiv = Array.from(frameDoc.body.children).find(
         (child) => child.tagName === 'DIV'
     ) as HTMLElement | undefined;

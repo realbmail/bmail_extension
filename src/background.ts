@@ -172,7 +172,7 @@ async function encryptData(peerAddr: string[], plainTxt: string, sendResponse: (
         if (plainTxt.includes(MailFlag)) {
             const encryptedMailBody = extractJsonString(plainTxt);
             const rawObj = BMailBody.fromJSON(encryptedMailBody!.json);
-            if (!rawObj.attachment && attachment) {
+            if (!rawObj.attAesKey && attachment) {
                 rawObj.addAppendAttachment(mKey, attachment)
                 sendResponse({success: true, data: JSON.stringify(rawObj)});
                 return;

@@ -22,7 +22,7 @@ export class BMailBody {
     nonce: Uint8Array;
     sender: string;
     mailFlag: string;
-    attachment: string = "";
+    attAesKey: string = "";
     isCompressed: boolean = false;
     mailReceiver: string = "";
 
@@ -34,7 +34,7 @@ export class BMailBody {
         this.nonce = nonce;
         this.sender = sender;
         this.mailFlag = MailFlag;
-        this.attachment = attachment ?? "";
+        this.attAesKey = attachment ?? "";
         this.isCompressed = isCompressed;
         this.mailReceiver = mailReceiver;
     }
@@ -49,7 +49,7 @@ export class BMailBody {
         const isCompressed = json.isCompressed ?? false;
         const mailReceiver = json.mailReceiver ?? "";
         return new BMailBody(version, receivers, cryptoBody,
-            nonce, sender, json.attachment, isCompressed, mailReceiver);
+            nonce, sender, json.attAesKey, isCompressed, mailReceiver);
     }
 
     toJSON() {
@@ -60,7 +60,7 @@ export class BMailBody {
             cryptoBody: this.cryptoBody,
             nonce: encodeHex(this.nonce),
             sender: this.sender,
-            attachment: this.attachment,
+            attAesKey: this.attAesKey,
             isCompressed: this.isCompressed,
             mailReceiver: this.mailReceiver,
         };
@@ -74,7 +74,7 @@ export class BMailBody {
         const sharedKey = nacl.scalarMult(mKey.curvePriKey, peerCurvePub!);
         const aesKey = nacl.secretbox.open(decodeHex(encryptedKey), this.nonce, sharedKey);
         const attData = nacl.secretbox(naclUtil.decodeUTF8(attachment), this.nonce, aesKey!);
-        this.attachment = naclUtil.encodeBase64(attData);
+        this.attAesKey = naclUtil.encodeBase64(attData);
     }
 }
 
@@ -175,8 +175,8 @@ export async function decodeMail(mailData: string, key: MailKey, adminAddr: stri
         : naclUtil.encodeUTF8(bodyBin);
 
     let attachment: string | undefined;
-    if (mail.attachment) {
-        const attachmentBin = nacl.secretbox.open(naclUtil.decodeBase64(mail.attachment), mail.nonce, aesKey);
+    if (mail.attAesKey) {
+        const attachmentBin = nacl.secretbox.open(naclUtil.decodeBase64(mail.attAesKey), mail.nonce, aesKey);
         if (!attachmentBin) {
             throw new Error("decrypt mail attachment keys failed");
         }
