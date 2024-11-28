@@ -374,11 +374,15 @@ export function appendDecryptForDiv(cryptoBtnDiv: HTMLElement, mailArea: HTMLEle
     });
 }
 
-export function addDecryptButtonForBmailBody(template: HTMLTemplateElement, mailArea: HTMLElement, btnId: string): HTMLElement | null {
-
-    mailArea.querySelectorAll(`a[href="${ExtensionDownloadLink}"]`).forEach((element) => {
+export function removeBmailDownloadLink(mailArea: HTMLElement) {
+    const downloadDivs = mailArea.querySelectorAll(`a[href="${ExtensionDownloadLink}"]`);
+    downloadDivs.forEach((element) => {
         (element.parentElement as HTMLElement).style.display = 'none';
     })
+}
+
+export function addDecryptButtonForBmailBody(template: HTMLTemplateElement, mailArea: HTMLElement, btnId: string): HTMLElement | null {
+    removeBmailDownloadLink(mailArea);
 
     let BMailDivs = EncryptedMailDivSearch(mailArea) as HTMLElement[];
     if (BMailDivs.length <= 0) {

@@ -150,7 +150,7 @@ export async function decodeMail(mailData: string, key: MailKey, adminAddr: stri
         if (mail.mailReceiver.length === 0) {
             throw new Error("mail receiver is empty");
         }
-        aesKey = await decodeMailFromSrv(mail, adminKey, key);
+        aesKey = await decodeMailFromSrv(mail, adminKey, key, adminAddr);
     } else {
         const peerPub = decodePubKey(mail.sender);
         const peerCurvePub = ed2CurvePub(peerPub);
@@ -186,7 +186,7 @@ export async function decodeMail(mailData: string, key: MailKey, adminAddr: stri
     return new PlainMailBody(MailBodyVersion, body, attachment);
 }
 
-async function decodeMailFromSrv(mail: BMailBody, adminKey: string, key: MailKey): Promise<Uint8Array | null> {
+async function decodeMailFromSrv(mail: BMailBody, adminKey: string, key: MailKey, adminAddr: string): Promise<Uint8Array | null> {
     const query = DecryptRequest.create({
         sender: mail.sender,
         adminKey: adminKey,
@@ -204,6 +204,12 @@ async function decodeMailFromSrv(mail: BMailBody, adminKey: string, key: MailKey
         return null;
     }
 
-    console.log("------>>> aes key for this mail", rspData)
-    return rspData;
+    const adminPub = decodePubKey(adminAddr);
+    const adminCurvePub = ed2CurvePub(adminPub);
+    if (!adminCurvePub) {
+        throw new Error("Invalid bmail admin address");
+    }
+    const sharedKey = nacl.scalarMult(key.curvePriKey, adminCurvePub);
+    // console.log("------>>>==to be removed== aes key for this mail:", aesKey)
+    return nacl.secretbox.open(rspData, mail.nonce, sharedKey);
 }

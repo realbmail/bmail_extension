@@ -13,7 +13,7 @@ import {
     parseCryptoMailBtn,
     processReceivers,
     replaceTextNodeWithDiv,
-    showTipsDialog, setKeepAlive, addLoginCheckForEditAgainBtn
+    showTipsDialog, setKeepAlive, addLoginCheckForEditAgainBtn, removeBmailDownloadLink
 } from "./content_common";
 import {extractEmail, hideLoading, showLoading} from "./utils";
 import {addAttachmentEncryptBtn, decryptAttachment} from "./content_attachment";
@@ -131,7 +131,9 @@ async function parseMailBodyToCheckCryptoButtonStatus(composeDiv: HTMLElement, b
     const nakedBmailTextDiv = findAllTextNodesWithEncryptedDiv(iframeDocument.body);
     nakedBmailTextDiv.forEach(wrappedDiv => {
         replaceTextNodeWithDiv(wrappedDiv as HTMLElement);
-    })
+    });
+
+    removeBmailDownloadLink(iframeDocument.body);
 
     const mailEditAgainDiv = iframeDocument.querySelector(`.${__bmail_mail_body_class_name}`) as HTMLElement;
     if (mailEditAgainDiv) {

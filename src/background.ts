@@ -122,6 +122,7 @@ self.addEventListener('activate', (event) => {
 
     const manifestData = browser.runtime.getManifest();
     initMailBodyVersion(manifestData.version);
+    updateIcon(false);
 });
 
 runtime.onInstalled.addListener((details: Runtime.OnInstalledDetailsType) => {
@@ -546,4 +547,4 @@ async function handleExistingDownloads() {
     });
 }
 
-handleExistingDownloads();
+handleExistingDownloads().then();

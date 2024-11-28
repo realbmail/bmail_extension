@@ -1,10 +1,24 @@
 import {
-    __decrypt_button_css_name, addCustomStyles,
-    addDecryptButtonForBmailBody, appendDecryptForDiv, decryptMailInReading,
-    encryptMailInComposing, extractAesKeyId, findAllTextNodesWithEncryptedDiv, ContentPageProvider,
-    observeForElement, parseBmailInboxBtn, parseContentHtml,
+    __decrypt_button_css_name,
+    addCustomStyles,
+    addDecryptButtonForBmailBody,
+    appendDecryptForDiv,
+    decryptMailInReading,
+    encryptMailInComposing,
+    extractAesKeyId,
+    findAllTextNodesWithEncryptedDiv,
+    ContentPageProvider,
+    observeForElement,
+    parseBmailInboxBtn,
+    parseContentHtml,
     parseCryptoMailBtn,
-    processReceivers, replaceTextNodeWithDiv, showTipsDialog, AttachmentKeyID, setKeepAlive, EncryptedMailDivSearch
+    processReceivers,
+    replaceTextNodeWithDiv,
+    showTipsDialog,
+    AttachmentKeyID,
+    setKeepAlive,
+    EncryptedMailDivSearch,
+    removeBmailDownloadLink
 } from "./content_common";
 import browser from "webextension-polyfill";
 import {
@@ -352,9 +366,7 @@ function showMoreMailContent(oneMail: HTMLElement, toolBarDiv: HTMLElement, temp
         return;
     }
 
-    quoteOrReply.querySelectorAll(`a[href="${ExtensionDownloadLink}"]`).forEach((element) => {
-        (element.parentElement as HTMLElement).style.display = 'none';
-    })
+    removeBmailDownloadLink(quoteOrReply);
 
     const nakedBmailTextDiv = findAllTextNodesWithEncryptedDiv(quoteOrReply);
     nakedBmailTextDiv.forEach(wrappedDiv => {
