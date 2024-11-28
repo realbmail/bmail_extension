@@ -55,7 +55,7 @@ const __nameToEmailMap = new Map();
 function cacheContactContent(contactDiv: HTMLElement) {
     const ulElement = contactDiv.querySelector('ul.ms-FloatingSuggestionsList-container') as HTMLElement;
     if (!ulElement) {
-        console.log("------>>>  contact list should not be null:",contactDiv);
+        console.log("------>>>  contact list should not be null:", contactDiv);
         return;
     }
 
@@ -207,7 +207,7 @@ async function encryptMailAndSendOutLook(composeArea: HTMLElement, sendDiv: HTML
     try {
         let mailBody = document.querySelector("[id^='editorParent_']")?.firstChild as HTMLElement;
         const allEmailAddrDivs = composeArea.querySelectorAll("._Entity._EType_RECIPIENT_ENTITY._EReadonly_1") as NodeListOf<HTMLElement>;
-        let receiver = await processReceivers(allEmailAddrDivs, (div) => {
+        let result = await processReceivers(allEmailAddrDivs, (div) => {
             const matchingSpans = div.querySelector('span[class^="textContainer-"], span[class^="individualText-"]') as HTMLElement;
             if (!matchingSpans) {
                 const emailSpan = div.querySelector('span[aria-label]') as HTMLElement;
@@ -225,6 +225,11 @@ async function encryptMailAndSendOutLook(composeArea: HTMLElement, sendDiv: HTML
             return emailAddr;
         });
 
+        if (!result) {
+            showTipsDialog("Tips", browser.i18n.getMessage("encrypt_mail_receiver"));
+            return;
+        }
+        const {receiver, mailReceiver} = result;
         const replayArea = document.getElementById("divRplyFwdMsg");
         if (replayArea) {
             const div = document.createElement("div");
@@ -237,7 +242,7 @@ async function encryptMailAndSendOutLook(composeArea: HTMLElement, sendDiv: HTML
         }
 
         const aekID = composeArea.dataset.attachmentKeyId ?? "";
-        const success = await encryptMailInComposing(mailBody, receiver, aekID);
+        const success = await encryptMailInComposing(mailBody, receiver, aekID, mailReceiver);
         if (!success) {
             return;
         }

@@ -66,5 +66,7 @@ export async function closeWallet(): Promise<void> {
 
 export function updateIcon(isLoggedIn: boolean) {
     const iconPath = isLoggedIn ? ICON_PATHS.loggedIn : ICON_PATHS.loggedOut;
-    browser.action.setIcon({path: iconPath}).then();
+    browser.action.setIcon({path: iconPath}).then(() => {
+        console.log("------>>>> set icon success");
+    });
 }

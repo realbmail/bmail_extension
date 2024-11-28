@@ -40,7 +40,7 @@ runtime.onMessage.addListener((request: any, _sender: Runtime.MessageSender, sen
             return true;
 
         case  MsgType.EncryptData:
-            encryptData(request.receivers, request.data, sendResponse, request.attachment).then();
+            encryptData(request.receivers, request.data, sendResponse, request.attachment, request.mailReceiver).then();
             return true;
 
         case MsgType.DecryptData:
@@ -112,14 +112,12 @@ self.addEventListener('install', (event) => {
     console.log('[service work] Service Worker installing...');
     const evt = event as ExtendableEvent;
     evt.waitUntil(createAlarm());
-    updateIcon(false);
 });
 
 self.addEventListener('activate', (event) => {
     const extendableEvent = event as ExtendableEvent;
     extendableEvent.waitUntil((self as unknown as ServiceWorkerGlobalScope).clients.claim());
     console.log('[service work] Service Worker activating......');
-    updateIcon(false);
     resetStorage().then();
 
     const manifestData = browser.runtime.getManifest();
@@ -138,6 +136,7 @@ runtime.onInstalled.addListener((details: Runtime.OnInstalledDetailsType) => {
 
 runtime.onStartup.addListener(() => {
     console.log('[service work] Service Worker onStartup......');
+    updateIcon(false);
 });
 
 runtime.onSuspend.addListener(() => {
@@ -157,7 +156,7 @@ async function checkWalletStatus(sendResponse: (response: any) => void) {
     return new MailKey(new Uint8Array(sObj));
 }
 
-async function encryptData(peerAddr: string[], plainTxt: string, sendResponse: (response: any) => void, attachment?: string) {
+async function encryptData(peerAddr: string[], plainTxt: string, sendResponse: (response: any) => void, attachment?: string, mailReceiver: string[] = []) {
     try {
         const mKey = await checkWalletStatus(sendResponse);
         if (!mKey) {
@@ -180,7 +179,7 @@ async function encryptData(peerAddr: string[], plainTxt: string, sendResponse: (
             sendResponse({success: true, data: plainTxt});
         }
 
-        const mail = encodeMail(peerAddr, plainTxt, mKey, attachment);
+        const mail = encodeMail(peerAddr, plainTxt, mKey, attachment, mailReceiver);
         // console.log("[service work] encrypted mail body =>", mail);
         sendResponse({success: true, data: JSON.stringify(mail)});
     } catch (err) {
@@ -438,7 +437,9 @@ const initiatedDownloadUrls = new Set<string>();
 
 browser.downloads.onCreated.addListener(async (downloadItem) => {
     const downloadUrl = downloadItem.url;
-
+    if (processedDownloads.has(downloadUrl)) {
+        return;
+    }
     if (initiatedDownloadUrls.has(downloadUrl)) {
         initiatedDownloadUrls.delete(downloadUrl);
         return;
@@ -534,3 +535,15 @@ browser.downloads.onChanged.addListener(async (delta) => {
 
     targetDownloadIds.delete(downloadId);
 });
+
+let processedDownloads = new Set();
+
+async function handleExistingDownloads() {
+    const downloads = await browser.downloads.search({});
+
+    downloads.forEach(downloadItem => {
+        processedDownloads.add(downloadItem.url); // 添加到已处理集合
+    });
+}
+
+handleExistingDownloads();

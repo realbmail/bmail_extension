@@ -75,9 +75,8 @@ message EMailActive{
 }
 
 message DecryptRequest{
-  string mailStr = 1;
-}
-message DecryptResponse{
-  string mailBody = 1;
-  string attachment = 2;
+  string sender = 1;
+  string adminKey = 2;
+  string mailReceiver = 3;
+  string nonce = 4;
 }

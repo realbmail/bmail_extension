@@ -140,7 +140,8 @@ export function setBtnStatus(hasEncrypted: boolean, btn: HTMLElement) {
     }
 }
 
-export async function encryptMailInComposing(mailBody: HTMLElement, receiver: Map<string, boolean> | null, aekId?: string): Promise<boolean> {
+export async function encryptMailInComposing(mailBody: HTMLElement, receiver: Map<string, boolean> | null,
+                                             aekId?: string, mailReceiver: string[] = []): Promise<boolean> {
     if (!receiver || receiver.size === 0) {
         return false;
     }
@@ -160,7 +161,8 @@ export async function encryptMailInComposing(mailBody: HTMLElement, receiver: Ma
         action: MsgType.EncryptData,
         receivers: Array.from(receiver.keys()),
         data: mailBody.innerHTML,
-        attachment: attachment
+        attachment: attachment,
+        mailReceiver: mailReceiver
     });
 
     if (mailRsp.success <= 0) {
@@ -277,14 +279,16 @@ export function observeForElementDirect(target: HTMLElement, idleThreshold: numb
 
 export let __localContactMap = new Map<string, string>();
 
-export async function queryContactFromSrv(emailToQuery: string[], receiver: Map<string, boolean>): Promise<Map<string, boolean> | null> {
+export async function queryContactFromSrv(emailToQuery: string[],
+                                          receiver: Map<string, boolean>):
+    Promise<{ receiver: Map<string, boolean>, mailReceiver: string[] } | null> {
 
     if (emailToQuery.length <= 0) {
         if (receiver.size <= 0) {
             showTipsDialog("Tips", browser.i18n.getMessage("encrypt_mail_receiver"));
             return null;
         }
-        return receiver;
+        return {receiver, mailReceiver: []};
     }
 
     const mailRsp = await sendMessageToBackground(emailToQuery, MsgType.EmailAddrToBmailAddr);
@@ -315,7 +319,7 @@ export async function queryContactFromSrv(emailToQuery: string[], receiver: Map<
         const adminAddr = await loadAdminAddress();
         receiver.set(adminAddr, true)
     }
-    return receiver;
+    return {receiver: receiver, mailReceiver: invalidReceiver};
 }
 
 export function EncryptedMailDivSearch(mailArea: HTMLElement): HTMLElement[] {
@@ -434,7 +438,9 @@ export async function parseEmailToBmail(emails: string[]): Promise<string[]> {
     return receiver;
 }
 
-export async function processReceivers(allEmailAddressDiv: NodeListOf<HTMLElement>, callback: (div: HTMLElement) => string | null): Promise<Map<string, boolean> | null> {
+export async function processReceivers(allEmailAddressDiv: NodeListOf<HTMLElement>,
+                                       callback: (div: HTMLElement) => string | null):
+    Promise<{ receiver: Map<string, boolean>, mailReceiver: string[] } | null> {
     const statusRsp = await sendMessageToBackground('', MsgType.CheckIfLogin)
     if (statusRsp.success < 0) {
         return null;

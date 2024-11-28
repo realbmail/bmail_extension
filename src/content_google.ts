@@ -185,11 +185,16 @@ async function encryptMailAndSendGoogle(mailBody: HTMLElement, titleForm: HTMLEl
     showLoading();
     try {
         const divsWithDataHoverCardId = titleForm.querySelectorAll('div[data-hovercard-id]') as NodeListOf<HTMLElement>;
-        const receiver = await processReceivers(divsWithDataHoverCardId, (div) => {
+        const result = await processReceivers(divsWithDataHoverCardId, (div) => {
             return div.getAttribute('data-hovercard-id') as string | null;
         });
+        if (!result) {
+            showTipsDialog("Tips", browser.i18n.getMessage("encrypt_mail_receiver"));
+            return;
+        }
 
-        const success = await encryptMailInComposing(mailBody, receiver, aekId);
+        const {receiver, mailReceiver} = result;
+        const success = await encryptMailInComposing(mailBody, receiver, aekId, mailReceiver);
         if (!success) {
             return;
         }

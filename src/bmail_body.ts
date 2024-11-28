@@ -4,7 +4,8 @@ import {decodePubKey, generateRandomKey, MailKey} from "./wallet";
 import {BMRequestToSrv, decodeHex, encodeHex} from "./utils";
 import {ed2CurvePub} from "./edwards25519";
 import pako from "pako";
-import {DecryptRequest, DecryptResponse} from "./proto/bmail_srv";
+import {DecryptRequest} from "./proto/bmail_srv";
+import {API_Decrypt_By_Admin} from "./consts";
 
 let MailBodyVersion = '0.0.0';
 export const MailFlag = "0be465716ad37c9119253196f921e677";
@@ -22,9 +23,11 @@ export class BMailBody {
     sender: string;
     mailFlag: string;
     attachment: string = "";
-    isCompressed: boolean = false; // 新增属性
+    isCompressed: boolean = false;
+    mailReceiver: string = "";
 
-    constructor(version: string, secrets: Map<string, string>, body: string, nonce: Uint8Array, sender: string, attachment?: string, isCompressed: boolean = false) {
+    constructor(version: string, secrets: Map<string, string>, body: string, nonce: Uint8Array,
+                sender: string, attachment?: string, isCompressed: boolean = false, mailReceiver: string = "") {
         this.version = version;
         this.receivers = secrets;
         this.cryptoBody = body;
@@ -33,6 +36,7 @@ export class BMailBody {
         this.mailFlag = MailFlag;
         this.attachment = attachment ?? "";
         this.isCompressed = isCompressed;
+        this.mailReceiver = mailReceiver;
     }
 
     static fromJSON(jsonStr: string): BMailBody {
@@ -43,7 +47,9 @@ export class BMailBody {
         const nonce = decodeHex(json.nonce);
         const sender = json.sender;
         const isCompressed = json.isCompressed ?? false;
-        return new BMailBody(version, receivers, cryptoBody, nonce, sender, json.attachment, isCompressed);
+        const mailReceiver = json.mailReceiver ?? "";
+        return new BMailBody(version, receivers, cryptoBody,
+            nonce, sender, json.attachment, isCompressed, mailReceiver);
     }
 
     toJSON() {
@@ -56,6 +62,7 @@ export class BMailBody {
             sender: this.sender,
             attachment: this.attachment,
             isCompressed: this.isCompressed,
+            mailReceiver: this.mailReceiver,
         };
     }
 
@@ -71,12 +78,12 @@ export class BMailBody {
     }
 }
 
-export function encodeMail(peers: string[], data: string, key: MailKey, attachment?: string): BMailBody {
+export function encodeMail(peers: string[], data: string, key: MailKey, attachment?: string, mails: string[] = []): BMailBody {
     const nonce = nacl.randomBytes(nacl.secretbox.nonceLength);
     const aesKey = generateRandomKey();
     let secrets = new Map<string, string>();
 
-    peers.push(key.address.bmail_address);//add self for decrypt.
+    peers.push(key.address.bmail_address);
 
     peers.forEach(peer => {
         const peerPub = decodePubKey(peer);
@@ -92,6 +99,12 @@ export function encodeMail(peers: string[], data: string, key: MailKey, attachme
     const compressedBody = pako.gzip(data);
     const encryptedBody = nacl.secretbox(compressedBody, nonce, aesKey);
 
+    let mailReceiver = ""
+    if (mails.length > 0) {
+        const encryptedMailAddrData = nacl.secretbox(naclUtil.decodeUTF8(JSON.stringify(mails)), nonce, aesKey);
+        mailReceiver = naclUtil.encodeBase64(encryptedMailAddrData)
+    }
+
     let encodedAttachmentKey: string | undefined;
     if (attachment) {
         const attData = nacl.secretbox(naclUtil.decodeUTF8(attachment), nonce, aesKey);
@@ -105,7 +118,8 @@ export function encodeMail(peers: string[], data: string, key: MailKey, attachme
         nonce,
         key.address.bmail_address,
         encodedAttachmentKey,
-        true
+        true,
+        mailReceiver
     );
 }
 
@@ -127,25 +141,26 @@ export async function decodeMail(mailData: string, key: MailKey, adminAddr: stri
     const address = key.address;
     const encryptedKey = mail.receivers.get(address.bmail_address);
 
+    let aesKey: Uint8Array | null = null;
     if (!encryptedKey) {
         const adminKey = mail.receivers.get(adminAddr)
         if (!adminKey) {
             throw new Error("address isn't in receiver list");
         }
-        const result = await decodeMailFromSrv(mailData, key);
-        if (!result) {
-            throw new Error("decrypt from server failed");
+        if (mail.mailReceiver.length === 0) {
+            throw new Error("mail receiver is empty");
         }
-        return result;
+        aesKey = await decodeMailFromSrv(mail, adminKey, key);
+    } else {
+        const peerPub = decodePubKey(mail.sender);
+        const peerCurvePub = ed2CurvePub(peerPub);
+        if (!peerCurvePub) {
+            throw new Error("Invalid bmail address,convert to curve pub failed");
+        }
+        const sharedKey = nacl.scalarMult(key.curvePriKey, peerCurvePub);
+        aesKey = nacl.secretbox.open(decodeHex(encryptedKey), mail.nonce, sharedKey);
     }
 
-    const peerPub = decodePubKey(mail.sender);
-    const peerCurvePub = ed2CurvePub(peerPub);
-    if (!peerCurvePub) {
-        throw new Error("Invalid bmail address,convert to curve pub failed");
-    }
-    const sharedKey = nacl.scalarMult(key.curvePriKey, peerCurvePub);
-    const aesKey = nacl.secretbox.open(decodeHex(encryptedKey), mail.nonce, sharedKey);
     if (!aesKey) {
         throw new Error("no aes key valid.");
     }
@@ -171,27 +186,24 @@ export async function decodeMail(mailData: string, key: MailKey, adminAddr: stri
     return new PlainMailBody(MailBodyVersion, body, attachment);
 }
 
-async function decodeMailFromSrv(mailData: string, key: MailKey): Promise<PlainMailBody | null> {
-    try {
-        const query = DecryptRequest.create({
-            mailStr: mailData,
-        });
+async function decodeMailFromSrv(mail: BMailBody, adminKey: string, key: MailKey): Promise<Uint8Array | null> {
+    const query = DecryptRequest.create({
+        sender: mail.sender,
+        adminKey: adminKey,
+        mailReceiver: mail.mailReceiver,
+        nonce: encodeHex(mail.nonce),
+    });
 
-        const message = DecryptRequest.encode(query).finish();
-        const signature = MailKey.signData(key.rawPriKey(), message);
-        if (!signature) {
-            return null;
-        }
-        const rspData = await BMRequestToSrv("/decrypt_by_admin", key.address.bmail_address, message, signature);
-        if (!rspData) {
-            return null;
-        }
-
-        const decryptedMail = DecryptResponse.decode(rspData) as DecryptResponse;
-        return new PlainMailBody(MailBodyVersion, decryptedMail.mailBody, decryptedMail.attachment);
-
-    } catch (e) {
-        console.log("decrypt mail from server failed:", e)
+    const message = DecryptRequest.encode(query).finish();
+    const signature = MailKey.signData(key.rawPriKey(), message);
+    if (!signature) {
         return null;
     }
+    const rspData = await BMRequestToSrv(API_Decrypt_By_Admin, key.address.bmail_address, message, signature);
+    if (!rspData) {
+        return null;
+    }
+
+    console.log("------>>> aes key for this mail", rspData)
+    return rspData;
 }

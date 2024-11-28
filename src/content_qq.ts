@@ -236,16 +236,21 @@ async function encryptMailAndSendQQ(mailBody: HTMLElement, receiverTable: HTMLEl
         }
 
         const allEmailAddressDiv = receiverTable.querySelectorAll("div[data-email]") as NodeListOf<HTMLElement>;
-        const receiver = await processReceivers(allEmailAddressDiv, (div) => {
+        const result = await processReceivers(allEmailAddressDiv, (div) => {
             // console.log("------>>> nick email:", email);
             return div.dataset.email ?? "";
         });
+        if (!result) {
+            showTipsDialog("Tips", browser.i18n.getMessage("encrypt_mail_receiver"));
+            return;
+        }
+        const {receiver, mailReceiver} = result;
         if (!receiver || receiver.size <= 0) {
             return;
         }
 
         const aekId = mailBody.dataset.attachmentKeyId ?? "";
-        const success = await encryptMailInComposing(mailBody, receiver, aekId);
+        const success = await encryptMailInComposing(mailBody, receiver, aekId, mailReceiver);
         if (!success) {
             return;
         }
@@ -477,14 +482,15 @@ async function encryptSimpleMailReplyQQ(mailBody: HTMLElement, email: string, se
         let address = __localContactMap.get(email);
         const receiverEmail = new Map<string, boolean>();
         if (!address) {
-            const receiver = await queryContactFromSrv([email], new Map<string, boolean>());
-            if (!receiver || receiver.size <= 0) {
+            const result = await queryContactFromSrv([email], new Map<string, boolean>());
+            if (!result || result.receiver.size <= 0) {
                 showTipsDialog("Warning", "no blockchain address found for email:" + email);
                 return;
             }
-            address = Array.from(receiver.keys())[0];
+            address = Array.from(result.receiver.keys())[0];
         }
-        receiverEmail.set(address, true)
+
+        receiverEmail.set(address, true);
         const success = await encryptMailInComposing(mailBody, receiverEmail);
         if (!success) {
             return;
@@ -752,12 +758,16 @@ async function encryptMailAndSendQQOldVersion(mailBody: HTMLElement, receiverTab
     showLoading();
     try {
         const allEmailAddrDivs = receiverTable.querySelectorAll(".addr_base.addr_normal") as NodeListOf<HTMLElement>;
-        const receiver = await processReceivers(allEmailAddrDivs, (div) => {
+        const result = await processReceivers(allEmailAddrDivs, (div) => {
             return div.getAttribute('addr')?.trim() as string | null;
         });
-
+        if (!result) {
+            showTipsDialog("Tips", browser.i18n.getMessage("encrypt_mail_receiver"));
+            return;
+        }
+        const {receiver, mailReceiver} = result;
         const aekId = mailBody.dataset.attachmentKeyId ?? "";
-        const success = await encryptMailInComposing(mailBody, receiver, aekId);
+        const success = await encryptMailInComposing(mailBody, receiver, aekId, mailReceiver);
         if (!success) {
             return;
         }
@@ -818,10 +828,14 @@ function addListenerForQuickReplyOldVersion(template: HTMLTemplateElement, doc: 
             title, 'bmail_crypto_btn_in_compose_qq_old', async _ => {
                 const spansWithEAttribute = doc.querySelectorAll('span[e]') as NodeListOf<HTMLElement>; // 查询包含 e 属性的所有 span 元素
 
-                const receiver = await processReceivers(spansWithEAttribute, (span) => {
+                const result = await processReceivers(spansWithEAttribute, (span) => {
                     return extractEmail(span.getAttribute('e') ?? "");
                 });
-
+                if (!result) {
+                    showTipsDialog("Tips", browser.i18n.getMessage("encrypt_mail_receiver"));
+                    return;
+                }
+                const {receiver, mailReceiver} = result;
                 const elements = doc.querySelectorAll('div[data-has-decrypted="true"]') as NodeListOf<HTMLElement>;
 
                 elements.forEach(bmailBody => {
@@ -835,7 +849,7 @@ function addListenerForQuickReplyOldVersion(template: HTMLTemplateElement, doc: 
                 });
                 mailContentDiv.insertBefore(newMailBody, mailContentDiv.firstChild);
 
-                const success = await encryptMailInComposing(newMailBody, receiver);
+                const success = await encryptMailInComposing(newMailBody, receiver, "", mailReceiver);
                 if (!success) {
                     return;
                 }

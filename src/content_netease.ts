@@ -250,16 +250,20 @@ async function encryptDataAndSendNetEase(composeDiv: HTMLElement, sendDiv: HTMLE
         }
 
         const receiverArea = composeDiv.querySelectorAll(".js-component-emailblock") as NodeListOf<HTMLElement>;
-        const receiver = await processReceivers(receiverArea, (div) => {
+        const result = await processReceivers(receiverArea, (div) => {
             const emailElement = div.querySelector(".nui-addr-email");
             if (!emailElement) {
                 return null;
             }
             return extractEmail(div.textContent ?? "");
         });
-
+        if (!result) {
+            showTipsDialog("Tips", browser.i18n.getMessage("encrypt_mail_receiver"));
+            return;
+        }
+        const {receiver, mailReceiver} = result;
         const aekId = composeDiv.dataset.attachmentKeyId ?? "";
-        const success = await encryptMailInComposing(mailBody, receiver, aekId);
+        const success = await encryptMailInComposing(mailBody, receiver, aekId, mailReceiver);
         if (!success) {
             return;
         }
@@ -374,9 +378,14 @@ function addEncryptBtnForQuickReply(mailArea: HTMLElement, template: HTMLTemplat
         const cryptoBtnDiv = parseCryptoMailBtn(template, 'file/logo_48.png', ".bmail-crypto-btn",
             title, 'bmail_crypto_btn_in_compose_netEase', async _ => {
                 const emailDiv = mailArea.querySelectorAll('.nui-addr-email') as NodeListOf<HTMLElement>;
-                const receiver = await processReceivers(emailDiv, (div) => {
+                const result = await processReceivers(emailDiv, (div) => {
                     return extractEmail(div?.textContent ?? "")
                 });
+                if (!result) {
+                    showTipsDialog("Tips", browser.i18n.getMessage("encrypt_mail_receiver"));
+                    return;
+                }
+                const {receiver, mailReceiver} = result;
                 const success = await encryptDataAndSendForQuickReplyNetEase(mailBody, receiver, sendDiv);
                 if (success) {
                     cryptoBtnDiv.parentNode?.removeChild(cryptoBtnDiv);
