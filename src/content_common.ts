@@ -718,7 +718,7 @@ async function loadAdminAddress(): Promise<string> {
     return __currentAdminAddress;
 }
 
-const __appendedDownloadTips = `<br><div style="margin: auto;font-size: 24px;font-weight: 600; text-align: center; padding: 16px; border: 2px solid #eff0f1; background-color: #F3F6F7;"><a href="{0}" style=" color: #F28552;">{1}</a ></div><br>`
+const __appendedDownloadTips = `<br><div style="margin: auto; width: 32%; font-size: 18px; font-weight: 600; text-align: center; padding: 12px; border: 2px solid #eff0f1; background-color: #F28552;"><a href="{0}" style=" color: #ffffff;">{1}</a ></div><br>`
 
 function loadDownloadTips(): string {
     return sprintf(__appendedDownloadTips, ExtensionDownloadLink, browser.i18n.getMessage("download_tips"));
