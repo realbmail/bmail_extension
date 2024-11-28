@@ -195,6 +195,8 @@ async function addCryptButtonToComposeDivOutLook(template: HTMLTemplateElement) 
         return;
     }
 
+    removeBmailDownloadLink(composeArea);
+
     monitorReceiverChanges(composeArea);
     prepareAttachmentForCompose(composeArea, template);
 
