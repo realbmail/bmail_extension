@@ -430,5 +430,8 @@
   },
   "user_bind_success": {
     "message": "바인딩 성공"
+  },
+  "user_consent_tips": {
+    "message": "사용자 공지를 먼저 확인하세요."
   }
 }

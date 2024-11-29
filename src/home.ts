@@ -54,6 +54,28 @@ function initWelcomeDiv(): void {
     });
 
     importButton.addEventListener('click', importWallet);
+
+    const tooltipMessage = browser.i18n.getMessage("user_consent_tips");
+    const tooltip = document.getElementById('create-account-tooltip') as HTMLDivElement;
+    createButton.addEventListener('mouseenter', (event: MouseEvent) => {
+        if (createButton.disabled) {
+            tooltip.textContent = tooltipMessage;
+            tooltip.style.display = 'block';
+            tooltip.style.left = `${event.pageX + 10}px`;
+            tooltip.style.top = `${event.pageY + 10}px`;
+        }
+    });
+
+    createButton.addEventListener('mousemove', (event: MouseEvent) => {
+        if (createButton.disabled && tooltip.style.display === 'block') {
+            tooltip.style.left = `${event.pageX + 10}px`;
+            tooltip.style.top = `${event.pageY + 10}px`;
+        }
+    });
+
+    createButton.addEventListener('mouseleave', () => {
+        tooltip.style.display = 'none';
+    });
 }
 
 function initPasswordDiv(): void {

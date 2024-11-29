@@ -430,5 +430,8 @@
   },
   "user_bind_success": {
     "message": "Vinculación exitosa"
+  },
+  "user_consent_tips": {
+    "message": "Por favor, marque primero el aviso para el usuario."
   }
 }

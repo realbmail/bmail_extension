@@ -4,7 +4,7 @@
     "description": "The title of the extension page"
   },
   "home_user_content": {
-    "message": "User Consent",
+    "message": "User Notice",
     "description": ""
   },
   "home_wallet_create": {
@@ -442,5 +442,8 @@
   },
   "user_bind_success": {
     "message": "Bind Success"
+  },
+  "user_consent_tips": {
+    "message": "Please check the user notice first."
   }
 }

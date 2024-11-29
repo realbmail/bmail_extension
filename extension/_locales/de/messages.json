@@ -430,5 +430,8 @@
   },
   "user_bind_success": {
     "message": "Bindung erfolgreich"
+  },
+  "user_consent_tips": {
+    "message": "Bitte bestätigen Sie zuerst die Benutzerhinweise."
   }
 }

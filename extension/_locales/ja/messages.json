@@ -430,5 +430,8 @@
   },
   "user_bind_success": {
     "message": "バインド成功"
+  },
+  "user_consent_tips": {
+    "message": "まずユーザー通知を確認してください。"
   }
 }
