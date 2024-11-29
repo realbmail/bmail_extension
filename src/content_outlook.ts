@@ -50,7 +50,7 @@ function appendForOutLook(template: HTMLTemplateElement) {
 
     observeForElement(document.body, 800,
         () => {
-            return document.querySelector(".DPg26 .xKrjQ");
+            return document.querySelector(".qQbyL .xKrjQ");
         }, async () => {
             appendBmailInboxMenuOutLook(template).then();
             monitorContactAction().then();
@@ -113,7 +113,7 @@ async function monitorContactAction() {
 }
 
 async function appendBmailInboxMenuOutLook(template: HTMLTemplateElement) {
-    const leftMenuDiv = document.querySelector(".DPg26 .xKrjQ") as HTMLElement;
+    const leftMenuDiv = document.querySelector(".qQbyL .xKrjQ") as HTMLElement;
     let clone = parseBmailInboxBtn(template, "bmail_left_menu_btn_outlook") as HTMLElement;
     if (leftMenuDiv.children.length >= 2) {
         leftMenuDiv.insertBefore(clone, leftMenuDiv.children[1]);
