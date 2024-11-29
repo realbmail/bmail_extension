@@ -84,7 +84,7 @@ function cacheContactContent(contactDiv: HTMLElement) {
 
         const emailName = contactItem.querySelector('.MwdHX') as HTMLElement
         const emailAddress = contactItem.querySelector('.Umn8G.MwdHX') as HTMLElement;
-        // console.log('-------->>>name:', emailName, "------>>> address:", emailAddress);
+        console.log('-------->>>name:', emailName, "------>>> address:", emailAddress);
         if (!emailName || !emailAddress) {
             console.log("------>>> need query later");
             setTimeout(() => {
