@@ -369,6 +369,11 @@ function addEncryptBtnForQuickReply(mailArea: HTMLElement, template: HTMLTemplat
     }
     const title = browser.i18n.getMessage('crypto_and_send');
     const mailBody = mailArea.querySelector('textarea[id$="_replyInput_inputId"]') as HTMLTextAreaElement;
+    if (mailBody.dataset.hasAddListener === 'true') {
+        return;
+    }
+
+    mailBody.dataset.hasAddListener = 'true';
     mailBody?.addEventListener('click', () => {
         let cryptoBtn = toolBarDiv.querySelector('.bmail-crypto-btn') as HTMLElement;
         if (cryptoBtn) {
@@ -387,7 +392,7 @@ function addEncryptBtnForQuickReply(mailArea: HTMLElement, template: HTMLTemplat
                     showTipsDialog("Tips", browser.i18n.getMessage("encrypt_mail_receiver"));
                     return;
                 }
-                const {receiver, mailReceiver} = result;
+                const {receiver} = result;
                 const success = await encryptDataAndSendForQuickReplyNetEase(mailBody, receiver, sendDiv);
                 if (success) {
                     cryptoBtnDiv.parentNode?.removeChild(cryptoBtnDiv);
