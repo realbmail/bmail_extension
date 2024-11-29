@@ -160,5 +160,8 @@
   },
   "user_bind_success": {
     "message": "اتصال موفقیت‌آمیز بود"
+  },
+  "user_consent_tips": {
+    "message": "لطفاً ابتدا اعلان کاربر را انتخاب کنید."
   }
 }

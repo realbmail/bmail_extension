@@ -160,5 +160,8 @@
   },
   "user_bind_success": {
     "message": "تم الربط بنجاح"
+  },
+  "user_consent_tips": {
+    "message": "يرجى التحقق من إشعار المستخدم أولاً."
   }
 }

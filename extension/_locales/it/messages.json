@@ -430,5 +430,8 @@
   },
   "user_bind_success": {
     "message": "Associazione riuscita"
+  },
+  "user_consent_tips": {
+    "message": "Si prega di leggere e accettare prima l'avviso per gli utenti."
   }
 }

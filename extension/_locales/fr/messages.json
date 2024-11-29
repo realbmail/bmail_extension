@@ -430,5 +430,8 @@
   },
   "user_bind_success": {
     "message": "Liaison réussie"
+  },
+  "user_consent_tips": {
+    "message": "Veuillez d'abord accepter les informations destinées aux utilisateurs."
   }
 }

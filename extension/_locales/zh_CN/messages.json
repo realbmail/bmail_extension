@@ -424,5 +424,8 @@
   },
   "user_bind_success": {
     "message": "绑定成功"
+  },
+  "user_consent_tips": {
+    "message": "请先选中用户须知"
   }
 }
