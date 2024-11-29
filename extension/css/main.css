@@ -688,3 +688,14 @@ input#contact-server-val:focus {
     background-color: rgba(4, 6, 46, 0.1);
     border-radius: 999px;
 }
+
+.contact-server-address-part{
+    padding: 12px;
+    background-color: #F3F6F7;
+    border-radius: 5px;
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%); /* 向左偏移自身宽度的 50%，居中对齐 */
+    color: #585e6d;
+}
