@@ -188,7 +188,6 @@ async function addCryptButtonToComposeDivOutLook(template: HTMLTemplateElement) 
         return;
     }
 
-    //vBoqL iLc1q cc0pa cF0pa tblbU zHv4R dP5Z2
     const toolBarDiv = composeArea.querySelector('div[data-testid="ComposeSendButton"]')?.parentNode as HTMLElement
     if (!toolBarDiv) {
         console.log("------>>> tool bar not found when compose mail");
@@ -214,6 +213,40 @@ async function addCryptButtonToComposeDivOutLook(template: HTMLTemplateElement) 
         }
     ) as HTMLElement;
     toolBarDiv.insertBefore(cryptoBtnDiv, toolBarDiv.children[1] as HTMLElement);
+
+
+    const receiverArea = composeArea.querySelector(".UVFSO.GCol2")
+    if (receiverArea) {
+        receiverArea.addEventListener('click', async e => {
+            console.log("----->>> receiverArea clicked", e.target);
+            setTimeout(() => {
+                const clickableReceiverDivs = receiverArea!.querySelectorAll('span[class^="textContainer-"], span[class^="individualText-"]') as NodeListOf<HTMLElement>;
+                cacheReceiverInfoOfReplier(clickableReceiverDivs);
+            }, 300)
+        })
+    }
+
+    const receiverInReply = composeArea.querySelector(".FO1cd.vJikE") as HTMLElement;
+    if (receiverInReply) {
+        const clickableReceiverDivs = receiverInReply.querySelectorAll('span[class^="textContainer-"], span[class^="individualText-"]') as NodeListOf<HTMLElement>;
+        cacheReceiverInfoOfReplier(clickableReceiverDivs);
+    }
+}
+
+function cacheReceiverInfoOfReplier(divs: NodeListOf<HTMLElement>) {
+    divs.forEach(div => {
+        const nickAndMail = div.innerText.trim();
+        const words = nickAndMail.split(/\s+/);
+        if (words.length !== 2) {
+            return;
+        }
+        const email = extractEmail(words[1]);
+        if (!email) {
+            return;
+        }
+        console.log("----->>>name:", words[0], " email=>", email)
+        __nameToEmailMap.set(words[0], email);
+    })
 }
 
 const __bmailComposeDivId = "bmail-mail-body-for-outlook";
