@@ -30,7 +30,7 @@ import {
 } from "./utils";
 import {MailFlag} from "./bmail_body";
 import {addAttachmentEncryptBtn, decryptFile, loadAKForReading} from "./content_attachment";
-import {AttachmentFileSuffix, ExtensionDownloadLink, MsgType} from "./consts";
+import {AttachmentFileSuffix, MsgType} from "./consts";
 
 function queryEmailAddrOutLook() {
     const element = document.getElementById("O365_AppName") as HTMLLinkElement | null;
