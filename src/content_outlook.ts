@@ -18,7 +18,7 @@ import {
     AttachmentKeyID,
     setKeepAlive,
     EncryptedMailDivSearch,
-    removeBmailDownloadLink
+    removeBmailDownloadLink, observeForElementDirect
 } from "./content_common";
 import browser from "webextension-polyfill";
 import {
@@ -213,18 +213,12 @@ async function addCryptButtonToComposeDivOutLook(template: HTMLTemplateElement) 
         }
     ) as HTMLElement;
     toolBarDiv.insertBefore(cryptoBtnDiv, toolBarDiv.children[1] as HTMLElement);
-
-
-    const receiverArea = composeArea.querySelector(".UVFSO.GCol2")
-    if (receiverArea) {
-        receiverArea.addEventListener('click', async e => {
-            console.log("----->>> receiverArea clicked", e.target);
-            setTimeout(() => {
-                const clickableReceiverDivs = receiverArea!.querySelectorAll('span[class^="textContainer-"], span[class^="individualText-"]') as NodeListOf<HTMLElement>;
-                cacheReceiverInfoOfReplier(clickableReceiverDivs);
-            }, 300)
-        })
-    }
+    observeForElementDirect(composeArea, 300, () => {
+        return composeArea.querySelector(".QFieH.zWl2D.J8sYv") as HTMLElement;
+    }, async () => {
+        const clickableReceiverDivs = composeArea.querySelectorAll('span[class^="textContainer-"], span[class^="individualText-"]') as NodeListOf<HTMLElement>;
+        cacheReceiverInfoOfReplier(clickableReceiverDivs);
+    });
 
     const receiverInReply = composeArea.querySelector(".FO1cd.vJikE") as HTMLElement;
     if (receiverInReply) {
@@ -236,16 +230,21 @@ async function addCryptButtonToComposeDivOutLook(template: HTMLTemplateElement) 
 function cacheReceiverInfoOfReplier(divs: NodeListOf<HTMLElement>) {
     divs.forEach(div => {
         const nickAndMail = div.innerText.trim();
-        const words = nickAndMail.split(/\s+/);
-        if (words.length !== 2) {
+        const words = nickAndMail.match(/(.*?)\s*<(.+?)>/);
+        if (!words) {
+            console.log("----->>> failed to parse email address and nick name from reply compose");
             return;
         }
-        const email = extractEmail(words[1]);
+
+        if (words.length !== 3) {
+            return;
+        }
+        const email = extractEmail(words[2]);
         if (!email) {
             return;
         }
-        console.log("----->>>name:", words[0], " email=>", email)
-        __nameToEmailMap.set(words[0], email);
+        console.log("----->>>name:", words[1], " email=>", email)
+        __nameToEmailMap.set(words[1], email);
     })
 }
 
@@ -275,7 +274,6 @@ async function encryptMailAndSendOutLook(composeArea: HTMLElement, sendDiv: HTML
         });
 
         if (!result) {
-            showTipsDialog("Tips", browser.i18n.getMessage("encrypt_mail_receiver"));
             return;
         }
         const {receiver, mailReceiver} = result;
