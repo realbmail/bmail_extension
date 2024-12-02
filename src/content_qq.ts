@@ -734,6 +734,7 @@ async function prepareMailContentOldVersion(frameDoc: Document): Promise<HTMLEle
     if (!bmailContentDiv.classList.contains(__bmailComposeDivId)) {
         bmailContentDiv = document.createElement("div");
         bmailContentDiv.classList.add(__bmailComposeDivId);
+        bmailContentDiv.style.backgroundColor = "rgba(242, 133, 82, 0.3)";
         bmailContentDiv.appendChild(frameDoc.body.firstChild as HTMLElement);
         frameDoc.body.insertBefore(bmailContentDiv, frameDoc.body.firstChild);
         if (bmailContentDiv.innerText.includes(MailFlag)) {
