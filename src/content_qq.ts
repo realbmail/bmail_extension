@@ -747,12 +747,17 @@ async function prepareMailContentOldVersion(frameDoc: Document): Promise<HTMLEle
         }
     }
 
-    const replyOrQuoteDiv = frameDoc.querySelector("includetail") as HTMLElement | null;
-    if (replyOrQuoteDiv) {
-        if (replyOrQuoteDiv.children.length > 3) {
-            bmailContentDiv.appendChild(replyOrQuoteDiv.children[0]);
-            bmailContentDiv.appendChild(replyOrQuoteDiv.children[0]);
+    const quoteDiv = frameDoc.body.querySelector("includetail") as HTMLElement
+    if (quoteDiv) {
+        if (quoteDiv.children.length > 3) {
+            bmailContentDiv.appendChild(quoteDiv.children[0]);
+            bmailContentDiv.appendChild(quoteDiv.children[0]);
         }
+    }
+    const replyDiv = frameDoc.getElementById("mailcontent_image_operator");
+    if (replyDiv){
+        bmailContentDiv.appendChild(bmailContentDiv.nextSibling as HTMLElement);
+        bmailContentDiv.appendChild(bmailContentDiv.nextSibling as HTMLElement);
     }
 
     return bmailContentDiv;
