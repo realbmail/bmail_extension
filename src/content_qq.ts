@@ -664,10 +664,7 @@ async function addCryptoBtnToComposeDivQQOldVersion(template: HTMLTemplateElemen
 
     const cryptoBtnDiv = parseCryptoMailBtn(template, 'file/logo_48.png', ".bmail-crypto-btn",
         title, 'bmail_crypto_btn_in_compose_qq_old', async _ => {
-            if (mailContentDivRef.current.classList.contains(__bmailComposeDivId)) {
-                mailContentDivRef.current.style.backgroundColor = "";
-                mailContentDivRef.current.style.border = "";
-            }
+
             await encryptMailAndSendQQOldVersion(mailContentDivRef.current, receiverTable, sendDiv);
         }
     ) as HTMLElement;
@@ -809,6 +806,10 @@ async function encryptMailAndSendQQOldVersion(mailBody: HTMLElement, receiverTab
         const success = await encryptMailInComposing(mailBody, receiver, aekId, mailReceiver);
         if (!success) {
             return;
+        }
+        if (mailBody.classList.contains(__bmailComposeDivId)) {
+            mailBody.style.backgroundColor = "";
+            mailBody.style.border = "";
         }
         sendDiv.click();
     } catch (e) {
