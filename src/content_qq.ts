@@ -242,7 +242,6 @@ async function encryptMailAndSendQQ(mailBody: HTMLElement, receiverTable: HTMLEl
             return div.dataset.email ?? "";
         });
         if (!result) {
-            showTipsDialog("Tips", browser.i18n.getMessage("encrypt_mail_receiver"));
             return;
         }
         const {receiver, mailReceiver} = result;
@@ -764,7 +763,6 @@ async function encryptMailAndSendQQOldVersion(mailBody: HTMLElement, receiverTab
             return div.getAttribute('addr')?.trim() as string | null;
         });
         if (!result) {
-            showTipsDialog("Tips", browser.i18n.getMessage("encrypt_mail_receiver"));
             return;
         }
         const {receiver, mailReceiver} = result;
@@ -834,7 +832,6 @@ function addListenerForQuickReplyOldVersion(template: HTMLTemplateElement, doc: 
                     return extractEmail(span.getAttribute('e') ?? "");
                 });
                 if (!result) {
-                    showTipsDialog("Tips", browser.i18n.getMessage("encrypt_mail_receiver"));
                     return;
                 }
                 const {receiver, mailReceiver} = result;

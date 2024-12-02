@@ -260,7 +260,6 @@ async function encryptDataAndSendNetEase(composeDiv: HTMLElement, sendDiv: HTMLE
             return extractEmail(div.textContent ?? "");
         });
         if (!result) {
-            showTipsDialog("Tips", browser.i18n.getMessage("encrypt_mail_receiver"));
             return;
         }
         const {receiver, mailReceiver} = result;
@@ -389,7 +388,6 @@ function addEncryptBtnForQuickReply(mailArea: HTMLElement, template: HTMLTemplat
                     return extractEmail(div?.textContent ?? "")
                 });
                 if (!result) {
-                    showTipsDialog("Tips", browser.i18n.getMessage("encrypt_mail_receiver"));
                     return;
                 }
                 const {receiver} = result;

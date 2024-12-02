@@ -198,7 +198,6 @@ async function encryptMailAndSendGoogle(mailBody: HTMLElement, titleForm: HTMLEl
             return div.getAttribute('data-hovercard-id') as string | null;
         });
         if (!result) {
-            showTipsDialog("Tips", browser.i18n.getMessage("encrypt_mail_receiver"));
             return;
         }
 
