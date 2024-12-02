@@ -656,19 +656,44 @@ async function addCryptoBtnToComposeDivQQOldVersion(template: HTMLTemplateElemen
     const receiverTable = iframeDocument!.getElementById('addrsDiv') as HTMLElement;
 
     const mailContentDiv = await prepareMailContentOldVersion(composeDocument);
+    mailContentDiv.style.backgroundColor = __composeBackgroundColor;
+    mailContentDiv.style.border = __composeBorderColor;
+
+    const mailContentDivRef = {current: mailContentDiv};
+    observeBodyDeletionOldVersion(composeDocument.body, mailContentDivRef);
 
     const cryptoBtnDiv = parseCryptoMailBtn(template, 'file/logo_48.png', ".bmail-crypto-btn",
         title, 'bmail_crypto_btn_in_compose_qq_old', async _ => {
-            if (mailContentDiv.classList.contains(__bmailComposeDivId)) {
-                mailContentDiv.style.backgroundColor = "";
-                mailContentDiv.style.border = "";
+            if (mailContentDivRef.current.classList.contains(__bmailComposeDivId)) {
+                mailContentDivRef.current.style.backgroundColor = "";
+                mailContentDivRef.current.style.border = "";
             }
-            await encryptMailAndSendQQOldVersion(mailContentDiv, receiverTable, sendDiv);
+            await encryptMailAndSendQQOldVersion(mailContentDivRef.current, receiverTable, sendDiv);
         }
     ) as HTMLElement;
 
     toolBarDiv.insertBefore(cryptoBtnDiv, toolBarDiv.children[2]);
-    mailContentDiv.dataset.attachmentKeyId = prepareAttachmentForComposeOldVersion(iframeDocument as Document, template);
+    mailContentDivRef.current.dataset.attachmentKeyId = prepareAttachmentForComposeOldVersion(iframeDocument as Document, template);
+}
+
+function observeBodyDeletionOldVersion(body: HTMLElement, mailContentDivRef: { current: HTMLElement }) {
+    observeForElementDirect(body, 20, () => {
+        if (body.childNodes.length === 0) {
+            return body;
+        }
+        console.log("----->>> observeBodyDeletion:", body.childNodes, body.childNodes.length);
+        return null;
+    }, async () => {
+        console.log("------>>> body is empty");
+        const newDiv = document.createElement("div");
+        newDiv.classList.add(__bmailComposeDivId);
+        newDiv.style.backgroundColor = __composeBackgroundColor;
+        newDiv.style.border = __composeBorderColor;
+        newDiv.innerHTML = "<br><br><br>";
+        body.appendChild(newDiv);
+
+        mailContentDivRef.current = newDiv;
+    }, true);
 }
 
 function findAttachmentKeyIDOldVersion(): Set<string> {
@@ -722,6 +747,8 @@ function prepareAttachmentForComposeOldVersion(frameDoc: Document, template: HTM
 }
 
 const __bmailComposeDivId = "bmail-mail-body-for-qq";
+const __composeBackgroundColor = "rgba(242, 133, 82, 0.3)"
+const __composeBorderColor = "2px dashed rgba(242, 133, 82, 0.3)"
 
 async function prepareMailContentOldVersion(frameDoc: Document): Promise<HTMLElement> {
     removeBmailDownloadLink(frameDoc.body);
@@ -738,8 +765,6 @@ async function prepareMailContentOldVersion(frameDoc: Document): Promise<HTMLEle
     if (!bmailContentDiv.classList.contains(__bmailComposeDivId)) {
         bmailContentDiv = document.createElement("div");
         bmailContentDiv.classList.add(__bmailComposeDivId);
-        bmailContentDiv.style.backgroundColor = "rgba(242, 133, 82, 0.3)";
-        bmailContentDiv.style.border = "2px dashed rgba(242, 133, 82, 0.3)";
         bmailContentDiv.appendChild(frameDoc.body.firstChild as HTMLElement);
         frameDoc.body.insertBefore(bmailContentDiv, frameDoc.body.firstChild);
         if (bmailContentDiv.innerText.includes(MailFlag)) {
@@ -761,7 +786,7 @@ async function prepareMailContentOldVersion(frameDoc: Document): Promise<HTMLEle
         }
     }
     const replyDiv = frameDoc.getElementById("mailcontent_image_operator");
-    if (replyDiv){
+    if (replyDiv) {
         bmailContentDiv.appendChild(bmailContentDiv.nextSibling as HTMLElement);
         bmailContentDiv.appendChild(bmailContentDiv.nextSibling as HTMLElement);
     }
