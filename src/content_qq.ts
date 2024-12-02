@@ -736,6 +736,9 @@ async function prepareMailContentOldVersion(frameDoc: Document): Promise<HTMLEle
         bmailContentDiv.classList.add(__bmailComposeDivId);
         bmailContentDiv.appendChild(frameDoc.body.firstChild as HTMLElement);
         frameDoc.body.insertBefore(bmailContentDiv, frameDoc.body.firstChild);
+        if (bmailContentDiv.innerText.includes(MailFlag)) {
+            await decryptMailForEditionOfSentMail(bmailContentDiv, true);
+        }
     } else {
         const encryptedArea = bmailContentDiv.querySelector(`.${__bmail_mail_body_class_name}`) as HTMLElement | null;
         const hasEncryptedRawData = encryptedArea?.innerText.includes(MailFlag);
