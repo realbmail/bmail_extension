@@ -659,6 +659,10 @@ async function addCryptoBtnToComposeDivQQOldVersion(template: HTMLTemplateElemen
 
     const cryptoBtnDiv = parseCryptoMailBtn(template, 'file/logo_48.png', ".bmail-crypto-btn",
         title, 'bmail_crypto_btn_in_compose_qq_old', async _ => {
+            if (mailContentDiv.classList.contains(__bmailComposeDivId)) {
+                mailContentDiv.style.backgroundColor = "";
+                mailContentDiv.style.border = "";
+            }
             await encryptMailAndSendQQOldVersion(mailContentDiv, receiverTable, sendDiv);
         }
     ) as HTMLElement;
@@ -735,6 +739,7 @@ async function prepareMailContentOldVersion(frameDoc: Document): Promise<HTMLEle
         bmailContentDiv = document.createElement("div");
         bmailContentDiv.classList.add(__bmailComposeDivId);
         bmailContentDiv.style.backgroundColor = "rgba(242, 133, 82, 0.3)";
+        bmailContentDiv.style.border = "2px dashed rgba(242, 133, 82, 0.3)";
         bmailContentDiv.appendChild(frameDoc.body.firstChild as HTMLElement);
         frameDoc.body.insertBefore(bmailContentDiv, frameDoc.body.firstChild);
         if (bmailContentDiv.innerText.includes(MailFlag)) {
