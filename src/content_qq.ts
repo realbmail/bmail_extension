@@ -673,25 +673,60 @@ async function addCryptoBtnToComposeDivQQOldVersion(template: HTMLTemplateElemen
     mailContentDivRef.current.dataset.attachmentKeyId = prepareAttachmentForComposeOldVersion(iframeDocument as Document, template);
 }
 
+function cleanAndModifyBody(divs: NodeListOf<HTMLElement>): void {
+    const firstDiv = divs[0];
+
+    for (let i = 1; i < divs.length; i++) {
+        const currentDiv = divs[i];
+        const hasOnlyOneBr = currentDiv.children.length === 1 && currentDiv.firstElementChild?.tagName === "BR";
+
+        if (!hasOnlyOneBr) {
+            const br = document.createElement("br");
+            firstDiv.appendChild(br);
+        }
+
+        while (currentDiv.firstChild) {
+            firstDiv.appendChild(currentDiv.firstChild);
+        }
+
+        currentDiv.remove();
+
+        requestAnimationFrame(() => {
+            setTimeout(() => {
+                firstDiv.offsetHeight;
+            }, 0);
+        });
+    }
+
+    console.log("Processed body:", firstDiv.innerHTML);
+}
+
 function observeBodyDeletionOldVersion(body: HTMLElement, mailContentDivRef: { current: HTMLElement }) {
     observeForElementDirect(body, 20, () => {
-        if (body.childNodes.length === 0) {
+        console.log("----->>> observeBodyDeletion:", body.childNodes, body.childNodes.length);
+        const divs = body.querySelectorAll('div.bmail-mail-body-for-qq') as NodeListOf<HTMLElement>;
+        if (divs.length >= 2) {
+            cleanAndModifyBody(divs);
+        }
+        if (divs.length === 0) {
             return body;
         }
-        console.log("----->>> observeBodyDeletion:", body.childNodes, body.childNodes.length);
+
         return null;
     }, async () => {
-        console.log("------>>> body is empty");
-        const newDiv = document.createElement("div");
+        let newDiv = body.firstElementChild as HTMLDivElement;
+        if (!newDiv) {
+            newDiv = document.createElement("div");
+        }
         newDiv.classList.add(__bmailComposeDivId);
         newDiv.style.backgroundColor = __composeBackgroundColor;
         newDiv.style.border = __composeBorderColor;
-        newDiv.innerHTML = "<br><br><br>";
+        newDiv.innerHTML = "<br>";
         body.appendChild(newDiv);
-
         mailContentDivRef.current = newDiv;
     }, true);
 }
+
 
 function findAttachmentKeyIDOldVersion(): Set<string> {
     const mySet = new Set<string>();
