@@ -688,14 +688,8 @@ function cleanAndModifyBody(divs: NodeListOf<HTMLElement>): void {
         while (currentDiv.firstChild) {
             firstDiv.appendChild(currentDiv.firstChild);
         }
-
         currentDiv.remove();
-
-        requestAnimationFrame(() => {
-            setTimeout(() => {
-                firstDiv.offsetHeight;
-            }, 0);
-        });
+        firstDiv.offsetHeight;
     }
 
     console.log("Processed body:", firstDiv.innerHTML);
@@ -1051,30 +1045,7 @@ async function downloadAndDecryptAgain(attachmentData?: any) {
     const encryptedData = new Uint8Array(attachmentData.data);
     const fileName = attachmentData.fileName;
     decryptAttachmentFileData(encryptedData, aesKey, fileName);
-    // console.log("------->>>> data size:=>", attachmentData.length);
 }
-
-// function monitorMsgTip(template: HTMLTemplateElement, mainArea: HTMLElement) {
-//     const mainAppDiv = document.getElementById("mailMainApp") as HTMLElement;
-//     const messageTipDiv = Array.from(mainAppDiv.querySelectorAll(".xm_mailPushTip_containerBox"));
-//
-//     if (!messageTipDiv || messageTipDiv.length === 0) {
-//         const div = document.createElement('div')
-//         div.classList.add('xm_mailPushTip_containerBox');
-//         mainAppDiv.appendChild(div);
-//         console.log("-------->>>add a push message tips box");
-//         messageTipDiv.push(div);
-//     }
-//
-//     messageTipDiv.forEach(message => {
-//         message.addEventListener("click", () => {
-//             setTimeout(() => {
-//                 addCryptoBtnToReadingMailQQ(template, mainArea);
-//             }, 1000)
-//         });
-//     });
-// }
-
 
 (window as any).contentPageProvider = new Provider();
 setKeepAlive();
