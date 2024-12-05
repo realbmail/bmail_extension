@@ -61,6 +61,7 @@ body.loading #dialog-waiting-overlay {
 
 .dialog-confirm-header {
     margin-bottom: 24px;
+    width: 100%;
 }
 
 #dialog-confirm-tips {
