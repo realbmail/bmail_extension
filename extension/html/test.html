@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>品牌主页</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    @media screen and (min-width: 1440px) {
+      .own-your-four-block-wrap {
+        grid-column-gap: 30px;
+        grid-row-gap: 30px;
+      }
+    }
+
+    @media screen and (min-width: 1440px) {
+      .footer, .footer.team, .bmail-pricing-intro {
+        padding-left: 140px;
+        padding-right: 140px;
+      }
+    }
+
+    @media screen and (min-width: 1440px) {
+      .bmail-content-wrap {
+        justify-content: center;
+        align-items: center;
+      }
+    }
+
+    @media screen and (min-width: 1440px) {
+      .bmail-details-block {
+        padding-top: 60px;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .css-491wnk {
+        font-size: 4rem;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      color: #1a1b1f;
+      font-family: Montserrat, sans-serif;
+      font-size: .83vw;
+      font-weight: 400;
+      line-height: 2;
+    }
+
+    a {
+      color: #1a1b1f;
+      transition: opacity .2s;
+      display: block;
+    }
+
+    h2 {
+      font-size: 48px;
+      font-weight: 600;
+    }
+
+    h3 {
+      display: block;
+      font-size: 1.5em;
+      margin-block-start: 1em;
+      margin-block-end: 1em;
+      margin-inline-start: 0px;
+      margin-inline-end: 0px;
+      font-weight: bold;
+      unicode-bidi: isolate;
+    }
+
+    nav {
+      background: #333;
+      color: #fff;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000; /* 确保导航栏位于最上层 */
+      transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    .a-web-heading {
+      color: #04062E;
+      text-align: center;
+      letter-spacing: -1.95px;
+      max-width: 600px;
+      margin: 35px auto 20px;
+      font-family: HelveticaNeueMedium, sans-serif;
+      font-size: 45px;
+      font-weight: 500;
+      line-height: 1.1;
+    }
+
+    /* 初始透明背景 */
+    nav.transparent {
+      background: transparent;
+      color: #fff;
+    }
+
+    nav.transparent a {
+      color: #fff;
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    /* 滚动后背景变为白色和深色文字 */
+    nav.scrolled {
+      background: #fff;
+      color: #04062E;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    nav.scrolled a {
+      color: #04062E;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+    }
+
+    nav ul li {
+      margin-left: 6rem;
+    }
+
+    nav ul li a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    nav ul li a:hover {
+      color: #F28552;
+    }
+
+    .logo img {
+      width: 48px;
+      height: auto;
+    }
+    .hero-section {
+      background-color: #04062E;
+    }
+
+    .banner {
+      grid-column-gap: 86px;
+      grid-row-gap: 86px;
+      justify-content: center;
+      align-items: center;
+      max-width: 1220px;
+      display: flex;
+      margin: auto;
+    }
+
+    .bmail-banner-image {
+      width: 100%;
+      height: 600px;
+    }
+    .section {
+      padding: 3rem 2rem;
+      text-align: left;
+      background-color: #F4F6F7;
+    }
+
+    .section3, .section4, .section5 {
+      background-color: white;
+    }
+
+    .banner-heading-title{
+      color: white !important;
+      font-size: 45px;
+      line-height: 54px;
+    }
+
+    .bmail-content-wrap {
+      grid-column-gap: 86px;
+      grid-row-gap: 86px;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      display: flex;
+      margin-bottom: 43px;
+    }
+
+    .bmail-details-block {
+      width: 100%;
+      max-width: 457px;
+      padding-top: 60px;
+    }
+
+    .bmail-single-image {
+      object-fit: contain;
+      object-position: 50% 0%;
+      width: 100%;
+      height: 600px;
+    }
+
+    .bmail-button {
+      color: #04062E;
+      background-color: #f28552;
+      border-radius: 999px;
+      background-image: url(https://chromewebstore.google.com/detail/bmail/kjlhomfbkgfkkfdpcolkecfanmipiiic);
+      background-position: 0 0;
+      background-size: auto;
+      padding: 18px 40px;
+      position: static;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.4;
+      transition-property: all;
+      text-decoration: none;
+      display: inline-block;
+      transition-duration: .3s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .bmail-button:hover{
+      background-color: rgba(242, 133, 82, 0.8);
+    }
+
+    .bmail-heading-three {
+      color: #04062E;
+      letter-spacing: -1.14px;
+      margin-top: 0;
+      margin-bottom: 0;
+      font-family: HelveticaNeueMedium, sans-serif;
+      font-size: 38px;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    .bmail-paragraph {
+      color: #04062E;
+      letter-spacing: -.4px;
+      margin-top: 25px;
+      margin-bottom: 50px;
+      font-size: 20px;
+      font-weight: 300;
+      line-height: 34px;
+    }
+
+    .brand-logos {
+      display: flex;
+      justify-content: center;
+      gap: 80px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .brand-logos img {
+      width: 270px;
+      height: auto;
+      padding: 24px;
+    }
+
+    .own-your-four-block-wrap {
+      grid-column-gap: 16px;
+      grid-row-gap: 16px;
+      grid-template-rows: auto;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      grid-auto-columns: 1fr;
+      justify-content: space-between;
+      max-width: 1550px;
+      margin-left: auto;
+      margin-right: auto;
+      display: grid;
+    }
+
+    .own-your-four-single-wrap {
+      -webkit-backdrop-filter: blur(22.5px);
+      backdrop-filter: blur(22.5px);
+      background-image: linear-gradient(#ffffff0d, #fff0);
+      border: 2px solid rgba(4, 6, 46, 0.1);
+      border-radius: 24px;
+      padding: 46px 16px 35px;
+    }
+
+    .get-paid-heading {
+      color: #04062E;
+      letter-spacing: -.84px;
+      margin-top: 60px;
+      margin-bottom: 20px;
+      font-family: HelveticaNeueMedium, sans-serif;
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 1.3;
+      text-align: left;
+    }
+
+    .feature-paragraph {
+      color: #04062E;
+      letter-spacing: -.4px;
+      margin-top: 0;
+      margin-bottom: 0;
+      font-size: 18px;
+      font-weight: 300;
+      line-height: 30px;
+      text-align: left;
+    }
+
+    .get-paid-image {
+      width: 65px;
+      height: 65px;
+    }
+
+    .footer{
+      background-color: rgba(244, 246, 247, 0.5);
+    }
+    .top-footer-block-wrap {
+      grid-column-gap: 36px;
+      grid-row-gap: 36px;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      display: flex;
+      padding: 35px 0;
+      border-bottom: 2px solid #eff0f1;
+    }
+
+    .middle-footer-block {
+      padding-top: 35px;
+      padding-bottom: 35px;
+    }
+
+    .footer-wrapper-two {
+      grid-column-gap: 40px;
+      grid-row-gap: 40px;
+      justify-content: space-between;
+      align-items: flex-start;
+      width: 100%;
+      display: flex;
+    }
+
+    .div-block {
+      max-width: 400px;
+    }
+
+    .paragraph-foot {
+      color: #04062E;
+      letter-spacing: -.8px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      font-size: 16px;
+      line-height: 26px;
+    }
+
+    .div-block-2 {
+      grid-column-gap: 15px;
+      grid-row-gap: 15px;
+      justify-content: flex-start;
+      align-items: center;
+      display: flex;
+    }
+
+    .w-inline-block {
+      max-width: 100%;
+      display: inline-block;
+    }
+
+    .image-2 {
+      width: 36px;
+      transition: all .3s;
+    }
+
+    .footer-title {
+      color: #04062E;
+      letter-spacing: 2.4px;
+      text-transform: uppercase;
+      margin-bottom: 25px;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+    }
+
+    .footer-link-two {
+      color: #04062E;
+      letter-spacing: -.32px;
+      font-size: 16px;
+      line-height: 40px;
+      text-decoration: none;
+      transition-property: all;
+      transition-duration: .3s;
+    }
+
+    .footer-link-two:hover{
+      color: #04062E;
+      text-decoration: underline;
+    }
+
+    .bmail-pricing-heading {
+      color: white;
+    }
+    /* 容器样式 */
+    .tab-switch {
+      display: flex;
+      position: relative;
+      background-color: #f28552; /* 背景色 */
+      border-radius: 27px; /* 圆角效果，高度的一半 */
+      padding: 2px; /* 内边距 */
+      width: 240px; /* 宽度 */
+      height: 54px; /* 高度 */
+      justify-content: space-between;
+      align-items: center;
+      overflow: hidden; /* 确保滑块不会超出容器 */
+    }
+
+    /* 按钮样式 */
+    .tab-button {
+      flex: 1; /* 按钮平分容器 */
+      position: relative;
+      z-index: 2; /* 确保按钮在滑块上方 */
+      border: none;
+      background: transparent;
+      color: white;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+      line-height: 50px; /* 使字体在滑块内垂直居中 */
+      transition: color 0.3s ease;
+    }
+
+    /* 激活状态按钮文字颜色 */
+    .tab-button.active {
+      color: #f28552; /* 激活按钮的字体颜色 */
+    }
+
+    /* 滑块样式 */
+    .tab-slider {
+      position: absolute;
+      left: 2px;
+      width: calc(50% - 4px); /* 滑块宽度为容器的一半减去内边距 */
+      height: calc(100% - 4px); /* 滑块高度减去内边距 */
+      background-color: white; /* 滑块颜色 */
+      border-radius: 25px; /* 圆角效果 */
+      transition: transform 0.3s ease; /* 平滑过渡效果 */
+      z-index: 1; /* 滑块在按钮下方 */
+    }
+
+    .css-list-heading {
+      font-size: 1.25rem;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+
+    ul {
+      list-style: none; /* 移除默认小点样式 */
+      padding: 0;
+      margin: 0;
+    }
+
+    ul .pricing-per-text {
+      position: relative;
+      padding-left: 1rem; /* 为对号留出空间 */
+      color: #04062E;
+      letter-spacing: -.4px;
+      margin-top: 0;
+      margin-bottom: 0;
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 32px;
+      text-align: left;
+    }
+
+    .bmail-pricing-all {
+      margin: auto;
+      background-color: #04062E;
+      padding: 72px;
+      max-width: 1550px;
+      border-radius: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .bmail-pricing-intro {
+      display: grid;
+      grid-column-gap: 32px;
+      grid-row-gap: 32px;
+      grid-template-rows: auto;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-auto-columns: 1fr;
+      justify-content: space-between;
+      padding: 4px;
+    }
+
+    .pricing-per-back {
+      background-color: white;
+      border-radius: 24px;
+      padding: 42px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    /* 鼠标悬停时 a 元素添加投影 */
+    a.pricing-per-back:hover {
+      box-shadow: 0 32px 66px rgba(242, 133, 82, 0.6);
+    }
+
+    /* 为 button 设置基础样式 */
+    a.pricing-per-back button {
+      background-color: #F28552; /* 默认背景色 */
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 24px;
+      font-size: 16px;
+      line-height: 30px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .pricing-span {
+      font-size: 14px;
+      line-height: 20px;
+      color: #98989A;
+      margin: 24px 0;
+      text-align: center;
+    }
+
+    /* 鼠标悬停在 a 元素时，button 背景色变化 */
+    a.pricing-per-back:hover button {
+      background-color: #04062E; /* 悬停时的背景色，可以根据需求自定义 */
+    }
+
+    .css-xlsc1k {
+      position: absolute;
+      left: -0.75rem;
+      top: 0;
+      font-family: bwi-font;
+      --tw-text-opacity: 1;
+      color: rgb(23 93 220 / var(--tw-text-opacity));
+    }
+
+    .css-491wnk{
+      font-size: 4rem;
+      margin: 0;
+      line-height: 4rem;
+      font-weight: 500;
+      color: #F28552;
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- 导航栏 -->
+<nav class="transparent" id="navbar">
+  <div class="logo">
+    <a href="#"><img src="../file/logo_48.png" alt="品牌LOGO"></a>
+  </div>
+  <ul>
+    <li><a href="#intro">intro</a></li>
+    <li><a href="#download">download</a></li>
+    <li><a href="#pricing">pricing</a></li>
+    <li><a href="#partners">Email</a></li>
+  </ul>
+</nav>
+
+<!-- Banner -->
+<section class="hero-section">
+  <div class="banner">
+    <div class="bmail-banner-left">
+      <img src="https://cdn.prod.website-files.com/65b21eba16cd83b427cde23e/65b38da8001c4a9a8cc48adb_Group%201000008335.svg" loading="lazy" width="811" alt="" class="bmail-banner-image">
+    </div>
+    <div class="banner-heading">
+      <h1 class="banner-heading-title">The most trusted password manager!</h1>
+      <p class="bmail-paragraph" style="color: white">Bitwarden is the best password manager for securely storing, managing, and sharing sensitive online data such as passwords, passkeys, and credit cards.</p>
+      <button class="bmail-button">Download Bmail</button>
+    </div>
+  </div>
+</section>
+
+<!-- 介绍部分 -->
+<section class="section" id="intro">
+  <div class="w-layout-blockcontainer container-two w-container">
+    <div class="the-most-block-wrap">
+      <h2 class="a-web-heading the-most-heading">The wallet that makes crypto simple.</h2>
+      <div class="bmail-content-block-wrap">
+        <div class="bmail-content-wrap">
+          <div class="bmail-image-block">
+            <img src="https://cdn.prod.website-files.com/65b21eba16cd83b427cde23e/65b38da8001c4a9a8cc48adb_Group%201000008335.svg" loading="lazy" width="811" alt="" class="bmail-single-image">
+          </div>
+          <div class="bmail-details-block">
+            <h3 class="bmail-heading-three desktop">Turn your data into dollars.</h3>
+            <p class="bmail-paragraph">Your data is valuable &amp; you’ve been giving it away for free for too long. Why not take control &amp; get paid for it?<br>
+              <br>With Cirus, downloading is your first step to unlocking the value of your data and entering crypto.&nbsp;</p>
+            <a href="#" class="button-3 bmail-button no-bg w-button">
+              <strong>Download Bmail</strong>
+            </a>
+          </div>
+        </div>
+        <div class="bmail-content-wrap">
+          <div class="bmail-details-block">
+            <h3 class="bmail-heading-three desktop">Exchange earnings for your favorite crypto.</h3>
+            <p class="bmail-paragraph">You should have the choice! <br>
+              <br>Choose between some of the worlds most popular crypto currencies like bitcoin and ethereum when redeeming your earnings.
+            </p>
+            <a href="https://bit.ly/w2c" class="button-3 bmail-button no-bg w-button">
+              <strong>Download Bmail</strong>
+            </a>
+          </div>
+          <div class="bmail-image-block">
+            <img src="https://cdn.prod.website-files.com/65b21eba16cd83b427cde23e/65b391adbe4fad427387e76c_Group%201000008335%20(1).svg" loading="lazy" alt="" class="bmail-single-image">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section section3" id="intro">
+  <h2 class="a-web-heading the-most-heading">The perfect balance of security and usability</h2>
+  <div class="own-your-four-block-wrap">
+    <div class="own-your-four-single-wrap">
+      <img src="../file/test.png" loading="lazy" alt="" class="get-paid-image">
+      <h4 class="get-paid-heading">Turn data into dollars!</h4>
+      <p class="feature-paragraph">You’re already giving it away for free to big tech. It’s time to get paid for it. Your data is your ticket into Crypto.</p>
+    </div>
+    <div class="own-your-four-single-wrap">
+      <img src="../file/test.png" loading="lazy" alt="" class="get-paid-image">
+      <h4 class="get-paid-heading">Manage your crypto</h4>
+      <p class="feature-paragraph">Claim your earnings and store your crypto securely with our multi-chain wallet.</p>
+    </div>
+    <div class="own-your-four-single-wrap">
+      <img src="../file/test.png" loading="lazy" alt="" class="get-paid-image">
+      <h4 class="get-paid-heading">Increase your Cirus Score</h4>
+      <p class="feature-paragraph">Unlock crypto-powered apps within the cirus ecosystem as your cirus score increases.</p>
+    </div><div class="own-your-four-single-wrap">
+      <img src="../file/test.png" loading="lazy" alt="" class="get-paid-image">
+      <h4 class="get-paid-heading">Crypto-powered<br>Apps</h4>
+      <p class="feature-paragraph">You’ve entered into crypto. Now what? Take your earnings and access new applications powered by crypto.</p>
+    </div>
+  </div>
+</section>
+
+<!-- pricing -->
+<section class="section section4" id="partners">
+  <div class="bmail-pricing-all">
+    <div>
+      <h2 class=" bmail-pricing-heading">pricing</h2>
+      <div class="tab-switch">
+        <button class="tab-button active" data-tab="personal">Personal</button>
+        <button class="tab-button" data-tab="business">Business</button>
+        <div class="tab-slider"></div>
+      </div>
+
+    </div>
+    <div class="bmail-pricing-intro">
+      <a class="pricing-personal-free pricing-per-back">
+        <h3>Free</h3>
+        <div style="display: flex">
+          <sup data-testid="pricing-currency" style="font-size: 2.25rem; line-height: 2.25rem;color: #F28552">$</sup>
+          <h3 class="css-491wnk">0.00</h3>
+        </div>
+        <span class="pricing-span">
+        <p>per month</p>
+        <p>Free Forever</p>
+      </span>
+        <p class="css-list-heading">Get a Bitwarden vault</p>
+        <ul>
+          <li class="pricing-per-text">
+            <span class="css-xlsc1k">✓</span>
+            Unlimited devices
+          </li>
+          <li class="pricing-per-text">
+            <span class="css-xlsc1k">✓</span>
+            Unlimited devices
+          </li>
+          <li class="pricing-per-text">
+            <span class="css-xlsc1k">✓</span>
+            Unlimited devices
+          </li>
+          <li class="pricing-per-text">
+            <span class="css-xlsc1k">✓</span>
+            Unlimited devices
+          </li>
+        </ul>
+        <span class="pricing-span">Share vault items with one other user</span>
+        <button class="bmail-btn p-free-btn">
+          <span>Get Started Today</span>
+        </button>
+      </a>
+      <a class="pricing-personal-premium pricing-per-back">
+        <h3>Premium</h3>
+        <div style="display: flex">
+          <sup data-testid="pricing-currency" style="font-size: 2.25rem; line-height: 2.25rem;color: #F28552">$</sup>
+          <h3 class="css-491wnk">0.00</h3>
+        </div>
+        <span class="pricing-span">
+        <p>per month</p>
+        <p>Free Forever</p>
+      </span>
+        <p class="css-list-heading">Get a Bitwarden vault</p>
+        <ul>
+          <li class="pricing-per-text">
+            <span class="css-xlsc1k">✓</span>
+            Unlimited devices
+          </li>
+          <li class="pricing-per-text">
+            <span class="css-xlsc1k">✓</span>
+            Unlimited devices
+          </li>
+          <li class="pricing-per-text">
+            <span class="css-xlsc1k">✓</span>
+            Unlimited devices
+          </li>
+          <li class="pricing-per-text">
+            <span class="css-xlsc1k">✓</span>
+            Unlimited devices
+          </li>
+        </ul>
+        <span class="pricing-span">Share vault items with one other user</span>
+        <button class="bmail-btn p-free-btn">
+          <span>Get Started Today</span>
+        </button>
+      </a>
+      <a class="pricing-personal-families pricing-per-back">
+        <h3>Familes</h3>
+        <div style="display: flex">
+          <sup data-testid="pricing-currency" style="font-size: 2.25rem; line-height: 2.25rem;color: #F28552">$</sup>
+          <h3 class="css-491wnk">0.00</h3>
+        </div>
+        <span class="pricing-span">
+        <p>per month</p>
+        <p>Free Forever</p>
+      </span>
+        <p class="css-list-heading">Get a Bitwarden vault</p>
+        <ul>
+          <li class="pricing-per-text">
+            <span class="css-xlsc1k">✓</span>
+            Unlimited devices
+          </li>
+          <li class="pricing-per-text">
+            <span class="css-xlsc1k">✓</span>
+            Unlimited devices
+          </li>
+          <li class="pricing-per-text">
+            <span class="css-xlsc1k">✓</span>
+            Unlimited devices
+          </li>
+          <li class="pricing-per-text">
+            <span class="css-xlsc1k">✓</span>
+            Unlimited devices
+          </li>
+        </ul>
+        <span class="pricing-span">Share vault items with one other user</span>
+        <button class="bmail-btn p-free-btn">
+          <span>Get Started Today</span>
+        </button>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- 品牌合作部分 -->
+<section class="section section5" id="partners">
+  <h2 class=" a-web-heading the-most-heading ">支持邮箱</h2>
+  <div class="brand-logos">
+    <img src="../file/gmail.png" alt="gmail">
+    <img src="../file/outlook.png" alt="outlook">
+    <img src="../file/qqmail.png" alt="qq">
+    <img src="../file/163mail.png" alt="网易">
+  </div>
+</section>
+
+<!-- 下载部分 -->
+<section class="footer" id="download">
+  <div class="top-footer-block-wrap">
+    <div>
+      <h2>Download Bmail now.</h2>
+      <p>下载我们的应用，开启全新的体验。</p>
+    </div>
+    <div>
+      <a href="https://chromewebstore.google.com/detail/bmail/kjlhomfbkgfkkfdpcolkecfanmipiiic?hl=en-US&utm_source=ext_sidebar" class="google-play-image-link-1 w-inline-block">
+        <img src="https://cdn.prod.website-files.com/65b21eba16cd83b427cde23e/65b9d6a76c6924ea5aecd732_image-chrome.webp" loading="lazy" width="172" sizes="(max-width: 479px) 92vw, (max-width: 991px) 116px, 190px" alt=""
+             srcset="https://cdn.prod.website-files.com/65b21eba16cd83b427cde23e/65b9d6a76c6924ea5aecd732_image-chrome-p-500.webp 500w, https://cdn.prod.website-files.com/65b21eba16cd83b427cde23e/65b9d6a76c6924ea5aecd732_image-chrome.webp 761w"
+             class="google-play-image">
+      </a>
+    </div>
+  </div>
+  <div class="middle-footer-block"><div class="footer-wrapper-two">
+      <div class="div-block">
+        <a href="/" aria-current="page" class="footer-brand w-inline-block w--current">
+          <img src="../file/logo_48.png" loading="lazy" alt="Logo black" class="image">
+        </a>
+        <p class="paragraph-foot">When we started building Cirus a couple of years ago, we had one goal in mind:
+          “Value Back to People”.&nbsp;We noticed that there are so many moments in life where value is created,
+          but the people creating it are often left out of the equation -&nbsp;we believe that Web3 solves this.
+        </p>
+        <div class="div-block-2">
+          <a href="https://twitter.com/cirusfoundation" target="_blank" class="w-inline-block">
+            <img src="https://cdn.prod.website-files.com/65b21eba16cd83b427cde23e/65b5e440bfb92da06a1b8348_Group%2033875.webp" loading="lazy" alt="" class="image-2">
+          </a>
+          <a href="https://www.linkedin.com/company/cirus-foundation/" target="_blank" class="w-inline-block">
+            <img src="https://cdn.prod.website-files.com/65b21eba16cd83b427cde23e/65b5e440fc4c59f7f28b560b_Group%2033878.webp" loading="lazy" alt="" class="image-2">
+          </a>
+          <a href="https://www.youtube.com/@CirusFoundation" target="_blank" class="link-block w-inline-block">
+            <img src="https://cdn.prod.website-files.com/65b21eba16cd83b427cde23e/65b5e440145d5b167fcc200f_Group%2033879.webp" loading="lazy" alt="" class="image-2">
+          </a>
+          <a href="https://discord.gg/Vbawz2j7AW" target="_blank" class="link-block w-inline-block">
+            <img src="https://cdn.prod.website-files.com/65b21eba16cd83b427cde23e/662a281ee606bb9a71e91854_discord.png" loading="lazy" alt="" class="image-2">
+          </a>
+          <a href="https://www.tiktok.com/@cirusfoundation?_t=8xlivzobb0p&amp;_r=1" target="_blank" class="link-block w-inline-block">
+            <img src="https://cdn.prod.website-files.com/65b21eba16cd83b427cde23e/662a28d943d2e1892a7929ae_tiktok.png" loading="lazy" alt="" class="image-2">
+          </a>
+          <a href="https://medium.com/the-cirus-foundation" target="_blank" class="link-block w-inline-block">
+            <img src="https://cdn.prod.website-files.com/65b21eba16cd83b427cde23e/662a2a6f8a4ad51700c4e415_Frame%201000008431.png" loading="lazy" alt="" class="image-2">
+          </a>
+        </div>
+      </div>
+      <div class="footer-block-two space">
+        <div class="footer-title">overview</div>
+        <a href="/" aria-current="page" class="footer-link-two w--current">Home</a><a href="/team" class="footer-link-two">Team</a>
+      </div><div class="footer-block-two">
+        <div class="footer-title">supporT</div>
+        <a href="https://cirusfoundation.notion.site/9d34403a43434ae6b81c57972582579a?v=353e24ccce7c45e28ca4233896ebb86a&amp;pvs=4" class="footer-link-two">Media</a>
+        <a href="#" class="footer-link-two">Download</a>
+        <a href="https://support.cirusfoundation.com/en/knowledge" class="footer-link-two">Support</a>
+      </div><div class="footer-form w-form">
+        <form id="wf-form-Footer-Form" name="wf-form-Footer-Form" data-name="Footer Form" method="get" class="footer-form-container" data-wf-flow="675351f51770ad8c19fdee40" data-wf-page-id="65bcb9d173f2d9716d1bf2f0" data-wf-element-id="5742ebf2-a1b4-13b5-0675-67aaced8b1d2" aria-label="Footer Form">
+          <div class="footer-title">Newsletter</div>
+          <p class="paragraph">Subscribe to get the latest updates.</p>
+          <div class="footer-form-block">
+            <input class="footer-form-field w-input" maxlength="256" name="Email-Form-Footer" data-name="Email Form Footer" aria-label="Get product updates" placeholder="Enter Email" type="email" id="Email-Form-Footer" required="">
+            <input type="submit" data-wait="Please wait..." class="footer-form-submit w-button" value="">
+          </div>
+        </form>
+        <div class="w-form-done" tabindex="-1" role="region" aria-label="Footer Form success">
+          <div>Thank you! Your submission has been received!</div>
+        </div>
+        <div class="w-form-fail" tabindex="-1" role="region" aria-label="Footer Form failure">
+          <div>Oops! Something went wrong while submitting the form.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // JavaScript监听滚动事件
+  window.addEventListener('scroll', () => {
+    const navbar = document.getElementById('navbar');
+    if (window.scrollY > 50) {
+      navbar.classList.add('scrolled');
+      navbar.classList.remove('transparent');
+    } else {
+      navbar.classList.add('transparent');
+      navbar.classList.remove('scrolled');
+    }
+  });
+  //滑块儿
+  document.addEventListener('DOMContentLoaded', () => {
+    const buttons = document.querySelectorAll('.tab-button');
+    const slider = document.querySelector('.tab-slider');
+    const tabSwitch = document.querySelector('.tab-switch');
+
+    buttons.forEach((button, index) => {
+      button.addEventListener('click', () => {
+        // 激活当前按钮
+        buttons.forEach((btn) => btn.classList.remove('active'));
+        button.classList.add('active');
+
+        // 更新滑块的位置
+        const buttonWidth = tabSwitch.clientWidth / buttons.length; // 每个按钮的宽度
+        slider.style.transform = `translateX(${index * buttonWidth}px)`;
+      });
+    });
+
+    // 初始化滑块位置
+    const buttonWidth = tabSwitch.clientWidth / buttons.length;
+    slider.style.width = `${buttonWidth - 4}px`; // 滑块宽度等于按钮宽度减去内边距
+    slider.style.transform = `translateX(0)`;
+  });
+
+</script>
+</body>
+</html>
