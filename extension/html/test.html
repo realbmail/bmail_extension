@@ -223,6 +223,7 @@
       transition-duration: .3s;
       cursor: pointer;
       border: none;
+      margin-top: 18px;
     }
 
     .bmail-button:hover{
@@ -243,8 +244,6 @@
     .bmail-paragraph {
       color: #04062E;
       letter-spacing: -.4px;
-      margin-top: 25px;
-      margin-bottom: 50px;
       font-size: 20px;
       font-weight: 300;
       line-height: 34px;
@@ -271,9 +270,10 @@
       grid-template-columns: 1fr 1fr 1fr 1fr;
       grid-auto-columns: 1fr;
       justify-content: space-between;
-      max-width: 1550px;
+      max-width: 1440px;
       margin-left: auto;
       margin-right: auto;
+      margin-top: 36px;
       display: grid;
     }
 
@@ -317,6 +317,7 @@
     .footer{
       background-color: rgba(244, 246, 247, 0.5);
     }
+
     .top-footer-block-wrap {
       grid-column-gap: 36px;
       grid-row-gap: 36px;
@@ -326,6 +327,7 @@
       display: flex;
       padding: 35px 0;
       border-bottom: 2px solid #eff0f1;
+      flex-direction: column;
     }
 
     .middle-footer-block {
@@ -401,6 +403,7 @@
     .bmail-pricing-heading {
       color: white;
     }
+
     /* 容器样式 */
     .tab-switch {
       display: flex;
@@ -540,7 +543,6 @@
       position: absolute;
       left: -0.75rem;
       top: 0;
-      font-family: bwi-font;
       --tw-text-opacity: 1;
       color: rgb(23 93 220 / var(--tw-text-opacity));
     }
@@ -551,6 +553,65 @@
       line-height: 4rem;
       font-weight: 500;
       color: #F28552;
+    }
+
+    .web-paragraph {
+      color: #04062E;
+      text-align: center;
+      letter-spacing: -.2px;
+      font-family: HelveticaNeueMedium, sans-serif;
+      font-size: 20px;
+      font-weight: 500;
+    }
+
+    .download-form {
+      width: 100%;
+      max-width: 1200px;
+      margin: 20px auto;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      overflow: hidden;
+      background-color: #f9f9f9;
+    }
+
+    .form-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .form-item:last-child {
+      border-bottom: none;
+    }
+
+    .form-title {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .form-title span{
+      font-size: 16px;
+      color: rgba(4, 6, 46, 0.5);
+      font-weight: 400;
+    }
+    .download-button {
+      background-color: #F28552;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 24px;
+      font-size: 16px;
+      line-height: 30px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .download-button:hover {
+      background-color: #04062E; /* 鼠标经过时的背景色 */
+      color: white;
     }
 
   </style>
@@ -566,7 +627,8 @@
     <li><a href="#intro">intro</a></li>
     <li><a href="#download">download</a></li>
     <li><a href="#pricing">pricing</a></li>
-    <li><a href="#partners">Email</a></li>
+    <li><a href="#email">Email</a></li>
+    <li><a href="#partners">GitHub</a></li>
   </ul>
 </nav>
 
@@ -588,7 +650,7 @@
 <section class="section" id="intro">
   <div class="w-layout-blockcontainer container-two w-container">
     <div class="the-most-block-wrap">
-      <h2 class="a-web-heading the-most-heading">The wallet that makes crypto simple.</h2>
+      <h2 class="a-web-heading the-most-heading">The wallet that makes crypto simple. </h2>
       <div class="bmail-content-block-wrap">
         <div class="bmail-content-wrap">
           <div class="bmail-image-block">
@@ -621,7 +683,7 @@
     </div>
   </div>
 </section>
-<section class="section section3" id="intro">
+<section class="section section3" id="security">
   <h2 class="a-web-heading the-most-heading">The perfect balance of security and usability</h2>
   <div class="own-your-four-block-wrap">
     <div class="own-your-four-single-wrap">
@@ -647,7 +709,7 @@
 </section>
 
 <!-- pricing -->
-<section class="section section4" id="partners">
+<section class="section section4" id="pricing">
   <div class="bmail-pricing-all">
     <div>
       <h2 class=" bmail-pricing-heading">pricing</h2>
@@ -700,8 +762,8 @@
           <h3 class="css-491wnk">0.00</h3>
         </div>
         <span class="pricing-span">
-        <p>per month</p>
-        <p>Free Forever</p>
+        <p> per month </p>
+        <p> Free Forever </p>
       </span>
         <p class="css-list-heading">Get a Bitwarden vault</p>
         <ul>
@@ -728,7 +790,7 @@
         </button>
       </a>
       <a class="pricing-personal-families pricing-per-back">
-        <h3>Familes</h3>
+        <h3>Families</h3>
         <div style="display: flex">
           <sup data-testid="pricing-currency" style="font-size: 2.25rem; line-height: 2.25rem;color: #F28552">$</sup>
           <h3 class="css-491wnk">0.00</h3>
@@ -764,9 +826,8 @@
     </div>
   </div>
 </section>
-
 <!-- 品牌合作部分 -->
-<section class="section section5" id="partners">
+<section class="section section5" id="email">
   <h2 class=" a-web-heading the-most-heading ">支持邮箱</h2>
   <div class="brand-logos">
     <img src="../file/gmail.png" alt="gmail">
@@ -780,18 +841,36 @@
 <section class="footer" id="download">
   <div class="top-footer-block-wrap">
     <div>
-      <h2>Download Bmail now.</h2>
-      <p>下载我们的应用，开启全新的体验。</p>
+      <h2 class="a-web-heading">Download Bmail now.</h2>
+      <p class="web-paragraph">下载我们的应用，开启全新的体验。</p>
     </div>
-    <div>
-      <a href="https://chromewebstore.google.com/detail/bmail/kjlhomfbkgfkkfdpcolkecfanmipiiic?hl=en-US&utm_source=ext_sidebar" class="google-play-image-link-1 w-inline-block">
-        <img src="https://cdn.prod.website-files.com/65b21eba16cd83b427cde23e/65b9d6a76c6924ea5aecd732_image-chrome.webp" loading="lazy" width="172" sizes="(max-width: 479px) 92vw, (max-width: 991px) 116px, 190px" alt=""
-             srcset="https://cdn.prod.website-files.com/65b21eba16cd83b427cde23e/65b9d6a76c6924ea5aecd732_image-chrome-p-500.webp 500w, https://cdn.prod.website-files.com/65b21eba16cd83b427cde23e/65b9d6a76c6924ea5aecd732_image-chrome.webp 761w"
-             class="google-play-image">
-      </a>
+    <div class="download-form">
+      <div class="form-item">
+        <div class="form-title">
+          <p class="web-paragraph" style="text-align: left">Project01</p>
+          <span style="text-align: left"> “Value Back to People We noticed that there are so many moments in life where value is created</span>
+        </div>
+        <button class="download-button">Download</button>
+      </div>
+      <div class="form-item">
+        <div class="form-title">
+          <p class="web-paragraph" style="text-align: left">Project01</p>
+          <span style="text-align: left"> “Value Back to People We noticed that there are so many moments in life where value is created</span>
+        </div>
+        <button class="download-button">Download</button>
+      </div>
+      <div class="form-item">
+        <div class="form-title">
+          <p class="web-paragraph" style="text-align: left">Project01</p>
+          <span style="text-align: left"> “Value Back to People We noticed that there are so many moments in life where value is created</span>
+        </div>
+        <button class="download-button">Download</button>
+      </div>
     </div>
+
   </div>
-  <div class="middle-footer-block"><div class="footer-wrapper-two">
+  <div class="middle-footer-block">
+    <div class="footer-wrapper-two">
       <div class="div-block">
         <a href="/" aria-current="page" class="footer-brand w-inline-block w--current">
           <img src="../file/logo_48.png" loading="lazy" alt="Logo black" class="image">
@@ -861,6 +940,7 @@
       navbar.classList.remove('scrolled');
     }
   });
+
   //滑块儿
   document.addEventListener('DOMContentLoaded', () => {
     const buttons = document.querySelectorAll('.tab-button');
