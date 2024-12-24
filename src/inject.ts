@@ -9,7 +9,7 @@ import {
 
 async function createBmailObj() {
     window.bmail = {
-        version: '1.2.5',
+        version: '3.2.6',
         setupEmail: async function (userEmail: string): Promise<any> {
             return await injectCall(MsgType.SetEmailByInjection, {email: userEmail}, true);
         },
