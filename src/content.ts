@@ -28,8 +28,25 @@ function translateInjectedElm() {
     }
 }
 
+const allowedDomains = [
+    /https:\/\/(?:.*\.)?mail\.163\.com\/.*/,
+    /https:\/\/(?:.*\.)?mail\.126\.com\/.*/,
+    /https:\/\/(?:.*\.)?mail\.qq\.com\/.*/,
+    /https:\/\/outlook\.live\.com\/.*/,
+    /https:\/\/mail\.google\.com\/.*/
+];
+
 document.addEventListener('DOMContentLoaded', async () => {
     addBmailObject('js/inject.js');
+
+    // 检查当前页面 URL 是否匹配允许的域名
+    const currentUrl = window.location.href;
+    const isAllowedDomain = allowedDomains.some(domainRegex => domainRegex.test(currentUrl));
+    if (!isAllowedDomain) {
+        console.log("----->>> no need to insert bmail elements", currentUrl)
+        return;
+    }
+    console.log("----->>> need to insert bmail elements:", currentUrl)
     addCustomStyles('css/common.css');
     const template = await parseContentHtml('html/inject.html');
     appendTipDialog(template);
