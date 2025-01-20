@@ -409,6 +409,7 @@ async function bindingAction(isUnbind: boolean, email: string, sendResponse: (re
         console.log("[service worker] binding or unbind=", isUnbind, " action success:=>", srvRsp);
         sendResponse({success: 1, message: (srvRsp as Uint8Array)[0]});
 
+        loadAccountDetailsFromSrv(addr.bmail_address).then()
     } catch (e) {
         const err = e as Error;
         console.log("[service worker] bind account failed:", err);

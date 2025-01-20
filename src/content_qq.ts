@@ -18,7 +18,7 @@ import {
     parseContentHtml,
     parseCryptoMailBtn,
     processReceivers,
-    queryContactFromSrv, removeBmailDownloadLink,
+    queryContactFromSrv, readCurrentMailAddress, removeBmailDownloadLink,
     replaceTextNodeWithDiv,
     setKeepAlive,
     showTipsDialog
@@ -273,8 +273,6 @@ function monitorReadingArea(template: HTMLTemplateElement, mainArea: HTMLElement
         oldElement = readerElm;
         return readerElm;
     }, async () => {
-        // const readerElm = mainArea.querySelector(".mail-list-page-reader-body.reader-body-children");
-        // console.log("------>>> reader element:", readerElm);
         addCryptoBtnToReadingMailQQ(template, mainArea);
     }, true);
 }
@@ -286,25 +284,7 @@ async function monitorQQMailReading(template: HTMLTemplateElement) {
         return;
     }
 
-    // monitorMsgTip(template, mainArea);
     monitorReadingArea(template, mainArea);
-    //
-    // mainArea.addEventListener("click", (event) => {
-    //     const targetElement = event.target as HTMLElement;
-    //     const mailItemDiv = targetElement.closest('div.mail-list-page-item') as HTMLElement | null;
-    //     const nextOrPreviousMailBtn = targetElement.closest(".mail-list-page-toolbar.toolbar-only-reader")
-    //     if (!mailItemDiv && !nextOrPreviousMailBtn) {
-    //         // console.log("------>>> this is not a mail reading action");
-    //         return;
-    //     }
-    //
-    //     let idleTimer = setTimeout(() => {
-    //         console.log("------>>> target hint, check elements and add bmail buttons");
-    //         clearTimeout(idleTimer);
-    //
-    //         addCryptoBtnToReadingMailQQ(template, mainArea);
-    //     }, 1200);
-    // });
 }
 
 function addCryptoBtnToReadingMailQQ(template: HTMLTemplateElement, mainArea?: HTMLElement) {
@@ -472,6 +452,15 @@ async function encryptSimpleMailReplyQQ(mailBody: HTMLElement, email: string, se
         if (statusRsp.success < 0) {
             return;
         }
+        const currentEmailAddress = readCurrentMailAddress();
+        const mailRsp = await sendMessageToBackground(currentEmailAddress, MsgType.IfBindThisEmail);
+        if (mailRsp.success < 0) {
+            showTipsDialog("Warning", mailRsp.message, async () => {
+                await sendMessageToBackground('', MsgType.OpenPlugin);
+            });
+            return null;
+        }
+
         let bodyTextContent = mailBody.innerText.trim();
 
         if (bodyTextContent.length <= 0) {
