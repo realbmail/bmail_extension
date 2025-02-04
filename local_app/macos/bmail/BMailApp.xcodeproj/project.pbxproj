@@ -10,15 +10,62 @@
 		2B3FB48C2D519B0900A0DF15 /* com.example.bmailapp.json in Resources */ = {isa = PBXBuildFile; fileRef = 2B3FB48B2D519B0600A0DF15 /* com.example.bmailapp.json */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		2B3FB4BC2D51F9DB00A0DF15 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		2B224ADA2D50B97200F3E892 /* BMailApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BMailApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2B3FB48B2D519B0600A0DF15 /* com.example.bmailapp.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = com.example.bmailapp.json; sourceTree = "<group>"; };
+		2B3FB4BE2D51F9DB00A0DF15 /* msgService */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = msgService; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		2B3FB4C92D51FC4500A0DF15 /* Exceptions for "LaunchAgents" folder in "BMailApp" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				com.yourcompany.msgservice.plist,
+			);
+			target = 2B224AD92D50B97200F3E892 /* BMailApp */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		2B3FB4CA2D51FC4500A0DF15 /* Exceptions for "LaunchAgents" folder in "Compile Sources" phase from "BMailApp" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = 2B224AD62D50B97200F3E892 /* Sources */;
+			membershipExceptions = (
+				com.yourcompany.msgservice.plist,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		2B224ADC2D50B97200F3E892 /* bmail */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = bmail;
+			sourceTree = "<group>";
+		};
+		2B3FB4BF2D51F9DB00A0DF15 /* msgService */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = msgService;
+			sourceTree = "<group>";
+		};
+		2B3FB4C52D51FC2100A0DF15 /* LaunchAgents */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				2B3FB4C92D51FC4500A0DF15 /* Exceptions for "LaunchAgents" folder in "BMailApp" target */,
+				2B3FB4CA2D51FC4500A0DF15 /* Exceptions for "LaunchAgents" folder in "Compile Sources" phase from "BMailApp" target */,
+			);
+			path = LaunchAgents;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -31,14 +78,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		2B3FB4BB2D51F9DB00A0DF15 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		2B224AD12D50B97200F3E892 = {
 			isa = PBXGroup;
 			children = (
+				2B3FB4C52D51FC2100A0DF15 /* LaunchAgents */,
 				2B3FB48B2D519B0600A0DF15 /* com.example.bmailapp.json */,
 				2B224ADC2D50B97200F3E892 /* bmail */,
+				2B3FB4BF2D51F9DB00A0DF15 /* msgService */,
 				2B224ADB2D50B97200F3E892 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -47,6 +103,7 @@
 			isa = PBXGroup;
 			children = (
 				2B224ADA2D50B97200F3E892 /* BMailApp.app */,
+				2B3FB4BE2D51F9DB00A0DF15 /* msgService */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -68,6 +125,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				2B224ADC2D50B97200F3E892 /* bmail */,
+				2B3FB4C52D51FC2100A0DF15 /* LaunchAgents */,
 			);
 			name = BMailApp;
 			packageProductDependencies = (
@@ -75,6 +133,28 @@
 			productName = bmail;
 			productReference = 2B224ADA2D50B97200F3E892 /* BMailApp.app */;
 			productType = "com.apple.product-type.application";
+		};
+		2B3FB4BD2D51F9DB00A0DF15 /* msgService */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2B3FB4C42D51F9DB00A0DF15 /* Build configuration list for PBXNativeTarget "msgService" */;
+			buildPhases = (
+				2B3FB4BA2D51F9DB00A0DF15 /* Sources */,
+				2B3FB4BB2D51F9DB00A0DF15 /* Frameworks */,
+				2B3FB4BC2D51F9DB00A0DF15 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				2B3FB4BF2D51F9DB00A0DF15 /* msgService */,
+			);
+			name = msgService;
+			packageProductDependencies = (
+			);
+			productName = msgService;
+			productReference = 2B3FB4BE2D51F9DB00A0DF15 /* msgService */;
+			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
 
@@ -87,6 +167,9 @@
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
 					2B224AD92D50B97200F3E892 = {
+						CreatedOnToolsVersion = 16.2;
+					};
+					2B3FB4BD2D51F9DB00A0DF15 = {
 						CreatedOnToolsVersion = 16.2;
 					};
 				};
@@ -106,6 +189,7 @@
 			projectRoot = "";
 			targets = (
 				2B224AD92D50B97200F3E892 /* BMailApp */,
+				2B3FB4BD2D51F9DB00A0DF15 /* msgService */,
 			);
 		};
 /* End PBXProject section */
@@ -123,6 +207,13 @@
 
 /* Begin PBXSourcesBuildPhase section */
 		2B224AD62D50B97200F3E892 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2B3FB4BA2D51F9DB00A0DF15 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -310,6 +401,28 @@
 			};
 			name = Release;
 		};
+		2B3FB4C22D51F9DB00A0DF15 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 2XYK8RBB6M;
+				ENABLE_HARDENED_RUNTIME = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		2B3FB4C32D51F9DB00A0DF15 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 2XYK8RBB6M;
+				ENABLE_HARDENED_RUNTIME = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -327,6 +440,15 @@
 			buildConfigurations = (
 				2B224AEC2D50B97300F3E892 /* Debug */,
 				2B224AED2D50B97300F3E892 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2B3FB4C42D51F9DB00A0DF15 /* Build configuration list for PBXNativeTarget "msgService" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2B3FB4C22D51F9DB00A0DF15 /* Debug */,
+				2B3FB4C32D51F9DB00A0DF15 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
