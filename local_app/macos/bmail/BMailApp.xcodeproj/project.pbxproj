@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		2B3FB48C2D519B0900A0DF15 /* com.example.bmailapp.json in Resources */ = {isa = PBXBuildFile; fileRef = 2B3FB48B2D519B0600A0DF15 /* com.example.bmailapp.json */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
-		2B224ADA2D50B97200F3E892 /* bmail.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bmail.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2B224ADA2D50B97200F3E892 /* BMailApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BMailApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2B3FB48B2D519B0600A0DF15 /* com.example.bmailapp.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = com.example.bmailapp.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -32,6 +37,7 @@
 		2B224AD12D50B97200F3E892 = {
 			isa = PBXGroup;
 			children = (
+				2B3FB48B2D519B0600A0DF15 /* com.example.bmailapp.json */,
 				2B224ADC2D50B97200F3E892 /* bmail */,
 				2B224ADB2D50B97200F3E892 /* Products */,
 			);
@@ -40,7 +46,7 @@
 		2B224ADB2D50B97200F3E892 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2B224ADA2D50B97200F3E892 /* bmail.app */,
+				2B224ADA2D50B97200F3E892 /* BMailApp.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,9 +54,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		2B224AD92D50B97200F3E892 /* bmail */ = {
+		2B224AD92D50B97200F3E892 /* BMailApp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2B224AEB2D50B97300F3E892 /* Build configuration list for PBXNativeTarget "bmail" */;
+			buildConfigurationList = 2B224AEB2D50B97300F3E892 /* Build configuration list for PBXNativeTarget "BMailApp" */;
 			buildPhases = (
 				2B224AD62D50B97200F3E892 /* Sources */,
 				2B224AD72D50B97200F3E892 /* Frameworks */,
@@ -63,11 +69,11 @@
 			fileSystemSynchronizedGroups = (
 				2B224ADC2D50B97200F3E892 /* bmail */,
 			);
-			name = bmail;
+			name = BMailApp;
 			packageProductDependencies = (
 			);
 			productName = bmail;
-			productReference = 2B224ADA2D50B97200F3E892 /* bmail.app */;
+			productReference = 2B224ADA2D50B97200F3E892 /* BMailApp.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -85,7 +91,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 2B224AD52D50B97200F3E892 /* Build configuration list for PBXProject "bmail" */;
+			buildConfigurationList = 2B224AD52D50B97200F3E892 /* Build configuration list for PBXProject "BMailApp" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -99,7 +105,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				2B224AD92D50B97200F3E892 /* bmail */,
+				2B224AD92D50B97200F3E892 /* BMailApp */,
 			);
 		};
 /* End PBXProject section */
@@ -109,6 +115,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2B3FB48C2D519B0900A0DF15 /* com.example.bmailapp.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -257,6 +264,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = BMailApp;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -264,7 +273,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.yushian..bmail;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yushian.bmail;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -285,6 +294,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = BMailApp;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -292,7 +303,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.yushian..bmail;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yushian.bmail;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -302,7 +313,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2B224AD52D50B97200F3E892 /* Build configuration list for PBXProject "bmail" */ = {
+		2B224AD52D50B97200F3E892 /* Build configuration list for PBXProject "BMailApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2B224AE92D50B97300F3E892 /* Debug */,
@@ -311,7 +322,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2B224AEB2D50B97300F3E892 /* Build configuration list for PBXNativeTarget "bmail" */ = {
+		2B224AEB2D50B97300F3E892 /* Build configuration list for PBXNativeTarget "BMailApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2B224AEC2D50B97300F3E892 /* Debug */,

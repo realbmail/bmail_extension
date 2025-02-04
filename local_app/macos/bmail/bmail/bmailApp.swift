@@ -6,27 +6,21 @@
 //
 
 import SwiftUI
-import SwiftData
+import AppKit
+
+// 自定义 AppDelegate
+class AppDelegate: NSObject, NSApplicationDelegate {
+        func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+                return true // 关闭最后一个窗口时退出应用
+        }
+}
 
 @main
 struct bmailApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
+        @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+        var body: some Scene {
+                WindowGroup {
+                        LoginView()
+                }
         }
-    }()
-
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
-        .modelContainer(sharedModelContainer)
-    }
 }
