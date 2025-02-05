@@ -7,8 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2B3FB48C2D519B0900A0DF15 /* com.example.bmailapp.json in Resources */ = {isa = PBXBuildFile; fileRef = 2B3FB48B2D519B0600A0DF15 /* com.example.bmailapp.json */; };
+		692D59252D535D3700F3C5EC /* msgService in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2B3FB4BE2D51F9DB00A0DF15 /* msgService */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		692D59222D535D0200F3C5EC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2B224AD22D50B97200F3E892 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2B3FB4BD2D51F9DB00A0DF15;
+			remoteInfo = msgService;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		2B3FB4BC2D51F9DB00A0DF15 /* CopyFiles */ = {
@@ -20,11 +30,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
+		692D59242D535D0D00F3C5EC /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 6;
+			files = (
+				692D59252D535D3700F3C5EC /* msgService in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		2B224ADA2D50B97200F3E892 /* BMailApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BMailApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		2B3FB48B2D519B0600A0DF15 /* com.example.bmailapp.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = com.example.bmailapp.json; sourceTree = "<group>"; };
 		2B3FB4BE2D51F9DB00A0DF15 /* msgService */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = msgService; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -92,7 +111,6 @@
 			isa = PBXGroup;
 			children = (
 				2B3FB4C52D51FC2100A0DF15 /* LaunchAgents */,
-				2B3FB48B2D519B0600A0DF15 /* com.example.bmailapp.json */,
 				2B224ADC2D50B97200F3E892 /* bmail */,
 				2B3FB4BF2D51F9DB00A0DF15 /* msgService */,
 				2B224ADB2D50B97200F3E892 /* Products */,
@@ -118,10 +136,12 @@
 				2B224AD62D50B97200F3E892 /* Sources */,
 				2B224AD72D50B97200F3E892 /* Frameworks */,
 				2B224AD82D50B97200F3E892 /* Resources */,
+				692D59242D535D0D00F3C5EC /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				692D59232D535D0200F3C5EC /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				2B224ADC2D50B97200F3E892 /* bmail */,
@@ -199,7 +219,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2B3FB48C2D519B0900A0DF15 /* com.example.bmailapp.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -221,6 +240,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		692D59232D535D0200F3C5EC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2B3FB4BD2D51F9DB00A0DF15 /* msgService */;
+			targetProxy = 692D59222D535D0200F3C5EC /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		2B224AE92D50B97300F3E892 /* Debug */ = {
@@ -404,9 +431,11 @@
 		2B3FB4C22D51F9DB00A0DF15 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2XYK8RBB6M;
 				ENABLE_HARDENED_RUNTIME = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yushian.bmail.helper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -415,9 +444,11 @@
 		2B3FB4C32D51F9DB00A0DF15 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2XYK8RBB6M;
 				ENABLE_HARDENED_RUNTIME = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yushian.bmail.helper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};

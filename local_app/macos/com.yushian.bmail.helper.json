@@ -1,0 +1,9 @@
+{
+  "name": "com.yushian.bmail.helper",
+  "description": "BMail App Native Messaging Host",
+  "path": "/Applications/BMailApp.app/Contents/MacOS/msgService",
+  "type": "stdio",
+  "allowed_origins": [
+    "chrome-extension://kjlhomfbkgfkkfdpcolkecfanmipiiic/"
+  ]
+}

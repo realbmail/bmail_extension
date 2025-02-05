@@ -549,3 +549,28 @@ async function handleExistingDownloads() {
 }
 
 handleExistingDownloads().then();
+
+
+// function checkEagleStatus() {
+//     chrome.runtime.sendNativeMessage(
+//         "com.eagle.native",  // JSON 注册的 name
+//         { command: "ping" }, // 发送 ping 请求
+//         (response) => {
+//             if (chrome.runtime.lastError) {
+//                 const errorMessage = chrome.runtime.lastError.message;
+//
+//                 if (errorMessage.includes("Specified native messaging host not found")) {
+//                     console.warn("Eagle is NOT installed.");
+//                     showInstallPrompt();  // 引导用户安装 Eagle
+//                 } else if (errorMessage.includes("Native host has exited")) {
+//                     console.warn("Eagle is installed but NOT running.");
+//                     showOpenEagleDialog();  // 提示用户启动 Eagle
+//                 } else {
+//                     console.warn("Unknown error:", errorMessage);
+//                 }
+//             } else {
+//                 console.log("Eagle is running:", response);
+//             }
+//         }
+//     );
+// }

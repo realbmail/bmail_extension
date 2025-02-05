@@ -1,9 +1,0 @@
-{
-  "name": "com.example.bmailapp",
-  "description": "BMail App Native Host",
-  "path": "/Applications/BMailApp.app/Contents/MacOS/BMailApp",
-  "type": "stdio",
-  "allowed_origins": [
-    "chrome-extension://your_extension_id/"
-  ]
-}
