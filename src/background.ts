@@ -104,7 +104,7 @@ alarms.onAlarm.addListener(timerTaskWork);
 
 async function timerTaskWork(alarm: any): Promise<void> {
     if (alarm.name === __alarm_name__) {
-        console.log("[service work] Alarm Triggered!");
+        // console.log("[service work] Alarm Triggered!");
     }
 }
 
@@ -467,7 +467,6 @@ async function downloadQQAttachment(url: string) {
         return;
     }
     initiatedDownloadUrls.add(url);
-
     const response = await fetch(url, {
         method: 'GET',
         credentials: 'include', // 如果需要携带 Cookie
@@ -512,7 +511,7 @@ browser.downloads.onChanged.addListener(async (delta) => {
 
     const items = await browser.downloads.search({id: downloadId});
     const downloadFile = items[0];
-    // console.log("----------->>> Downloaded file: ", downloadFile);
+    console.log("----------->>> Downloaded file: ", downloadFile);
 
     const fileName = downloadFile.filename;
     if (!fileName) {
@@ -528,15 +527,19 @@ browser.downloads.onChanged.addListener(async (delta) => {
         return;
     }
 
+    await sendMsgToContent({action: MsgType.BMailDownload, fileName: fileName})
+
+    targetDownloadIds.delete(downloadId);
+});
+
+async function sendMsgToContent(message: any) {
     const tabs = await browser.tabs.query({active: true, currentWindow: true});
     if (!tabs[0]) {
         return;
     }
 
-    await browser.tabs.sendMessage(tabs[0].id!, {action: MsgType.BMailDownload, fileName: fileName});
-
-    targetDownloadIds.delete(downloadId);
-});
+    await browser.tabs.sendMessage(tabs[0].id!, message);
+}
 
 let processedDownloads = new Set();
 
@@ -550,27 +553,30 @@ async function handleExistingDownloads() {
 
 handleExistingDownloads().then();
 
+browser.contextMenus.create({
+    id: "myMenuItem",
+    title: "我的自定义菜单",
+    contexts: ["all"] // 你可以根据需求调整上下文
+});
 
-// function checkEagleStatus() {
-//     chrome.runtime.sendNativeMessage(
-//         "com.eagle.native",  // JSON 注册的 name
-//         { command: "ping" }, // 发送 ping 请求
-//         (response) => {
-//             if (chrome.runtime.lastError) {
-//                 const errorMessage = chrome.runtime.lastError.message;
-//
-//                 if (errorMessage.includes("Specified native messaging host not found")) {
-//                     console.warn("Eagle is NOT installed.");
-//                     showInstallPrompt();  // 引导用户安装 Eagle
-//                 } else if (errorMessage.includes("Native host has exited")) {
-//                     console.warn("Eagle is installed but NOT running.");
-//                     showOpenEagleDialog();  // 提示用户启动 Eagle
-//                 } else {
-//                     console.warn("Unknown error:", errorMessage);
-//                 }
-//             } else {
-//                 console.log("Eagle is running:", response);
-//             }
-//         }
-//     );
-// }
+const hostName = "com.yushian.bmail.helper";
+browser.contextMenus.onClicked.addListener(async (info, tab) => {
+
+    if (info.menuItemId === "myMenuItem") {
+        try {
+            const msg = {command: "sendImage", imgUrl: "https://example.com/image.jpg"};
+            const result = await browser.runtime.sendNativeMessage(hostName, msg);
+            console.log("收到宿主程序的响应：", result);
+        } catch (err) {
+            console.log("调用 Native Message 失败：", err);
+            if (err instanceof Error && err.message.includes("Native host has exited")) {
+                await sendMsgToContent({
+                    action: MsgType.LocalAppNotRun,
+                    message: "UI 应用未启动，请先启动 UI 应用再进行消息交换。"
+                })
+            } else if (err instanceof Error && err.message.includes("Specified native messaging host not found")) {
+                await sendMsgToContent({action: MsgType.LocalAppNotInstall, message: "UI 应用未安装，请下载安装：url。"})
+            }
+        }
+    }
+});

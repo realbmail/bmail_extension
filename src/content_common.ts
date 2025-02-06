@@ -102,6 +102,27 @@ export function showTipsDialog(title: string, message: string, callback?: () => 
     dialog.style.display = "block";
 }
 
+export function showConfirmDialog(message: string, callback?: () => Promise<void>) {
+    const dialog = document.getElementById("dialog-confirm-container") as HTMLElement
+    if (!dialog) {
+        return;
+    }
+    dialog.querySelector(".dialog-confirm-tips")!.textContent = message;
+
+    dialog.querySelector(".dialog-confirm-ok")?.addEventListener("click", async () => {
+        if (callback) {
+            await callback();
+        }
+        dialog.style.display = "none";
+    })
+
+    dialog.querySelector(".dialog-confirm-no")?.addEventListener("click", () => {
+        dialog.style.display = "none";
+    })
+
+    dialog.style.display = "block";
+}
+
 
 export function checkFrameBody(fBody: HTMLElement, btn: HTMLElement) {
     let textContent = fBody.textContent?.trim();

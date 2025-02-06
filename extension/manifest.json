@@ -23,7 +23,8 @@
     "tabs",
     "alarms",
     "downloads",
-    "nativeMessaging"
+    "nativeMessaging",
+    "contextMenus"
   ],
   "host_permissions": [
     "https://bmail.simplenets.org/*"

@@ -5,7 +5,7 @@ import {
     parseContentHtml,
     parseEmailToBmail,
     readCurrentMailAddress,
-    setupEmailAddressByInjection
+    setupEmailAddressByInjection, showConfirmDialog
 } from "./content_common";
 import {sendMessageToBackground} from "./utils";
 
@@ -214,6 +214,14 @@ browser.runtime.onMessage.addListener((request, _sender, sendResponse: (response
             }
             provider.processAttachmentDownload(request.fileName, request.attachment).then();
             sendResponse({success: true});
+            break;
+
+        case MsgType.LocalAppNotRun:
+            showConfirmDialog(request.message)
+            break;
+
+        case MsgType.LocalAppNotInstall:
+            showConfirmDialog(request.message)
             break;
     }
     return true;
