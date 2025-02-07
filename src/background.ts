@@ -554,28 +554,34 @@ async function handleExistingDownloads() {
 handleExistingDownloads().then();
 
 browser.contextMenus.create({
-    id: "myMenuItem",
-    title: "我的自定义菜单",
-    contexts: ["all"] // 你可以根据需求调整上下文
+    id: "openBmailLocalApp",
+    title: "Open BMail App",
+    contexts: ["all"],
+    documentUrlPatterns: [
+        "*://mail.google.com/*",
+        "*://outlook.live.com/*",
+        "*://*.mail.qq.com/*",
+        "*://*.mail.163.com/*",
+        "*://*.mail.126.com/*",
+    ]
 });
 
 const hostName = "com.yushian.bmail.helper";
 browser.contextMenus.onClicked.addListener(async (info, tab) => {
 
-    if (info.menuItemId === "myMenuItem") {
+    if (info.menuItemId === "openBmailLocalApp") {
         try {
-            const msg = {command: "sendImage", imgUrl: "https://example.com/image.jpg"};
+            const msg = {command: "openApp", data: ""};
             const result = await browser.runtime.sendNativeMessage(hostName, msg);
-            console.log("收到宿主程序的响应：", result);
+            console.log("------>>>收到宿主程序的响应：", result);
         } catch (err) {
-            console.log("调用 Native Message 失败：", err);
+            console.log("------>>>调用 Native Message 失败：", err);
             if (err instanceof Error && err.message.includes("Native host has exited")) {
                 await sendMsgToContent({
-                    action: MsgType.LocalAppNotRun,
-                    message: "UI 应用未启动，请先启动 UI 应用再进行消息交换。"
+                    action: MsgType.LocalAppNotRun
                 })
             } else if (err instanceof Error && err.message.includes("Specified native messaging host not found")) {
-                await sendMsgToContent({action: MsgType.LocalAppNotInstall, message: "UI 应用未安装，请下载安装：url。"})
+                await sendMsgToContent({action: MsgType.LocalAppNotInstall})
             }
         }
     }

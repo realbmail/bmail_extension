@@ -433,5 +433,17 @@
   },
   "user_consent_tips": {
     "message": "Si prega di leggere e accettare prima l'avviso per gli utenti."
+  },
+  "local_app_not_run": {
+    "message": "BMail non è in esecuzione"
+  },
+  "start_local_app": {
+    "message": "Avvia BMail"
+  },
+  "local_app_not_install": {
+    "message": "BMail non è installato"
+  },
+  "download_local_app": {
+    "message": "Scarica l'app BMail"
   }
 }

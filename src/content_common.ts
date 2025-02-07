@@ -102,19 +102,28 @@ export function showTipsDialog(title: string, message: string, callback?: () => 
     dialog.style.display = "block";
 }
 
-export function showConfirmDialog(message: string, callback?: () => Promise<void>) {
+export function showConfirmDialog(message: string, confirmTitle?: string, callback?: () => Promise<void>) {
     const dialog = document.getElementById("dialog-confirm-container") as HTMLElement
     if (!dialog) {
         return;
     }
     dialog.querySelector(".dialog-confirm-tips")!.textContent = message;
 
-    dialog.querySelector(".dialog-confirm-ok")?.addEventListener("click", async () => {
+    const confirmBtn = dialog.querySelector(".dialog-confirm-ok") as HTMLElement
+
+    if (confirmTitle) {
+        confirmBtn.textContent = confirmTitle
+    }
+
+    const handler = async (event: Event) => {
         if (callback) {
             await callback();
         }
         dialog.style.display = "none";
-    })
+        confirmBtn.removeEventListener("click", handler);
+    }
+    confirmBtn.addEventListener("click", handler)
+
 
     dialog.querySelector(".dialog-confirm-no")?.addEventListener("click", () => {
         dialog.style.display = "none";

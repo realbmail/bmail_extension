@@ -163,5 +163,17 @@
   },
   "user_consent_tips": {
     "message": "لطفاً ابتدا اعلان کاربر را انتخاب کنید."
+  },
+  "local_app_not_run": {
+    "message": "BMail اجرا نشده است"
+  },
+  "start_local_app": {
+    "message": "اجرای BMail"
+  },
+  "local_app_not_install": {
+    "message": "BMail نصب نشده است"
+  },
+  "download_local_app": {
+    "message": "دانلود اپلیکیشن BMail"
   }
 }

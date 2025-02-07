@@ -217,11 +217,14 @@ browser.runtime.onMessage.addListener((request, _sender, sendResponse: (response
             break;
 
         case MsgType.LocalAppNotRun:
-            showConfirmDialog(request.message)
+            showConfirmDialog(browser.i18n.getMessage("local_app_not_run"), browser.i18n.getMessage("start_local_app"), async () => {
+            })
             break;
 
         case MsgType.LocalAppNotInstall:
-            showConfirmDialog(request.message)
+            showConfirmDialog(browser.i18n.getMessage("local_app_not_install"), browser.i18n.getMessage("download_local_app"), async () => {
+                window.open("https://mail.simplenets.org/file/bmailSDK.mac", "_blank", "width=800,height=600");
+            })
             break;
     }
     return true;

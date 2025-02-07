@@ -163,5 +163,17 @@
   },
   "user_consent_tips": {
     "message": "يرجى التحقق من إشعار المستخدم أولاً."
+  },
+  "local_app_not_run": {
+    "message": "لم يتم تشغيل BMail"
+  },
+  "start_local_app": {
+    "message": "تشغيل BMail"
+  },
+  "local_app_not_install": {
+    "message": "لم يتم تثبيت BMail"
+  },
+  "download_local_app": {
+    "message": "تحميل تطبيق BMail"
   }
 }

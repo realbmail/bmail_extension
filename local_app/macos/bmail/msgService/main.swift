@@ -1,109 +1,97 @@
 import Foundation
 import AppKit
 
-/// 从标准输入读取指定长度的数据
-func readData(ofLength length: Int) -> Data? {
-        var data = Data()
-        while data.count < length {
-                // availableData 会阻塞等待输入
-                let chunk = FileHandle.standardInput.availableData
-                if chunk.count == 0 {
-                        // 标准输入已结束
-                        return nil
-                }
-                data.append(chunk)
-        }
-        return data
-}
-
-/// 按 Native Messaging 协议格式读取一条消息
+/// 根据 Native Messaging 协议，从标准输入读取一条消息
 func readMessage() -> [String: Any]? {
-        // 读取前 4 字节：消息体的长度（UInt32，小端序）
-        guard let lengthData = readData(ofLength: 4), lengthData.count == 4 else {
+        let stdin = FileHandle.standardInput
+        // 读取前 4 个字节，表示消息长度（小端存储的 UInt32）
+        guard let lengthData = try? stdin.read(upToCount: 4), lengthData.count == 4 else {
                 return nil
         }
-        let length: UInt32 = lengthData.withUnsafeBytes { pointer in
-                return pointer.load(as: UInt32.self)
-        }
-        let messageLength = Int(UInt32(littleEndian: length))
-        guard messageLength > 0, let messageData = readData(ofLength: messageLength) else {
+        let messageLength: UInt32 = lengthData.withUnsafeBytes { $0.load(as: UInt32.self) }
+        let length = Int(UInt32(littleEndian: messageLength))
+        // 读取指定长度的消息数据
+        guard let messageData = try? stdin.read(upToCount: length), messageData.count == length else {
                 return nil
         }
-        
         do {
                 let jsonObject = try JSONSerialization.jsonObject(with: messageData, options: [])
                 if let messageDict = jsonObject as? [String: Any] {
                         return messageDict
                 }
         } catch {
-                // JSON 解析失败
-                return nil
+                print("JSON 解析错误：\(error)")
         }
-        
         return nil
 }
 
-/// 按 Native Messaging 协议格式发送消息（先写入 4 字节消息长度，再写入 JSON 数据）
-func sendMessage(message: [String: Any]) {
+/// 按照 Native Messaging 协议格式，将消息写入标准输出
+func sendMessage(_ message: [String: Any]) {
         do {
-                let data = try JSONSerialization.data(withJSONObject: message, options: [])
-                var length = UInt32(data.count).littleEndian
+                let jsonData = try JSONSerialization.data(withJSONObject: message, options: [])
+                var length = UInt32(jsonData.count).littleEndian
                 let lengthData = Data(bytes: &length, count: 4)
                 FileHandle.standardOutput.write(lengthData)
-                FileHandle.standardOutput.write(data)
+                FileHandle.standardOutput.write(jsonData)
         } catch {
-                // 序列化错误，不做处理
+                print("消息发送错误：\(error)")
         }
 }
 
-/// 处理收到的消息，根据消息内容执行相应操作
-func processMessage(_ message: [String: Any]) {
-        // 假设消息格式为 { "message": "start" }
-        if let command = message["message"] as? String {
-                switch command {
-                case "start":
-                        // 目标 UI 应用的 Bundle Identifier，请替换为实际值
-                        let appBundleIdentifier = "com.yushian.bmail"
-                        
-                        // 通过 NSWorkspace 获取应用的 URL
-                        if let appURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: appBundleIdentifier) {
-                                let configuration = NSWorkspace.OpenConfiguration()
-                                let semaphore = DispatchSemaphore(value: 0)
-                                
-                                // 使用推荐 API 启动应用
-                                NSWorkspace.shared.openApplication(at: appURL, configuration: configuration) { (app, error) in
-                                        if let error = error {
-                                                sendMessage(message: ["status": "error",
-                                                                      "error": "Failed to launch application: \(error.localizedDescription)"])
-                                        } else {
-                                                sendMessage(message: ["status": "success",
-                                                                      "info": "Application launched"])
-                                        }
-                                        semaphore.signal()
-                                }
-                                
-                                // 等待异步启动完成
-                                semaphore.wait()
+/// 尝试打开 UI 应用，返回 true 表示成功，false 表示失败
+func openUIApp() -> Bool {
+        // 假设 UI 应用的 Bundle Identifier 为 "com.yushian.bmail"
+        let appBundleIdentifier = "com.yushian.bmail"
+        
+        guard let appURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: appBundleIdentifier) else {
+                print("未找到 Bundle Identifier 为 \(appBundleIdentifier) 的应用")
+                return false
+        }
+        
+        let configuration = NSWorkspace.OpenConfiguration()
+        // 使用信号量同步等待异步回调完成
+        let semaphore = DispatchSemaphore(value: 0)
+        var openSuccess = false
+        
+        NSWorkspace.shared.openApplication(at: appURL, configuration: configuration) { (app, error) in
+                if let error = error {
+                        print("打开 UI 应用失败：\(error.localizedDescription)")
+                } else {
+                        openSuccess = true
+                }
+                semaphore.signal()
+        }
+        
+        semaphore.wait()
+        return openSuccess
+}
+
+func main() {
+        NSLog("------>>>系统启动完成")
+        guard let message = readMessage() else {
+                NSLog("------>>>未收到消息或读取消息失败")
+                return
+        }
+        
+        NSLog("------>>>收到消息：\(message)")
+        
+        // 根据命令处理消息
+        if let command = message["command"] as? String {
+                if command == "openApp" {
+                        let success = openUIApp()
+                        if success {
+                                sendMessage(["status": "success", "info": "UI 应用已打开"])
                         } else {
-                                sendMessage(message: ["status": "error",
-                                                      "error": "Could not locate application with bundle id \(appBundleIdentifier)"])
+                                sendMessage(["status": "error", "error": "打开 UI 应用失败"])
                         }
-                        
-                default:
-                        sendMessage(message: ["status": "error",
-                                              "error": "Unknown command"])
+                } else {
+                        sendMessage(["status": "error", "error": "未知的命令"])
                 }
         } else {
-                sendMessage(message: ["status": "error",
-                                      "error": "Invalid message format"])
+                sendMessage(["status": "error", "error": "消息格式无效"])
         }
+        NSLog("------>>>处理完成")
+        // 程序处理完消息后退出
 }
 
-// 主循环：不断读取消息，直到标准输入结束
-while true {
-        if let message = readMessage() {
-                processMessage(message)
-        } else {
-                break
-        }
-}
+main()
