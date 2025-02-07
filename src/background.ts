@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
 import browser, {Runtime} from "webextension-polyfill";
-import {closeDatabase} from "./database";
+import {closeDatabase, initDatabase} from "./database";
 import {resetStorage, sessionGet, sessionSet} from "./session_storage";
 import {MailAddress, MailKey} from "./wallet";
 import {BMRequestToSrv, decodeHex, extractJsonString, extractNameFromUrl} from "./utils";
@@ -14,10 +14,11 @@ import {
     MsgType,
     WalletStatus
 } from "./consts";
-import {extractAesKeyId} from "./content_common";
+import {extractAesKeyId, sendMsgToContent} from "./content_common";
 import {openWallet, updateIcon} from "./wallet_util";
 import {getAdminAddress} from "./setting";
 import {parseEmailTemplate} from "./main_common";
+import {AddMenuListener, createContextMenu} from "./local_app";
 
 const runtime = browser.runtime;
 const alarms = browser.alarms;
@@ -123,6 +124,10 @@ self.addEventListener('activate', (event) => {
     const manifestData = browser.runtime.getManifest();
     initMailBodyVersion(manifestData.version);
     updateIcon(false);
+    initDatabase().then(r => {
+        createContextMenu().then()
+        AddMenuListener();
+    });
 });
 
 runtime.onInstalled.addListener((details: Runtime.OnInstalledDetailsType) => {
@@ -532,15 +537,6 @@ browser.downloads.onChanged.addListener(async (delta) => {
     targetDownloadIds.delete(downloadId);
 });
 
-async function sendMsgToContent(message: any) {
-    const tabs = await browser.tabs.query({active: true, currentWindow: true});
-    if (!tabs[0]) {
-        return;
-    }
-
-    await browser.tabs.sendMessage(tabs[0].id!, message);
-}
-
 let processedDownloads = new Set();
 
 async function handleExistingDownloads() {
@@ -552,37 +548,3 @@ async function handleExistingDownloads() {
 }
 
 handleExistingDownloads().then();
-
-browser.contextMenus.create({
-    id: "openBmailLocalApp",
-    title: "Open BMail App",
-    contexts: ["all"],
-    documentUrlPatterns: [
-        "*://mail.google.com/*",
-        "*://outlook.live.com/*",
-        "*://*.mail.qq.com/*",
-        "*://*.mail.163.com/*",
-        "*://*.mail.126.com/*",
-    ]
-});
-
-const hostName = "com.yushian.bmail.helper";
-browser.contextMenus.onClicked.addListener(async (info, tab) => {
-
-    if (info.menuItemId === "openBmailLocalApp") {
-        try {
-            const msg = {command: "openApp", data: ""};
-            const result = await browser.runtime.sendNativeMessage(hostName, msg);
-            console.log("------>>>收到宿主程序的响应：", result);
-        } catch (err) {
-            console.log("------>>>调用 Native Message 失败：", err);
-            if (err instanceof Error && err.message.includes("Native host has exited")) {
-                await sendMsgToContent({
-                    action: MsgType.LocalAppNotRun
-                })
-            } else if (err instanceof Error && err.message.includes("Specified native messaging host not found")) {
-                await sendMsgToContent({action: MsgType.LocalAppNotInstall})
-            }
-        }
-    }
-});

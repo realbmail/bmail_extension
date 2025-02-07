@@ -39,7 +39,6 @@ async function openAllWallets(): Promise<void> {
         await sessionSet(__dbKey_cur_addr, mAddr);
         inputElement.value = '';
         showView('#onboarding/main-dashboard', router);
-
     } catch (e) {
         console.log("------------>>> failed to open wallet:=>", e);
         const err = e as Error;

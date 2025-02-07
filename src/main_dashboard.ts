@@ -19,7 +19,6 @@ import browser from "webextension-polyfill";
 import {__dbKey_cur_addr, API_Active_Account, MsgType} from "./consts";
 import {closeWallet} from "./wallet_util";
 import {getAdminAddress} from "./setting";
-import {initMailBodyVersion} from "./bmail_body";
 
 export function initDashBoard(): void {
     const container = document.getElementById("view-main-dashboard") as HTMLDivElement;

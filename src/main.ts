@@ -1,7 +1,5 @@
 import browser from "webextension-polyfill";
-import {
-    showView
-} from "./utils";
+import {showView} from "./utils";
 import {checkAndInitDatabase, initDatabase} from "./database";
 import {translateMainPage} from "./local";
 import {getSystemSetting} from "./setting";
@@ -9,10 +7,10 @@ import {sessionGet} from "./session_storage";
 import {router} from "./main_common";
 import {initLoginDiv} from "./main_login";
 import {initDashBoard} from "./main_dashboard";
-import {WalletStatus} from "./consts";
+import {__dbKey_cur_key, __key_wallet_status, WalletStatus} from "./consts";
 import {loadWalletJsonFromDB} from "./wallet";
-import {__dbKey_cur_key, __key_wallet_status} from "./consts";
 import {initSetting} from "./main_setting";
+import {createContextMenu} from "./local_app";
 
 document.addEventListener("DOMContentLoaded", initBMailExtension as EventListener);
 
@@ -29,7 +27,6 @@ async function initBMailExtension(): Promise<void> {
 async function checkBackgroundStatus(): Promise<void> {
 
     const status = await checkWalletStatus();
-
     switch (status) {
         case WalletStatus.NoWallet:
             browser.tabs.create({

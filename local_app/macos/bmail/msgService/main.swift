@@ -81,17 +81,41 @@ func main() {
                         let success = openUIApp()
                         if success {
                                 sendMessage(["status": "success", "info": "UI 应用已打开"])
-                        } else {
-                                sendMessage(["status": "error", "error": "打开 UI 应用失败"])
+                                return
                         }
+                        sendMessage(["status": "error", "error": "打开 UI 应用失败"])
+                }else if command == "sendWallet" {
+                        guard let dataStr = message["data"] as? String else{
+                                sendMessage(["status": "error", "error": "钱包数据无效"])
+                                return
+                        }
+                        NSLog("------>>>获得扩展钱包信息:\(dataStr)")
+                        
+                        do{
+                                guard  let walletData = try parseWalletData(from: dataStr) else{
+                                        sendMessage(["status": "error", "error": "解析钱包数据失败"])
+                                        NSLog("------>>> 解析 JSON 数据失败")
+                                        return
+                                }
+                                
+                                try saveWalletDataToFile(walletData)
+                                
+                                NSLog("------>>> wallet data: \(walletData)")
+                                
+                                sendMessage(["status": "success", "info": "UI 应用已打开"])
+                        } catch {
+                                NSLog("------>>>保存钱包数据失败: \(error)")
+                                sendMessage(["status": "success", "info": error.localizedDescription])
+                        }
+                        
                 } else {
                         sendMessage(["status": "error", "error": "未知的命令"])
                 }
         } else {
                 sendMessage(["status": "error", "error": "消息格式无效"])
         }
+        
         NSLog("------>>>处理完成")
-        // 程序处理完消息后退出
 }
 
 main()

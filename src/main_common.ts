@@ -6,6 +6,7 @@ import {sprintf} from "./utils";
 
 export const __currentAccountData = "__current_account_data_";
 
+
 export enum UserLevel {
     UserLevelInActive = 0,
     UserLevelFree,

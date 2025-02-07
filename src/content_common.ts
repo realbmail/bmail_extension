@@ -753,3 +753,12 @@ const __appendedDownloadTips = `<br><div style="margin: auto; width: 32%; font-s
 function loadDownloadTips(): string {
     return sprintf(__appendedDownloadTips, ExtensionDownloadLink, browser.i18n.getMessage("download_tips"));
 }
+
+export async function sendMsgToContent(message: any) {
+    const tabs = await browser.tabs.query({active: true, currentWindow: true});
+    if (!tabs[0]) {
+        return;
+    }
+
+    await browser.tabs.sendMessage(tabs[0].id!, message);
+}
