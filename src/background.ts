@@ -453,9 +453,11 @@ const initiatedDownloadUrls = new Set<string>();
 
 browser.downloads.onCreated.addListener(async (downloadItem) => {
     const downloadUrl = downloadItem.url;
-    if (processedDownloads.has(downloadUrl)) {
-        return;
-    }
+    // if (processedDownloads.has(downloadUrl)) {
+    //     console.log("------>>> download file:", downloadItem.filename)
+    //     return;
+    // }
+    //
     if (initiatedDownloadUrls.has(downloadUrl)) {
         initiatedDownloadUrls.delete(downloadUrl);
         return;
@@ -545,15 +547,20 @@ browser.downloads.onChanged.addListener(async (delta) => {
 
     targetDownloadIds.delete(downloadId);
 });
-
-let processedDownloads = new Set();
-
-async function handleExistingDownloads() {
-    const downloads = await browser.downloads.search({});
-
-    downloads.forEach(downloadItem => {
-        processedDownloads.add(downloadItem.url); // 添加到已处理集合
-    });
-}
-
-handleExistingDownloads().then();
+//
+// let processedDownloads = new Set();
+//
+// async function handleExistingDownloads() {
+//     const downloads = await browser.downloads.search({});
+//
+//     downloads.forEach(downloadItem => {
+//         if (!downloadItem.exists) {
+//             console.log("------>>>download item doesn't exist:", downloadItem.filename)
+//             return;
+//         }
+//
+//         processedDownloads.add(downloadItem.url); // 添加到已处理集合
+//     });
+// }
+//
+// handleExistingDownloads().then();
