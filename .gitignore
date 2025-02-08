@@ -18,3 +18,5 @@ resources/.arch-internal-preview.css
 /package-lock.json
 /src/proto/bmail_srv.ts
 /extension/html/test.html
+/local_app/macos/bmail/BMailApp.xcodeproj/project.xcworkspace/xcuserdata/hyperorchid.xcuserdatad/UserInterfaceState.xcuserstate
+/local_app/macos/bmail/BMailApp.xcodeproj/project.xcworkspace/xcuserdata/wesley.xcuserdatad/UserInterfaceState.xcuserstate
