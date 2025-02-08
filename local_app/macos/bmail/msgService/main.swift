@@ -1,6 +1,10 @@
 import Foundation
 import AppKit
 
+let AppShareDir = "BMailApp"
+let WalletFile = "walletData.json"
+let AttachmentDir = "Attachment"
+
 /// 根据 Native Messaging 协议，从标准输入读取一条消息
 func readMessage() -> [String: Any]? {
         let stdin = FileHandle.standardInput
@@ -108,11 +112,25 @@ func main() {
                                 sendMessage(["status": "success", "info": error.localizedDescription])
                         }
                         
+                } else if command == "moveFile" {
+                        guard let filePath = message["filePath"] as? String  else{
+                                sendMessage(["status": "error", "error": "未知的命令"])
+                                return
+                        }
+                        let sourceURL = URL(fileURLWithPath: filePath)
+                        do {
+                                let destinationURL = try destinationURL(for: sourceURL)
+                                try FileManager.default.moveItem(at: sourceURL, to: destinationURL)
+                                sendMessage(["status": "success"])
+                        } catch {
+                                sendMessage(["status": "error", "error": error.localizedDescription])
+                        }
+                        
                 } else {
-                        sendMessage(["status": "error", "error": "未知的命令"])
+                        sendMessage(["status": "error", "error": "消息格式无效"])
                 }
-        } else {
-                sendMessage(["status": "error", "error": "消息格式无效"])
+                
+                NSLog("------>>>处理完成")
         }
         
         NSLog("------>>>处理完成")

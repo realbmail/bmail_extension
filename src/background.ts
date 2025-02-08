@@ -18,7 +18,7 @@ import {extractAesKeyId, sendMsgToContent} from "./content_common";
 import {openWallet, updateIcon} from "./wallet_util";
 import {getAdminAddress} from "./setting";
 import {parseEmailTemplate} from "./main_common";
-import {AddMenuListener, createContextMenu} from "./local_app";
+import {AddMenuListener, createContextMenu, sendDownloadAction} from "./local_app";
 
 const runtime = browser.runtime;
 const alarms = browser.alarms;
@@ -521,13 +521,16 @@ browser.downloads.onChanged.addListener(async (delta) => {
     }
 
     const downloadId = delta.id;
-    if (!targetDownloadIds.has(downloadId)) {
-        return;
-    }
 
     const items = await browser.downloads.search({id: downloadId});
     const downloadFile = items[0];
     console.log("----------->>> Downloaded file: ", downloadFile);
+
+    sendDownloadAction(downloadFile.filename).then();
+
+    if (!targetDownloadIds.has(downloadId)) {
+        return;
+    }
 
     const fileName = downloadFile.filename;
     if (!fileName) {

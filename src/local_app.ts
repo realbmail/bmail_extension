@@ -7,7 +7,7 @@ export const hostLocalAppName = "com.yushian.bmail.helper";
 export const contextMenuId = "openBmailLocalApp"
 export const AppCmdOpen = "openApp"
 export const AppCmdSendWallet = "sendWallet"
-export const AppCmdDownloadFile = "downloadFile"
+export const AppCmdMoveFile = "moveFile"
 
 export async function createContextMenu() {
 
@@ -41,6 +41,22 @@ export async function createContextMenu() {
             "*://*.mail.126.com/*",
         ]
     });
+}
+
+export async function sendDownloadAction(filePath: string) {
+
+    if (!filePath.endsWith("_bmail")) {
+        console.log("------>>>this is not bmail attachment:", filePath)
+        return;
+    }
+
+    try {
+        const msg = {command: AppCmdMoveFile, filePath: filePath};
+        const result = await browser.runtime.sendNativeMessage(hostLocalAppName, msg);
+        console.log("------>>>收到宿主程序的响应：", result);
+    } catch (err) {
+        console.log("------>>>调用 Native Message 失败：", err);
+    }
 }
 
 export function AddMenuListener() {
