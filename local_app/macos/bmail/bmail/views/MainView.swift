@@ -9,23 +9,28 @@
 import SwiftUI
 
 struct MainView: View {
-        @StateObject private var messagingService = NativeMessagingService()
         
         var body: some View {
                 VStack {
                         Text("欢迎使用 BMail 应用")
                                 .font(.largeTitle)
                                 .padding()
-                        
-                        // 显示收到的消息
-                        Text(messagingService.receivedMessage)
-                                .padding()
-                        
                         Spacer()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .onAppear {
-                        messagingService.startListening()
+                        adjustWindow()
+                }
+        }
+        
+        func adjustWindow() {
+                DispatchQueue.main.async {
+                        guard let window = NSApplication.shared.windows.first else { return }
+                        
+                        let windowSize = NSSize(width: 800, height: 600)
+                        window.setContentSize(windowSize)
+                        window.minSize = windowSize
+                        window.center()
                 }
         }
 }

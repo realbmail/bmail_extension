@@ -20,7 +20,7 @@ func readMessage() -> [String: Any]? {
                         return messageDict
                 }
         } catch {
-                print("JSON 解析错误：\(error)")
+                NSLog("------>>>JSON 解析错误：\(error)")
         }
         return nil
 }
@@ -34,7 +34,7 @@ func sendMessage(_ message: [String: Any]) {
                 FileHandle.standardOutput.write(lengthData)
                 FileHandle.standardOutput.write(jsonData)
         } catch {
-                print("消息发送错误：\(error)")
+                NSLog("------>>>消息发送错误：\(error)")
         }
 }
 
@@ -44,7 +44,7 @@ func openUIApp() -> Bool {
         let appBundleIdentifier = "com.yushian.bmail"
         
         guard let appURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: appBundleIdentifier) else {
-                print("未找到 Bundle Identifier 为 \(appBundleIdentifier) 的应用")
+                NSLog("------>>>未找到 Bundle Identifier 为 \(appBundleIdentifier) 的应用")
                 return false
         }
         
@@ -55,7 +55,7 @@ func openUIApp() -> Bool {
         
         NSWorkspace.shared.openApplication(at: appURL, configuration: configuration) { (app, error) in
                 if let error = error {
-                        print("打开 UI 应用失败：\(error.localizedDescription)")
+                        NSLog("------>>>打开 UI 应用失败：\(error.localizedDescription)")
                 } else {
                         openSuccess = true
                 }

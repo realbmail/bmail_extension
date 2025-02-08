@@ -80,3 +80,24 @@ func saveWalletDataToFile(_ walletData: WalletData) throws{
         try data.write(to: fileURL)
         NSLog("------>>> 钱包数据已保存到: \(fileURL.path)")
 }
+
+
+func loadBmailWallet() throws -> WalletData {
+        let fileManager = FileManager.default
+        // 获取 Application Support 目录
+        let appSupportDir = try fileManager.url(for: .applicationSupportDirectory,
+                                                in: .userDomainMask,
+                                                appropriateFor: nil,
+                                                create: false)
+        // 拼接子目录 "BMailApp"
+        let targetDir = appSupportDir.appendingPathComponent("BMailApp", isDirectory: true)
+        // 拼接文件 "walletData.json"
+        let fileURL = targetDir.appendingPathComponent("walletData.json")
+        
+        // 读取文件数据
+        let data = try Data(contentsOf: fileURL)
+        let decoder = JSONDecoder()
+        // 解析 JSON 数据为 WalletData 对象
+        let walletData = try decoder.decode(WalletData.self, from: data)
+        return walletData
+}

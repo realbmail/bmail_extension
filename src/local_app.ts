@@ -40,7 +40,6 @@ export async function createContextMenu() {
             "*://*.mail.126.com/*",
         ]
     });
-    console.log("------>>> add context menu success")
 }
 
 export function AddMenuListener() {

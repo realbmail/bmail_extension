@@ -55,6 +55,13 @@
 			);
 			target = 2B224AD92D50B97200F3E892 /* BMailApp */;
 		};
+		696ABE0A2D56E2AB0013F28F /* Exceptions for "msgService" folder in "BMailApp" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				WalletData.swift,
+			);
+			target = 2B224AD92D50B97200F3E892 /* BMailApp */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
@@ -75,6 +82,9 @@
 		};
 		2B3FB4BF2D51F9DB00A0DF15 /* msgService */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				696ABE0A2D56E2AB0013F28F /* Exceptions for "msgService" folder in "BMailApp" target */,
+			);
 			path = msgService;
 			sourceTree = "<group>";
 		};
