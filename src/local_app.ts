@@ -7,6 +7,7 @@ export const hostLocalAppName = "com.yushian.bmail.helper";
 export const contextMenuId = "openBmailLocalApp"
 export const AppCmdOpen = "openApp"
 export const AppCmdSendWallet = "sendWallet"
+export const AppCmdDownloadFile = "downloadFile"
 
 export async function createContextMenu() {
 

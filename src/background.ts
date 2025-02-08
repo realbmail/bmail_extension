@@ -124,6 +124,13 @@ self.addEventListener('activate', (event) => {
     const manifestData = browser.runtime.getManifest();
     initMailBodyVersion(manifestData.version);
     updateIcon(false);
+
+    initDatabase().then(r => {
+        createContextMenu().then()
+        AddMenuListener();
+        console.log("------>>> context menu setup success")
+    });
+
 });
 
 runtime.onInstalled.addListener((details: Runtime.OnInstalledDetailsType) => {
