@@ -12,7 +12,7 @@ struct LoginView: View {
         var body: some View {
                 ZStack {
                         if isLoggedIn {
-                                MainView()
+                                MainView(isLoggedIn: $isLoggedIn)
                         } else {
                                 loginContent
                         }
@@ -23,11 +23,17 @@ struct LoginView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .onAppear {
+                        adjustWindow()
                         if let storedAddress = loadBmailAddress() {
                                 bmailAddress = storedAddress
                         }
                 }.onChange(of: isLoading) { oldValue, newValue in
                         disableInput = newValue
+                }.onChange(of: isLoggedIn) { oldValue, newValue in
+                        NSLog("------>>> isLoggedIn is:\(newValue)")
+                        if newValue == false{
+                                adjustWindow()
+                        }
                 }
         }
         
@@ -82,7 +88,7 @@ struct LoginView: View {
         private func login() {
                 NSLog("------>>> login ......")
                 isLoading = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 12) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                         if password == "1" {
                                 isLoggedIn = true
                         } else {
@@ -100,6 +106,17 @@ struct LoginView: View {
                 } catch {
                         print("------>>> 加载钱包数据失败：\(error)")
                         return nil
+                }
+        }
+        
+        func adjustWindow() {
+                DispatchQueue.main.async {
+                        NSLog("------>>> adjust login window......")
+                        guard let window = NSApplication.shared.windows.first else { return }
+                        let windowSize = NSSize(width: 400, height: 600)
+                        window.setContentSize(windowSize)
+                        window.minSize = windowSize
+                        window.center()
                 }
         }
 }
