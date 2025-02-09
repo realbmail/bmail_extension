@@ -24,13 +24,11 @@ export async function createContextMenu() {
             console.log("------>>>context menu: local app run failed:", result.info);
             return
         }
-        addContextMenu()
     } catch (err) {
         console.log("------>>>context menu: 调用 Native Message 失败：", err);
-        // if (err instanceof Error && err.message.includes("Specified native messaging host not found")) {
-        //     return
-        // }
     }
+
+    addContextMenu()
 }
 
 function addContextMenu() {
@@ -74,6 +72,10 @@ export function AddMenuListener() {
                 console.log("------>>>收到宿主程序的响应：", result);
             } catch (err) {
                 console.log("------>>>调用 Native Message 失败：", err);
+                if (err instanceof Error && err.message.includes("messaging host not found")) {
+                    await sendMsgToContent({action: MsgType.LocalAppNotInstall, message: ""})
+                    return
+                }
             }
         }
     });

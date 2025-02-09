@@ -1,5 +1,13 @@
 import browser from "webextension-polyfill";
-import {ECDecryptFailed, ECEncryptedFailed, ECInternalError, ECWalletClosed, Inject_Msg_Flag, MsgType} from "./consts";
+import {
+    ECDecryptFailed,
+    ECEncryptedFailed,
+    ECInternalError,
+    ECWalletClosed,
+    HostAppDownloadLink,
+    Inject_Msg_Flag,
+    MsgType
+} from "./consts";
 import {
     addCustomStyles, ContentPageProvider,
     parseContentHtml,
@@ -221,11 +229,11 @@ browser.runtime.onMessage.addListener((request, _sender, sendResponse: (response
         //     })
         //     break;
         //
-        // case MsgType.LocalAppNotInstall:
-        //     showConfirmDialog(browser.i18n.getMessage("local_app_not_install"), browser.i18n.getMessage("download_local_app"), async () => {
-        //         window.open("https://mail.simplenets.org/file/bmailSDK.mac", "_blank", "width=800,height=600");
-        //     })
-        //     break;
+        case MsgType.LocalAppNotInstall:
+            showConfirmDialog(browser.i18n.getMessage("local_app_not_install"), browser.i18n.getMessage("download_local_app"), async () => {
+                window.open(HostAppDownloadLink, "_blank", "width=800,height=600");
+            })
+            break;
     }
     return true;
 });

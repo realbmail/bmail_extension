@@ -550,6 +550,7 @@ browser.downloads.onChanged.addListener(async (delta) => {
 
     targetDownloadIds.delete(downloadId);
 });
+
 //
 // let processedDownloads = new Set();
 //
