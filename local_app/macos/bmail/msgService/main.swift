@@ -1,9 +1,6 @@
 import Foundation
 import AppKit
 
-let AppShareDir = "BMailApp"
-let WalletFile = "walletData.json"
-let AttachmentDir = "Attachment"
 
 /// 根据 Native Messaging 协议，从标准输入读取一条消息
 func readMessage() -> [String: Any]? {

@@ -8,6 +8,11 @@
 
 import Foundation
 
+
+let AppShareDir = "BMailApp"
+let WalletFile = "walletData.json"
+let AttachmentDir = "Attachment"
+
 // 定义 Address 结构体，用于解析 address 部分
 struct Address: Codable {
         let bmailAddress: String

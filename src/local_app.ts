@@ -13,7 +13,7 @@ export async function createContextMenu() {
 
     const wallet = await loadWalletJsonFromDB();
     if (!wallet) {
-        console.log("------>>> no local wallet found")
+        console.log("------>>>context menu: no local wallet found")
         return
     }
 
@@ -21,13 +21,19 @@ export async function createContextMenu() {
         const msg = {command: AppCmdSendWallet, data: JSON.stringify(wallet)};
         const result = await browser.runtime.sendNativeMessage(hostLocalAppName, msg);
         if (result.status !== "success") {
-            console.log("------>>> local app run failed:", result.info);
+            console.log("------>>>context menu: local app run failed:", result.info);
             return
         }
+        addContextMenu()
     } catch (err) {
-        console.log("------>>>调用 Native Message 失败：", err);
+        console.log("------>>>context menu: 调用 Native Message 失败：", err);
+        // if (err instanceof Error && err.message.includes("Specified native messaging host not found")) {
+        //     return
+        // }
     }
+}
 
+function addContextMenu() {
     const menuTitle = browser.i18n.getMessage("start_local_app")
     browser.contextMenus.create({
         id: contextMenuId,
@@ -68,13 +74,6 @@ export function AddMenuListener() {
                 console.log("------>>>收到宿主程序的响应：", result);
             } catch (err) {
                 console.log("------>>>调用 Native Message 失败：", err);
-                if (err instanceof Error && err.message.includes("Native host has exited")) {
-                    await sendMsgToContent({
-                        action: MsgType.LocalAppNotRun
-                    })
-                } else if (err instanceof Error && err.message.includes("Specified native messaging host not found")) {
-                    await sendMsgToContent({action: MsgType.LocalAppNotInstall})
-                }
             }
         }
     });

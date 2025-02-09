@@ -58,6 +58,7 @@
 		696ABE0A2D56E2AB0013F28F /* Exceptions for "msgService" folder in "BMailApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				fileManger.swift,
 				WalletData.swift,
 			);
 			target = 2B224AD92D50B97200F3E892 /* BMailApp */;
