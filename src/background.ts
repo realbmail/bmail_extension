@@ -74,6 +74,7 @@ runtime.onMessage.addListener((request: any, _sender: Runtime.MessageSender, sen
 
         case MsgType.OpenPlugin:
             browser.action.openPopup().then();
+            sendResponse({success: 1, data: ""});
             return true;
 
         case MsgType.QueryCurBMail:
@@ -85,7 +86,10 @@ runtime.onMessage.addListener((request: any, _sender: Runtime.MessageSender, sen
                 sendResponse({success: true, data: str});
             })
             return true;
-
+        // case MsgType.DecryptDownloadFileSuccess:
+        //     moveBmailFileByHostApp(request.fileName);
+        //     sendResponse({success: 1, data: ""});
+        //     return true;
         default:
             sendResponse({status: false, message: 'unknown action'});
             return;
@@ -125,7 +129,7 @@ self.addEventListener('activate', (event) => {
     initMailBodyVersion(manifestData.version);
     updateIcon(false);
 
-    initDatabase().then(r => {
+    initDatabase().then(() => {
         createContextMenu().then()
         AddMenuListener();
         console.log("------>>> context menu setup success")
@@ -147,7 +151,7 @@ runtime.onStartup.addListener(() => {
     console.log('[service work] Service Worker onStartup......');
     updateIcon(false);
 
-    initDatabase().then(r => {
+    initDatabase().then(() => {
         createContextMenu().then()
         AddMenuListener();
         console.log("------>>> context menu setup success")
@@ -458,15 +462,20 @@ browser.downloads.onCreated.addListener(async (downloadItem) => {
     //     return;
     // }
     //
+
+    // console.log("------>>> new download item:", downloadItem)
+
     if (initiatedDownloadUrls.has(downloadUrl)) {
+        console.log("------>>>duplicate item download:", downloadItem)
         initiatedDownloadUrls.delete(downloadUrl);
         return;
     }
 
     if (downloadUrl.includes("outlook.live.com")) {
         targetDownloadIds.add(downloadItem.id);
+        // console.log("------>>> new download item create:", downloadItem)
     } else if (downloadUrl.includes("mail.qq.com")) {
-        console.log("------>>> qq download url:=>", downloadUrl);
+        // console.log("------>>> qq download url:=>", downloadUrl);
         try {
             await downloadQQAttachment(downloadUrl);
         } catch (e) {
@@ -479,7 +488,7 @@ async function downloadQQAttachment(url: string) {
     const fileName = extractNameFromUrl(url, 'name') || extractNameFromUrl(url, 'filename');
     const parsedId = extractAesKeyId(fileName);
     if (!parsedId) {
-        console.log("------>>> no need to decrypt this file", fileName);
+        console.log("------>>> no need to decrypt this file", fileName, url);
         return;
     }
     initiatedDownloadUrls.add(url);
@@ -508,10 +517,15 @@ async function downloadQQAttachment(url: string) {
             continue;
         }
 
-        await browser.tabs.sendMessage(tab.id!, {
+        const result = await browser.tabs.sendMessage(tab.id!, {
             action: MsgType.BMailDownload,
             attachment: attData,
+            fileName: fileName,
         });
+        // console.log("------>>> qq file download decrypt result:", result)
+        if (result.success) {
+            initiatedDownloadUrls.delete(url);
+        }
     }
 }
 
@@ -524,24 +538,25 @@ browser.downloads.onChanged.addListener(async (delta) => {
 
     const items = await browser.downloads.search({id: downloadId});
     const downloadFile = items[0];
-    console.log("----------->>> Downloaded file: ", downloadFile);
-
-    sendDownloadAction(downloadFile.filename).then();
+    const fileName = downloadFile.filename;
+    console.log("----------->>> downloads on change file name: ", fileName);
+    sendDownloadAction(fileName).then(() => {
+        console.log("----->>> send download action to local host app!")
+    })
 
     if (!targetDownloadIds.has(downloadId)) {
         return;
     }
 
-    const fileName = downloadFile.filename;
     if (!fileName) {
-        console.log("----------->>> file name in download item not found:", delta);
+        // console.log("----------->>> file name in download item not found:", delta);
         targetDownloadIds.delete(downloadId); // 清除已处理的下载 ID
         return;
     }
 
     const bmailFile = extractAesKeyId(fileName);
     if (!bmailFile) {
-        console.log("----------->>> this file is not for bmail :", fileName);
+        // console.log("----------->>> this file is not for bmail :", fileName);
         targetDownloadIds.delete(downloadId); // 清除已处理的下载 ID
         return;
     }
@@ -550,6 +565,9 @@ browser.downloads.onChanged.addListener(async (delta) => {
 
     targetDownloadIds.delete(downloadId);
 });
+
+// function moveBmailFileByHostApp(fileName: string) {
+// }
 
 //
 // let processedDownloads = new Set();

@@ -26,7 +26,6 @@ func createAppDataDirectory()throws -> URL {
                                                 in: .userDomainMask,
                                                 appropriateFor: nil,
                                                 create: true)
-//        let targetDir = appSupportDir.appendingPathComponent("BMailApp/Attachment", isDirectory: true)
         
         let targetDir = appSupportDir
             .appendingPathComponent(AppShareDir, isDirectory: true)

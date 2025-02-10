@@ -15,7 +15,8 @@ export enum MsgType {
     SetEmailByInjection = 'SetEmailByInjection',
     KeepAlive = 'KeepAlive',
     AdminAddress = 'AdminAddress',
-    LocalAppNotInstall = "LocalAppNotInstall"
+    LocalAppNotInstall = "LocalAppNotInstall",
+    // DecryptDownloadFileSuccess = "DecryptDownloadFileSuccess"
 }
 
 export enum WalletStatus {

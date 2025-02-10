@@ -117,8 +117,9 @@ func main() {
                         let sourceURL = URL(fileURLWithPath: filePath)
                         do {
                                 let destinationURL = try destinationURL(for: sourceURL)
+                                NSLog("------>>>filePath \(filePath) source url \(sourceURL.path) dest url \(destinationURL.path)")
                                 try FileManager.default.moveItem(at: sourceURL, to: destinationURL)
-                                sendMessage(["status": "success"])
+                                sendMessage(["status": "success","path":destinationURL.path])
                         } catch {
                                 sendMessage(["status": "error", "error": error.localizedDescription])
                         }
@@ -126,8 +127,6 @@ func main() {
                 } else {
                         sendMessage(["status": "error", "error": "消息格式无效"])
                 }
-                
-                NSLog("------>>>处理完成")
         }
         
         NSLog("------>>>处理完成")

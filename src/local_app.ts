@@ -44,6 +44,10 @@ function addContextMenu() {
             "*://*.mail.163.com/*",
             "*://*.mail.126.com/*",
         ]
+    }, () => {
+        if (browser.runtime.lastError) {
+            console.log("------>>>", browser.runtime.lastError);
+        }
     });
 }
 

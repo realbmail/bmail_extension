@@ -188,7 +188,7 @@ export function extractNameFromUrl(url: string, key: string): string | null {
         const rawParam = match ? match[1] : null;
 
         if (!rawParam) {
-            console.log(`------>>> URL 中未找到参数 ${key}`);
+            // console.log(`------>>> URL 中未找到参数 ${key}`);
             return null;
         }
 

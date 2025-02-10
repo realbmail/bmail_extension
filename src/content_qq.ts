@@ -1015,7 +1015,7 @@ class Provider implements ContentPageProvider {
     }
 
     async processAttachmentDownload(_fileName?: string, attachmentData?: any): Promise<void> {
-        console.log("-------->>>", attachmentData)
+        // console.log("-------->>>", attachmentData)
         await downloadAndDecryptAgain(attachmentData);
     }
 }
