@@ -92,9 +92,7 @@ export function AddMenuListener() {
 }
 
 function removeContextMenu() {
-    browser.contextMenus.remove(contextMenuId).then(r => {
-        console.log("------>>>菜单项 'Open BMail App' 已删除");
-    });
+    browser.contextMenus.remove(contextMenuId).then();
 }
 
 export async function sendAkToLocalApp(id: string, key: string) {
