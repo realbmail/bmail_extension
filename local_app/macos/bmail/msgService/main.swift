@@ -127,6 +127,9 @@ func main() {
                                         return
                                 }
                                 
+                                DistributedNotificationCenter.default().post(name: Notification.Name("FileMovedNotification"),
+                                                                             object: nil,
+                                                                             userInfo: ["path": resultingURL.path])
                                 sendMessage(["status": "success","path":resultingURL.path])
                         } catch {
                                 sendMessage(["status": "error", "error": error.localizedDescription])

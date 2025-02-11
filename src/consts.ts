@@ -16,7 +16,7 @@ export enum MsgType {
     KeepAlive = 'KeepAlive',
     AdminAddress = 'AdminAddress',
     LocalAppNotInstall = "LocalAppNotInstall",
-    // DecryptDownloadFileSuccess = "DecryptDownloadFileSuccess"
+    KeyForLocalApp = "KeyForLocalApp"
 }
 
 export enum WalletStatus {

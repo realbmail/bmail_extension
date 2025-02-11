@@ -19,7 +19,7 @@ struct SidebarView: View {
                         Button(action: {
                                 selectedContent = .mailAttachment
                         }) {
-                                Label("邮件附件", systemImage: "doc.on.doc")
+                                Label("BMail附件", systemImage: "doc.on.doc")
                                         .frame(maxWidth: .infinity, minHeight: 44)
                                         .padding(.vertical, 8)
                                         .padding(.horizontal, 12)

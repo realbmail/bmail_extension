@@ -8,6 +8,7 @@ export const contextMenuId = "openBmailLocalApp"
 export const AppCmdOpen = "openApp"
 export const AppCmdSendWallet = "sendWallet"
 export const AppCmdMoveFile = "moveFile"
+export const AppCmdFileKey = "fileKey"
 
 export async function createContextMenu() {
 
@@ -55,15 +56,20 @@ export async function sendDownloadAction(filePath: string) {
 
     if (!filePath.endsWith("_bmail")) {
         console.log("------>>>this is not bmail attachment:", filePath)
-        return;
+        return null;
     }
 
     try {
         const msg = {command: AppCmdMoveFile, filePath: filePath};
         const result = await browser.runtime.sendNativeMessage(hostLocalAppName, msg);
         console.log("------>>>收到宿主程序的响应：", result);
+        if (result.status === "success") {
+            return result.path;
+        }
+        return null;
     } catch (err) {
         console.log("------>>>调用 Native Message 失败：", err);
+        return null;
     }
 }
 
@@ -89,4 +95,15 @@ function removeContextMenu() {
     browser.contextMenus.remove(contextMenuId).then(r => {
         console.log("------>>>菜单项 'Open BMail App' 已删除");
     });
+}
+
+export async function sendAkToLocalApp(id: string, key: string) {
+    try {
+        const msg = {command: AppCmdFileKey, key: key, id: id};
+        const result = await browser.runtime.sendNativeMessage(hostLocalAppName, msg);
+        console.log("------>>>收到宿主程序的响应：", result);
+
+    } catch (err) {
+        console.log("------>>>调用 Native Message 失败：", err);
+    }
 }

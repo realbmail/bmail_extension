@@ -18,7 +18,7 @@ import {extractAesKeyId, sendMsgToContent} from "./content_common";
 import {openWallet, updateIcon} from "./wallet_util";
 import {getAdminAddress} from "./setting";
 import {parseEmailTemplate} from "./main_common";
-import {AddMenuListener, createContextMenu, sendDownloadAction} from "./local_app";
+import {AddMenuListener, createContextMenu, sendAkToLocalApp, sendDownloadAction} from "./local_app";
 
 const runtime = browser.runtime;
 const alarms = browser.alarms;
@@ -86,10 +86,10 @@ runtime.onMessage.addListener((request: any, _sender: Runtime.MessageSender, sen
                 sendResponse({success: true, data: str});
             })
             return true;
-        // case MsgType.DecryptDownloadFileSuccess:
-        //     moveBmailFileByHostApp(request.fileName);
-        //     sendResponse({success: 1, data: ""});
-        //     return true;
+        case MsgType.KeyForLocalApp:
+            sendAkToLocalApp(request.data.id, request.data.key).then();
+            sendResponse({success: 1, data: ""});
+            return true;
         default:
             sendResponse({status: false, message: 'unknown action'});
             return;
@@ -452,7 +452,7 @@ async function queryCurrentBmailAddress(sendResponse: (response: any) => void) {
     sendResponse({success: 1, data: addr.bmail_address});
 }
 
-const targetDownloadIds = new Set<number>();
+const outlookDownloadItems = new Set<number>();
 const initiatedDownloadUrls = new Set<string>();
 
 browser.downloads.onCreated.addListener(async (downloadItem) => {
@@ -472,7 +472,7 @@ browser.downloads.onCreated.addListener(async (downloadItem) => {
     }
 
     if (downloadUrl.includes("outlook.live.com")) {
-        targetDownloadIds.add(downloadItem.id);
+        outlookDownloadItems.add(downloadItem.id);
         // console.log("------>>> new download item create:", downloadItem)
     } else if (downloadUrl.includes("mail.qq.com")) {
         // console.log("------>>> qq download url:=>", downloadUrl);
@@ -538,30 +538,34 @@ browser.downloads.onChanged.addListener(async (delta) => {
 
     const items = await browser.downloads.search({id: downloadId});
     const downloadFile = items[0];
-    const fileName = downloadFile.filename;
-    console.log("------>>> downloads on change file name: ", fileName);
-    sendDownloadAction(fileName).then();
+    let fileName = downloadFile.filename;
+    // console.log("------>>> downloads on change file name: ", fileName);
+    const newDownloadFilePath = await sendDownloadAction(fileName);
 
-    if (!targetDownloadIds.has(downloadId)) {
+    if (!outlookDownloadItems.has(downloadId)) {
         return;
     }
 
     if (!fileName) {
         // console.log("------>>> file name in download item not found:", delta);
-        targetDownloadIds.delete(downloadId); // 清除已处理的下载 ID
+        outlookDownloadItems.delete(downloadId); // 清除已处理的下载 ID
         return;
     }
 
     const bmailFile = extractAesKeyId(fileName);
     if (!bmailFile) {
         // console.log("------>>> this file is not for bmail :", fileName);
-        targetDownloadIds.delete(downloadId); // 清除已处理的下载 ID
+        outlookDownloadItems.delete(downloadId); // 清除已处理的下载 ID
         return;
+    }
+
+    if (newDownloadFilePath) {
+        fileName = newDownloadFilePath;
     }
 
     await sendMsgToContent({action: MsgType.BMailDownload, fileName: fileName})
 
-    targetDownloadIds.delete(downloadId);
+    outlookDownloadItems.delete(downloadId);
 });
 
 // function moveBmailFileByHostApp(fileName: string) {

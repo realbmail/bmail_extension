@@ -29,7 +29,7 @@ import {
     showLoading
 } from "./utils";
 import {MailFlag} from "./bmail_body";
-import {addAttachmentEncryptBtn, decryptFile, loadAKForReading} from "./content_attachment";
+import {addAttachmentEncryptBtn, AttachmentEncryptKey, decryptFile, loadAKForReading} from "./content_attachment";
 import {AttachmentFileSuffix, MsgType} from "./consts";
 
 function queryEmailAddrOutLook() {
@@ -625,14 +625,9 @@ async function procDownloadFile(filePath?: string) {
         return;
     }
     const fileName = extractFileNameWithExtension(filePath);
-    if (!fileName) {
-        console.log("------>>>  filePath", filePath);
-        return;
-    }
-
     const aekId = extractAesKeyId(fileName);
     if (!aekId) {
-        console.log("----->>> not bmail file:", fileName);
+        console.log("------>>> no file name found for filePath", filePath);
         return;
     }
     const dialog = document.getElementById("bmail-decrypt-dialog") as HTMLElement
@@ -672,6 +667,11 @@ async function decryptDownloadedFile(event: Event, aekId: AttachmentKeyID): Prom
         showTipsDialog("Tips", browser.i18n.getMessage("decrypt_mail_body_first"))
         return;
     }
+
+    sendMessageToBackground({
+        key: AttachmentEncryptKey.toJson(aesKey),
+        id: aekId.id,
+    }, MsgType.KeyForLocalApp).then();
 
     const tempInput = event.target as HTMLInputElement;
     const files = tempInput.files;
