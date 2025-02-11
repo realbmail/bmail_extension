@@ -102,7 +102,6 @@ func main() {
                                 try saveWalletDataToFile(walletData)
                                 
                                 NSLog("------>>> wallet data: \(walletData)")
-                                
                                 sendMessage(["status": "success", "info": "UI 应用已打开"])
                         } catch {
                                 NSLog("------>>>保存钱包数据失败: \(error)")
@@ -118,8 +117,17 @@ func main() {
                         do {
                                 let destinationURL = try destinationURL(for: sourceURL)
                                 NSLog("------>>>filePath \(filePath) source url \(sourceURL.path) dest url \(destinationURL.path)")
-                                try FileManager.default.moveItem(at: sourceURL, to: destinationURL)
-                                sendMessage(["status": "success","path":destinationURL.path])
+                                
+                                let fileManager = FileManager.default
+                                guard let resultingURL = try fileManager.replaceItemAt(destinationURL,
+                                                                                       withItemAt: sourceURL,
+                                                                                       backupItemName: nil,
+                                                                                       options: []) else{
+                                        sendMessage(["status": "error", "error": "覆盖重复文件失败"])
+                                        return
+                                }
+                                
+                                sendMessage(["status": "success","path":resultingURL.path])
                         } catch {
                                 sendMessage(["status": "error", "error": error.localizedDescription])
                         }

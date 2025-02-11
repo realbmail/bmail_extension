@@ -9,7 +9,7 @@ import SwiftUI
 struct SettingView: View {
         var body: some View {
                 VStack {
-                        Text("设置视图")
+                        Text("设置")
                                 .font(.title)
                         Spacer()
                 }

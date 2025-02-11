@@ -42,7 +42,7 @@ struct SidebarView: View {
                         Button(action: {
                                 showLogoutConfirmation = true
                         }) {
-                                Label("退出", systemImage: "arrow.backward.circle")
+                                Label("退出登录", systemImage: "arrow.backward.circle")
                                         .frame(maxWidth: .infinity, minHeight: 44)
                                         .padding(.vertical, 8)
                                         .padding(.horizontal, 12)

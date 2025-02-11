@@ -25,7 +25,7 @@ const alarms = browser.alarms;
 const __alarm_name__: string = '__alarm_name__timer__';
 
 runtime.onMessage.addListener((request: any, _sender: Runtime.MessageSender, sendResponse: (response?: any) => void): true | void => {
-    // console.log("[service work] action :=>", request.action, sender.url);
+    // console.log("------>>> action :=>", request.action, sender.url);
     switch (request.action) {
         case MsgType.KeepAlive:
             sendResponse({status: true});
@@ -35,7 +35,7 @@ runtime.onMessage.addListener((request: any, _sender: Runtime.MessageSender, sen
             browser.action.openPopup().then(() => {
                 sendResponse({success: true});
             }).catch((error) => {
-                console.error("[service work] bmail inbox action failed:", error);
+                console.error("------>>> bmail inbox action failed:", error);
                 sendResponse({success: false, error: error.message});
             });
             return true;
@@ -109,12 +109,12 @@ alarms.onAlarm.addListener(timerTaskWork);
 
 async function timerTaskWork(alarm: any): Promise<void> {
     if (alarm.name === __alarm_name__) {
-        // console.log("[service work] Alarm Triggered!");
+        // console.log("------>>> Alarm Triggered!");
     }
 }
 
 self.addEventListener('install', (event) => {
-    console.log('[service work] Service Worker installing...');
+    console.log('------>>> Service Worker installing...');
     const evt = event as ExtendableEvent;
     evt.waitUntil(createAlarm());
 });
@@ -122,7 +122,7 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
     const extendableEvent = event as ExtendableEvent;
     extendableEvent.waitUntil((self as unknown as ServiceWorkerGlobalScope).clients.claim());
-    console.log('[service work] Service Worker activating......');
+    console.log('------>>> Service Worker activating......');
     resetStorage().then();
 
     const manifestData = browser.runtime.getManifest();
@@ -138,7 +138,7 @@ self.addEventListener('activate', (event) => {
 });
 
 runtime.onInstalled.addListener((details: Runtime.OnInstalledDetailsType) => {
-    console.log("[service work] onInstalled event triggered......");
+    console.log("------>>> onInstalled event triggered......");
     if (details.reason === "install") {
         browser.tabs.create({
             url: runtime.getURL("html/home.html#onboarding/welcome")
@@ -148,7 +148,7 @@ runtime.onInstalled.addListener((details: Runtime.OnInstalledDetailsType) => {
 });
 
 runtime.onStartup.addListener(() => {
-    console.log('[service work] Service Worker onStartup......');
+    console.log('------>>> Service Worker onStartup......');
     updateIcon(false);
 
     initDatabase().then(() => {
@@ -159,7 +159,7 @@ runtime.onStartup.addListener(() => {
 });
 
 runtime.onSuspend.addListener(() => {
-    console.log('[service work] Browser is shutting down, closing IndexedDB...');
+    console.log('------>>> Browser is shutting down, closing IndexedDB...');
     closeDatabase();
 });
 
@@ -199,10 +199,10 @@ async function encryptData(peerAddr: string[], plainTxt: string, sendResponse: (
         }
 
         const mail = encodeMail(peerAddr, plainTxt, mKey, attachment, mailReceiver);
-        // console.log("[service work] encrypted mail body =>", mail);
+        // console.log("------>>> encrypted mail body =>", mail);
         sendResponse({success: true, data: JSON.stringify(mail)});
     } catch (err) {
-        console.log("[service worker]  encrypt data failed:", err)
+        console.log("------>>> encrypt data failed:", err)
         sendResponse({success: -1, message: `internal error: ${err}`});
     }
 }
@@ -217,7 +217,7 @@ async function decryptData(mailData: string, sendResponse: (response: any) => vo
         const mailBody = await decodeMail(mailData, mKey, adminAddress);
         sendResponse({success: 1, data: mailBody.body, attachment: mailBody.attachment});
     } catch (err) {
-        console.log("[service worker] decrypt data failed:", err)
+        console.log("------>>> decrypt data failed:", err)
         sendResponse({success: -1, message: browser.i18n.getMessage("decrypt_mail_body_failed") + ` error: ${err}`});
     }
 }
@@ -232,7 +232,7 @@ async function checkLoginStatus(sendResponse: (response: any) => void) {
         }
         sendResponse({success: 1});
     } catch (err) {
-        console.log("[service work] checkLoginStatus failed:", err)
+        console.log("------>>> checkLoginStatus failed:", err)
     }
 }
 
@@ -268,7 +268,7 @@ async function SigDataInBackground(data: any, sendResponse: (response: any) => v
 }
 
 async function getAccount(address: string, force: boolean, sendResponse: (response: any) => void) {
-    console.log("[service worker] loading account info from server", address, force);
+    console.log("------>>> loading account info from server", address, force);
     let account = await sessionGet(__dbKey_cur_account_details);
     if (account && !force) {
         sendResponse({success: 1, data: account});
@@ -284,14 +284,14 @@ async function getAccount(address: string, force: boolean, sendResponse: (respon
     } catch (err) {
         const e = err as Error;
         sendResponse({success: -1, message: e.message});
-        console.log("[service work] load account details from server =>", err);
+        console.log("------>>> load account details from server =>", err);
         return null;
     }
 }
 
 async function loadAccountDetailsFromSrv(address: string): Promise<BMailAccount | null> {
     if (!address) {
-        console.log("[service work] no address found locally =>");
+        console.log("------>>> no address found locally =>");
         return null;
     }
 
@@ -301,13 +301,13 @@ async function loadAccountDetailsFromSrv(address: string): Promise<BMailAccount 
     const message = QueryReq.encode(payload).finish();
     const sig = await signData(message);
     if (!sig) {
-        console.log("[service work]  signature not found");
+        console.log("------>>> signature not found");
         return null;
     }
 
     const srvRsp = await BMRequestToSrv(API_Query_Bmail_Details, address, message, sig)
     if (!srvRsp) {
-        console.log("[service work]  fetch failed no response data found");
+        console.log("------>>> fetch failed no response data found");
         return null;
     }
     const accountDetails = BMailAccount.decode(srvRsp) as BMailAccount;
@@ -352,20 +352,20 @@ async function searchAccountByEmails(emails: string[], sendResponse: (response: 
         const message = QueryReq.encode(query).finish();
         const signature = await signData(message);
         if (!signature) {
-            console.log("[service worker] sign data failed");
+            console.log("------>>> sign data failed");
             sendResponse({success: -3, message: "sign data failed"});
             return;
         }
         const rspData = await BMRequestToSrv(API_Query_By_EMails, addr.bmail_address, message, signature);
         if (!rspData) {
-            console.log("[service worker] no contact data");
+            console.log("------>>> no contact data");
             sendResponse({success: -4, message: "no blockchain address found"});
             return;
         }
         const result = EmailReflects.decode(rspData) as EmailReflects
         sendResponse({success: 1, data: result});
     } catch (e) {
-        console.log("[service worker] search bmail accounts failed:", e)
+        console.log("------>>> search bmail accounts failed:", e)
         sendResponse({success: -5, message: "network failed:" + e});
     }
 }
@@ -424,13 +424,13 @@ async function bindingAction(isUnbind: boolean, email: string, sendResponse: (re
         }
 
         const srvRsp = await BMRequestToSrv(apiPath, addr.bmail_address, message, sig)
-        console.log("[service worker] binding or unbind=", isUnbind, " action success:=>", srvRsp);
+        console.log("------>>> binding or unbind=", isUnbind, " action success:=>", srvRsp);
         sendResponse({success: 1, message: (srvRsp as Uint8Array)[0]});
 
         loadAccountDetailsFromSrv(addr.bmail_address).then()
     } catch (e) {
         const err = e as Error;
-        console.log("[service worker] bind account failed:", err);
+        console.log("------>>> bind account failed:", err);
         sendResponse({success: -1, message: err.message});
     }
 }
@@ -466,7 +466,7 @@ browser.downloads.onCreated.addListener(async (downloadItem) => {
     // console.log("------>>> new download item:", downloadItem)
 
     if (initiatedDownloadUrls.has(downloadUrl)) {
-        console.log("------>>>duplicate item download:", downloadItem)
+        console.log("------>>> duplicate item download:", downloadItem)
         initiatedDownloadUrls.delete(downloadUrl);
         return;
     }
@@ -539,24 +539,22 @@ browser.downloads.onChanged.addListener(async (delta) => {
     const items = await browser.downloads.search({id: downloadId});
     const downloadFile = items[0];
     const fileName = downloadFile.filename;
-    console.log("----------->>> downloads on change file name: ", fileName);
-    sendDownloadAction(fileName).then(() => {
-        console.log("----->>> send download action to local host app!")
-    })
+    console.log("------>>> downloads on change file name: ", fileName);
+    sendDownloadAction(fileName).then();
 
     if (!targetDownloadIds.has(downloadId)) {
         return;
     }
 
     if (!fileName) {
-        // console.log("----------->>> file name in download item not found:", delta);
+        // console.log("------>>> file name in download item not found:", delta);
         targetDownloadIds.delete(downloadId); // 清除已处理的下载 ID
         return;
     }
 
     const bmailFile = extractAesKeyId(fileName);
     if (!bmailFile) {
-        // console.log("----------->>> this file is not for bmail :", fileName);
+        // console.log("------>>> this file is not for bmail :", fileName);
         targetDownloadIds.delete(downloadId); // 清除已处理的下载 ID
         return;
     }
@@ -577,7 +575,7 @@ browser.downloads.onChanged.addListener(async (delta) => {
 //
 //     downloads.forEach(downloadItem => {
 //         if (!downloadItem.exists) {
-//             console.log("------>>>download item doesn't exist:", downloadItem.filename)
+//             console.log("------>>> download item doesn't exist:", downloadItem.filename)
 //             return;
 //         }
 //

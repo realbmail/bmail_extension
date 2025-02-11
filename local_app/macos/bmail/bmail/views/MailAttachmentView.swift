@@ -9,7 +9,7 @@ import SwiftUI
 struct MailAttachmentView: View {
         var body: some View {
                 VStack {
-                        Text("邮件附件视图")
+                        Text("邮件附件")
                                 .font(.title)
                         Spacer()
                 }
