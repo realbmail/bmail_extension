@@ -135,6 +135,33 @@ func main() {
                                 sendMessage(["status": "error", "error": error.localizedDescription])
                         }
                         
+                } else if command == "fileKey" {
+                        
+                        guard let key = message["key"] as? String, let id = message["id"] as? String  else{
+                                sendMessage(["status": "error", "error": "id , key 参数错误"])
+                                return
+                        }
+                        
+                        do {
+                                // 获取 UI 应用管理数据的目录
+                                let appDataDir = try createAppDataDirectory()
+                                // 使用 id 生成文件名，这里文件名为 “.” + id
+                                let fileUrl = appDataDir.appendingPathComponent("."+id)
+                                
+                                let fileManager = FileManager.default
+                                if fileManager.fileExists(atPath: fileUrl.path) {
+                                        // 文件已存在，不进行写入
+                                        sendMessage(["status": "success", "info": "File already exists"])
+                                } else {
+                                        // 文件不存在，写入 key 内容到该文件
+                                        try key.write(to: fileUrl, atomically: true, encoding: .utf8)
+                                        sendMessage(["status": "success", "info": "File created"])
+                                }
+                        } catch {
+                                sendMessage(["status": "error", "error": error.localizedDescription])
+                        }
+                        
+                        
                 } else {
                         sendMessage(["status": "error", "error": "消息格式无效"])
                 }

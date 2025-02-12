@@ -630,6 +630,15 @@ async function procDownloadFile(filePath?: string) {
         console.log("------>>> no file name found for filePath", filePath);
         return;
     }
+
+    const aesKey = loadAKForReading(aekId.id);
+    if (aesKey) {
+        sendMessageToBackground({
+            key: AttachmentEncryptKey.toJson(aesKey),
+            id: aekId.id,
+        }, MsgType.KeyForLocalApp).then();
+    }
+
     const dialog = document.getElementById("bmail-decrypt-dialog") as HTMLElement
     dialog.style.display = 'block';
     dialog.querySelector(".bmail-file-path")!.textContent = filePath;
@@ -667,11 +676,6 @@ async function decryptDownloadedFile(event: Event, aekId: AttachmentKeyID): Prom
         showTipsDialog("Tips", browser.i18n.getMessage("decrypt_mail_body_first"))
         return;
     }
-
-    sendMessageToBackground({
-        key: AttachmentEncryptKey.toJson(aesKey),
-        id: aekId.id,
-    }, MsgType.KeyForLocalApp).then();
 
     const tempInput = event.target as HTMLInputElement;
     const files = tempInput.files;

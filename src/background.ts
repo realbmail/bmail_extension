@@ -4,7 +4,7 @@ import {closeDatabase, initDatabase} from "./database";
 import {resetStorage, sessionGet, sessionSet} from "./session_storage";
 import {MailAddress, MailKey} from "./wallet";
 import {BMRequestToSrv, decodeHex, extractJsonString, extractNameFromUrl} from "./utils";
-import {BMailBody, decodeMail, encodeMail, initMailBodyVersion, MailFlag} from "./bmail_body";
+import {BMailBody, decodeMail, encodeMail, initMailBodyVersion, MailFlag, testGenerateNonce} from "./bmail_body";
 import {BMailAccount, QueryReq, EmailReflects, BindAction} from "./proto/bmail_srv";
 import {
     __dbKey_cur_account_details,
@@ -86,10 +86,17 @@ runtime.onMessage.addListener((request: any, _sender: Runtime.MessageSender, sen
                 sendResponse({success: true, data: str});
             })
             return true;
+
         case MsgType.KeyForLocalApp:
-            sendAkToLocalApp(request.data.id, request.data.key).then();
+            checkWalletStatus(sendResponse).then(async mkey => {
+                if (!mkey) {
+                    return
+                }
+                await sendAkToLocalApp(request.data.id, request.data.key, mkey);
+            });
             sendResponse({success: 1, data: ""});
             return true;
+
         default:
             sendResponse({status: false, message: 'unknown action'});
             return;
@@ -134,7 +141,6 @@ self.addEventListener('activate', (event) => {
         AddMenuListener();
         console.log("------>>> context menu setup success")
     });
-
 });
 
 runtime.onInstalled.addListener((details: Runtime.OnInstalledDetailsType) => {

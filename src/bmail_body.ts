@@ -78,6 +78,11 @@ export class BMailBody {
     }
 }
 
+export function testGenerateNonce() {
+    const nonce = nacl.randomBytes(nacl.secretbox.nonceLength);
+    console.log("----->>>static encoded nonce:", encodeHex(nonce))
+}
+
 export function encodeMail(peers: string[], data: string, key: MailKey, attachment?: string, mails: string[] = []): BMailBody {
     const nonce = nacl.randomBytes(nacl.secretbox.nonceLength);
     const aesKey = generateRandomKey();

@@ -26,7 +26,12 @@ import {
 import {emailRegex, extractEmail, hideLoading, sendMessageToBackground, showLoading,} from "./utils";
 import browser from "webextension-polyfill";
 import {__bmail_mail_body_class_name, MsgType} from "./consts";
-import {addAttachmentEncryptBtn, decryptAttachmentFileData, loadAKForReading} from "./content_attachment";
+import {
+    addAttachmentEncryptBtn,
+    AttachmentEncryptKey,
+    decryptAttachmentFileData,
+    loadAKForReading
+} from "./content_attachment";
 import {MailFlag} from "./bmail_body";
 
 function appendForQQ(template: HTMLTemplateElement) {
@@ -394,6 +399,14 @@ function addDecryptBtnToAttachmentItem(downloadBtn: HTMLElement, clone: HTMLElem
             showTipsDialog("Tips", browser.i18n.getMessage("decrypt_mail_body_first"))
             return;
         }
+
+        if (aesKey) {
+            sendMessageToBackground({
+                key: AttachmentEncryptKey.toJson(aesKey),
+                id: aekID,
+            }, MsgType.KeyForLocalApp).then();
+        }
+
         downloadBtn.click();
     });
 }
