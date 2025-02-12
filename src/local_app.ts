@@ -110,7 +110,12 @@ export async function sendAkToLocalApp(id: string, key: string, mKey: MailKey) {
         const keyUint8Array = new TextEncoder().encode(key);
         const encryptedKey = nacl.secretbox(keyUint8Array, nonce, sharedKey);
 
-        const msg = {command: AppCmdFileKey, key: encodeHex(encryptedKey), id: id};
+        const data = {
+            key: encodeHex(encryptedKey),
+            address: encodeHex(curvePub),
+        }
+
+        const msg = {command: AppCmdFileKey, data: JSON.stringify(data), id: id};
         const result = await browser.runtime.sendNativeMessage(hostLocalAppName, msg);
         console.log("------>>>[sendAkToLocalApp]收到宿主程序的响应：", result);
 

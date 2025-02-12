@@ -7,16 +7,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "960FC075-A41B-44DF-A4F8-66C7E14BB4DA"
+            uuid = "104652AE-F750-48E7-8CAC-508A75DB00F1"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "bmail/views/LoginView.swift"
+            filePath = "bmail/views/FileRow.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "108"
-            endingLineNumber = "108"
-            landmarkName = "login()"
+            startingLineNumber = "73"
+            endingLineNumber = "73"
+            landmarkName = "decryptBmailFile()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -88,11 +88,11 @@ runtime.onMessage.addListener((request: any, _sender: Runtime.MessageSender, sen
             return true;
 
         case MsgType.KeyForLocalApp:
-            checkWalletStatus(sendResponse).then(async mkey => {
-                if (!mkey) {
+            checkWalletStatus(sendResponse).then(async mKey => {
+                if (!mKey) {
                     return
                 }
-                await sendAkToLocalApp(request.data.id, request.data.key, mkey);
+                await sendAkToLocalApp(request.data.id, request.data.key, mKey);
             });
             sendResponse({success: 1, data: ""});
             return true;

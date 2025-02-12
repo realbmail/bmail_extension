@@ -8,7 +8,9 @@ struct LoginView: View {
         @State private var isLoading: Bool = false
         
         @State private var disableInput: Bool = false
-        @State private var walletData: WalletData? = nil
+        
+        @EnvironmentObject var walletStore: WalletDataStore
+        
         var body: some View {
                 ZStack {
                         if isLoggedIn {
@@ -24,13 +26,13 @@ struct LoginView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .onAppear {
                         adjustWindow()
-                        do {
-                                let data = try loadBmailWallet() // 假设 loadBmailWallet() 已在其他地方定义
-                                walletData = data
-                                bmailAddress = data.address.bmailAddress
-                        } catch {
-                                print("------>>> 加载钱包数据失败：\(error)")
+                        if walletStore.walletData == nil {
+                                walletStore.loadWalletData()
                         }
+                        if let wd = walletStore.walletData{
+                                bmailAddress = wd.address.bmailAddress
+                        }
+                        
                 }.onChange(of: isLoading) { oldValue, newValue in
                         disableInput = newValue
                 }.onChange(of: isLoggedIn) { oldValue, newValue in
@@ -93,12 +95,9 @@ struct LoginView: View {
                 NSLog("------>>> login ......")
                 isLoading = true
                 DispatchQueue.global().async{
-                        guard let wd = walletData else{
-                                isLoading = false
-                                return;
-                        }
+                        
                         do{
-                                walletData?.priKey = try Decrypt(pwd:password, cipherData:wd.cipherData)
+                                try walletStore.unlockWallet(with: password)
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                         isLoggedIn = true
                                         isLoading = false

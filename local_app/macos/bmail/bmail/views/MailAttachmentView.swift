@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
+
 struct MailAttachmentView: View {
         @State private var fileURLs: [URL] = []
         @State private var selectedFile: URL? = nil  // 当前选中的文件
         @State private var distributedObserver: NSObjectProtocol?
+        
         
         var body: some View {
                 VStack(alignment: .leading) {
@@ -36,12 +38,10 @@ struct MailAttachmentView: View {
                         Spacer()
                 }
                 .padding()
-                // 为整个视图添加右键菜单：无论文件列表是否为空，右键点击空白区域都会弹出菜单
                 .contextMenu {
                         Button("刷新") {
                                 loadFiles()
                         }
-                        // 可以添加更多菜单项
                 }
                 .onAppear {
                         loadFiles()

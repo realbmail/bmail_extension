@@ -17,10 +17,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
 @main
 struct bmailApp: App {
+        @StateObject private var walletStore = WalletDataStore()
         @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
         var body: some Scene {
                 WindowGroup {
-                        LoginView()
+                        LoginView().environmentObject(walletStore)
                 }
         }
 }
