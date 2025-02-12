@@ -99,7 +99,7 @@ struct LoginView: View {
                         }
                         do{
                                 walletData?.priKey = try Decrypt(pwd:password, cipherData:wd.cipherData)
-                                DispatchQueue.main.async() {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                         isLoggedIn = true
                                         isLoading = false
                                 }

@@ -146,9 +146,8 @@ func Decrypt(pwd: String, cipherData: CipherData) throws -> [UInt8]  {
         ).calculate()
         
         // 使用 AES 解密，采用 CFB 模式，无填充（使用 CryptoSwift.Padding.noPadding）
-        let aes = try AES(key: derivedKey, blockMode: CFB(iv: ivBytes), padding: CryptoSwift.Padding.noPadding)
+        let aes = try AES(key: derivedKey, blockMode: CFB(iv: ivBytes), padding: .pkcs7)
         let decryptedBytes = try aes.decrypt(cipherBytes)
-        
         // 将解密后的数据转换为 UTF-8 字符串，假设结果为一个十六进制字符串
         guard let decryptedHexString = String(data: Data(decryptedBytes), encoding: .utf8) else {
                 throw NSError(domain: "DecryptError", code: 0, userInfo: [NSLocalizedDescriptionKey: "Unable to decode decrypted data as UTF-8"])
