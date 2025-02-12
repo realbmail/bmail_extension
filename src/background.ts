@@ -4,7 +4,7 @@ import {closeDatabase, initDatabase} from "./database";
 import {resetStorage, sessionGet, sessionSet} from "./session_storage";
 import {MailAddress, MailKey} from "./wallet";
 import {BMRequestToSrv, decodeHex, extractJsonString, extractNameFromUrl} from "./utils";
-import {BMailBody, decodeMail, encodeMail, initMailBodyVersion, MailFlag, testGenerateNonce} from "./bmail_body";
+import {BMailBody, decodeMail, encodeMail, initMailBodyVersion, MailFlag} from "./bmail_body";
 import {BMailAccount, QueryReq, EmailReflects, BindAction} from "./proto/bmail_srv";
 import {
     __dbKey_cur_account_details,

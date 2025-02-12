@@ -8,7 +8,7 @@ struct LoginView: View {
         @State private var isLoading: Bool = false
         
         @State private var disableInput: Bool = false
-        
+        @State private var walletData: WalletData? = nil
         var body: some View {
                 ZStack {
                         if isLoggedIn {
@@ -24,8 +24,12 @@ struct LoginView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .onAppear {
                         adjustWindow()
-                        if let storedAddress = loadBmailAddress() {
-                                bmailAddress = storedAddress
+                        do {
+                                let data = try loadBmailWallet() // 假设 loadBmailWallet() 已在其他地方定义
+                                walletData = data
+                                bmailAddress = data.address.bmailAddress
+                        } catch {
+                                print("------>>> 加载钱包数据失败：\(error)")
                         }
                 }.onChange(of: isLoading) { oldValue, newValue in
                         disableInput = newValue
@@ -88,24 +92,24 @@ struct LoginView: View {
         private func login() {
                 NSLog("------>>> login ......")
                 isLoading = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        if password == "1" {
-                                isLoggedIn = true
-                        } else {
-                                showAlert = true
+                DispatchQueue.global().async{
+                        guard let wd = walletData else{
+                                isLoading = false
+                                return;
                         }
-                        isLoading = false
-                }
-        }
-        
-        func loadBmailAddress() -> String? {
-                do {
-                        let walletData = try loadBmailWallet()
-                        print("------>>> bmail_address: \(walletData.address.bmailAddress)")
-                        return walletData.address.bmailAddress
-                } catch {
-                        print("------>>> 加载钱包数据失败：\(error)")
-                        return nil
+                        do{
+                                walletData?.priKey = try Decrypt(pwd:password, cipherData:wd.cipherData)
+                                DispatchQueue.main.async() {
+                                        isLoggedIn = true
+                                        isLoading = false
+                                }
+                        }catch{
+                                NSLog("----->>> decrypt error=\(error.localizedDescription)")
+                                DispatchQueue.main.async() {
+                                        showAlert = true
+                                        isLoading = false
+                                }
+                        }
                 }
         }
         

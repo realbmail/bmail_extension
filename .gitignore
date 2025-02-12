@@ -21,3 +21,5 @@ resources/.arch-internal-preview.css
 /local_app/macos/bmail/BMailApp.xcodeproj/project.xcworkspace/xcuserdata/hyperorchid.xcuserdatad/UserInterfaceState.xcuserstate
 /local_app/macos/bmail/BMailApp.xcodeproj/project.xcworkspace/xcuserdata/wesley.xcuserdatad/UserInterfaceState.xcuserstate
 .DS_Store
+/local_app/macos/bmail/Cartfile.resolved
+/local_app/macos/bmail/Carthage/
