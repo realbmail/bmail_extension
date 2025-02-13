@@ -11,7 +11,6 @@ import Foundation
 let AppShareDir = "BMailApp"
 let WalletFile = "walletData.json"
 let AttachmentDir = "BMailAttachments"
-private let LocalAppNonce = "40981a5dc01567a287e10214c4b17f428bdb308b4dc3a968"
 
 // 定义 Address 结构体，用于解析 address 部分
 struct Address: Codable {

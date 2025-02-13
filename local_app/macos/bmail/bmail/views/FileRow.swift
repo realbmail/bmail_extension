@@ -6,6 +6,23 @@
 //
 import SwiftUI
 
+enum FileRowError: Error, LocalizedError {
+        case invalidFileName(String)
+        case fileNotFound(String)
+        case readingFileFailed(String)
+        
+        var errorDescription: String? {
+                switch self {
+                case .invalidFileName(let message):
+                        return "无法提取文件ID：\(message)"
+                case .fileNotFound(let path):
+                        return "文件不存在：\(path)"
+                case .readingFileFailed(let message):
+                        return "读取文件内容失败：\(message)"
+                }
+        }
+}
+
 struct FileRow: View {
         @State private var showAlert = false
         @State private var alertMessage = ""
@@ -68,31 +85,18 @@ struct FileRow: View {
                 }
         }
         
-        private func decryptBmailFile(){
-                
-                guard let extractedID = extractIDFromFileName(fileURL: fileURL) else {
-                        alertMessage = "无法提取文件 ID。"
-                        showAlert = true
-                        return
-                }
-                
-                
-                do{
+        private func decryptBmailFile() {
+                do {
+                        let extractedID = try extractIDFromFileName(fileURL: fileURL)
                         NSLog("------>>> 提取到的ID：\(extractedID)")
-                        let appDataDir = try createAppDataDirectory()
-                        let fileUrl = appDataDir.appendingPathComponent("." + extractedID)
                         
-                        let fileManager = FileManager.default
-                        if !fileManager.fileExists(atPath: fileUrl.path){
-                                alertMessage = "文件不存在：\(fileUrl.path)"
-                                showAlert = true
-                                return
-                        }
-                        
-                        let fileContent = try String(contentsOf: fileUrl, encoding: .utf8)
+                        // 调用新的封装函数读取文件内容
+                        let fileContent = try readFileContent(extractedID: extractedID)
                         NSLog("------>>> 文件内容：\(fileContent)")
                         
-                }catch{
+                        // 后续可以对 fileContent 进行处理
+                        
+                } catch {
                         alertMessage = "解密过程中出现错误：\(error.localizedDescription)"
                         showAlert = true
                 }
@@ -100,22 +104,62 @@ struct FileRow: View {
 }
 
 
-func extractIDFromFileName(fileURL: URL) -> String? {
-        // 获取文件名，例如 "bitcoin.pdf.1732846845512_bmail"
+func extractIDFromFileName(fileURL: URL) throws -> String {
         let fileName = fileURL.lastPathComponent
-        // 定义正则表达式，匹配以数字结尾并紧跟 "_bmail" 的部分
+        // 正则表达式匹配形如 "bitcoin.pdf.1732846845512_bmail" 中的 "1732846845512"
         let pattern = #"(\d+)_bmail"#
         
         do {
-                let regex = try NSRegularExpression(pattern: pattern, options: [])
+                let regex = try NSRegularExpression(pattern: pattern)
                 let range = NSRange(fileName.startIndex..<fileName.endIndex, in: fileName)
                 if let match = regex.firstMatch(in: fileName, options: [], range: range),
                    let numberRange = Range(match.range(at: 1), in: fileName) {
                         let numberString = String(fileName[numberRange])
                         return numberString
+                } else {
+                        throw FileRowError.invalidFileName("文件名格式不符合预期：\(fileName)")
                 }
         } catch {
-                NSLog("------>>> 正则表达式错误：\(error)")
+                throw FileRowError.invalidFileName("正则表达式错误：\(error.localizedDescription)")
         }
-        return nil
+}
+
+func readFileContent(extractedID: String) throws -> String {
+        let appDataDir = try createAppDataDirectory()
+        let targetFileURL = appDataDir.appendingPathComponent("." + extractedID)
+        
+        let fileManager = FileManager.default
+        if !fileManager.fileExists(atPath: targetFileURL.path) {
+                throw FileRowError.fileNotFound(targetFileURL.path)
+        }
+        
+        do {
+                return try String(contentsOf: targetFileURL, encoding: .utf8)
+        } catch {
+                throw FileRowError.readingFileFailed("无法读取文件内容：\(error.localizedDescription)")
+        }
+}
+
+struct KeyAddress: Codable {
+        let key: String
+        let address: String
+}
+
+private let LocalAppNonce = "40981a5dc01567a287e10214c4b17f428bdb308b4dc3a968"
+
+func parseKey(from json: String) throws {
+        guard let data = json.data(using: .utf8) else {
+                throw NSError(domain: "parseKey", code: 0, userInfo: [NSLocalizedDescriptionKey: "无法将字符串转换为 Data"])
+        }
+        
+        let decoder = JSONDecoder()
+        let keyAddress = try decoder.decode(KeyAddress.self, from: data)
+        
+        // 示例：记录解析结果，后续可在这里增加更多逻辑
+        NSLog("------>>> 解析到的 key: \(keyAddress.key)")
+        NSLog("------>>> 解析到的 address: \(keyAddress.address)")
+        let noce = try decodeHex(LocalAppNonce)
+        NSLog("------>>> 解析到的 noce: \(noce)")
+        
+        // 在此处继续增加其他逻辑...
 }
