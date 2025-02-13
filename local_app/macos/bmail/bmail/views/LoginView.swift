@@ -8,6 +8,7 @@ struct LoginView: View {
         @State private var isLoading: Bool = false
         
         @State private var disableInput: Bool = false
+        @State private var alertMessage = "请检查 BMail 地址和密码是否正确"
         
         @EnvironmentObject var walletStore: WalletDataStore
         
@@ -27,10 +28,9 @@ struct LoginView: View {
                 .onAppear {
                         adjustWindow()
                         if walletStore.walletData == nil {
-                                walletStore.loadWalletData()
-                        }
-                        if let wd = walletStore.walletData{
-                                bmailAddress = wd.address.bmailAddress
+                                walletStore.loadWalletData(){ walletData in
+                                        bmailAddress = walletData.address.bmailAddress
+                                }
                         }
                         
                 }.onChange(of: isLoading) { oldValue, newValue in
@@ -85,13 +85,20 @@ struct LoginView: View {
                 .alert(isPresented: $showAlert) {
                         Alert(
                                 title: Text("登录失败"),
-                                message: Text("请检查 BMail 地址和密码是否正确"),
+                                message: Text(alertMessage),
                                 dismissButton: .default(Text("确定"))
                         )
                 }
         }
         
         private func login() {
+                
+                guard (walletStore.walletData?.address.bmailAddress) != nil else{
+                        showAlert = true
+                        alertMessage = "请先登录BMail浏览器插件"
+                        return
+                }
+                
                 NSLog("------>>> login ......")
                 isLoading = true
                 DispatchQueue.global().async{
@@ -106,6 +113,7 @@ struct LoginView: View {
                                 DispatchQueue.main.async() {
                                         showAlert = true
                                         isLoading = false
+                                        alertMessage = "请检查 BMail 地址和密码是否正确:"+error.localizedDescription
                                 }
                         }
                 }

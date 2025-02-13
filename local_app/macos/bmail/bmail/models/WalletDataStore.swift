@@ -30,13 +30,14 @@ class WalletDataStore: ObservableObject {
         @Published var walletData: WalletData?
         
         /// 异步加载钱包数据
-        func loadWalletData() {
+        func loadWalletData(completion: ((WalletData) -> Void)? = nil) {
                 DispatchQueue.global(qos: .userInitiated).async { [weak self] in
                         do {
                                 let data = try loadBmailWallet()
                                 // 切换回主线程更新 UI
                                 DispatchQueue.main.async {
                                         self?.walletData = data
+                                        completion?(data)
                                 }
                         } catch {
                                 // 这里可以添加更完善的错误处理逻辑
