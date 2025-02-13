@@ -147,7 +147,7 @@ func main() {
                                 // 获取 UI 应用管理数据的目录
                                 let appDataDir = try createAppDataDirectory()
                                 // 使用 id 生成文件名，这里文件名为 “.” + id
-                                let fileUrl = appDataDir.appendingPathComponent("."+id+"_")
+                                let fileUrl = appDataDir.appendingPathComponent("."+id)
                                 
                                 let fileManager = FileManager.default
                                 if fileManager.fileExists(atPath: fileUrl.path) {
