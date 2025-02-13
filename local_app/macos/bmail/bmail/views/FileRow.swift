@@ -5,7 +5,8 @@
 //  Created by wesley on 2025/2/11.
 //
 import SwiftUI
-
+import CryptoKit
+let BmailFileSuffix = "_bmail"
 enum FileRowError: Error, LocalizedError {
         case invalidFileName(String)
         case fileNotFound(String)
@@ -23,6 +24,7 @@ enum FileRowError: Error, LocalizedError {
         }
 }
 
+
 struct FileRow: View {
         @State private var showAlert = false
         @State private var alertMessage = ""
@@ -33,7 +35,7 @@ struct FileRow: View {
         
         var iconImage: Image {
                 let fileExtension = fileURL.pathExtension.lowercased()
-                if fileExtension.hasSuffix("_bmail") {
+                if fileExtension.hasSuffix(BmailFileSuffix) {
                         // 使用 "logo" 作为图标
                         return Image("logo")
                 }
@@ -61,12 +63,25 @@ struct FileRow: View {
                 .padding(4)
                 .background(isSelected ? Color.blue.opacity(0.3) : Color.clear)
                 .contentShape(Rectangle())
+                .onTapGesture(count: 2) { // ADDED: Double-click gesture recognizer
+                        openDecryptFile() // Call openDecryptFile on double-click
+                }
                 .contextMenu {
-                        Button(action: {
-                                decryptBmailFile()
-                        }) {
-                                Label("解密文件", systemImage: "doc.text")
+                        let fileExtension = fileURL.pathExtension.lowercased()
+                        if fileExtension.hasSuffix(BmailFileSuffix) {
+                                Button(action: {
+                                        decryptBmailFile()
+                                }) {
+                                        Label("解密文件", systemImage: "doc.text")
+                                }
+                        }else{
+                                Button(action: {
+                                        openDecryptFile()
+                                }) {
+                                        Label("打开文件", systemImage: "doc.text")
+                                }
                         }
+                        
                         
                         Button(action: {
                                 do {
@@ -86,20 +101,48 @@ struct FileRow: View {
         }
         
         private func decryptBmailFile() {
+                
+                NSLog("------>>> 需要解析的文件: \(fileURL)")
+                
+                guard let priKey = walletStore.walletData?.curvePriKey else {
+                        alertMessage = "请首先解密账号"
+                        showAlert = true
+                        return;
+                }
+                
+                //                NSLog("------>>> 解析到的 priKey: \(priKey)")
+                
                 do {
                         let extractedID = try extractIDFromFileName(fileURL: fileURL)
-                        NSLog("------>>> 提取到的ID：\(extractedID)")
+                        //                        NSLog("------>>> 提取到的ID：\(extractedID)")
                         
                         // 调用新的封装函数读取文件内容
                         let fileContent = try readFileContent(extractedID: extractedID)
-                        NSLog("------>>> 文件内容：\(fileContent)")
+                        //                        NSLog("------>>> 文件内容：\(fileContent)")
                         
                         // 后续可以对 fileContent 进行处理
+                        let bmailKey = try parseKey(from: fileContent,priKey:priKey)
+                        
+                        let bmailFileData = try Data(contentsOf: fileURL)
+                        let decryptFileUrl = convertURLIfNeeded(originalURL: fileURL)
+                        
+                        let decryptBmailKey = try decryptWithTweetNacl(cipherData: bmailFileData,
+                                                                       nonce: bmailKey.nonce, key: bmailKey.key)
+                        
+                        try Data(decryptBmailKey).write(to: decryptFileUrl)
+                        
+                        DistributedNotificationCenter.default().post(name: Notification.Name("FileMovedNotification"),
+                                                                     object: nil,
+                                                                     userInfo: ["path": decryptFileUrl.path])
                         
                 } catch {
                         alertMessage = "解密过程中出现错误：\(error.localizedDescription)"
                         showAlert = true
                 }
+        }
+        
+        func openDecryptFile(){
+                NSWorkspace.shared .open(fileURL)
         }
 }
 
@@ -145,9 +188,21 @@ struct KeyAddress: Codable {
         let address: String
 }
 
+func scalarMult(priKey: [UInt8], curvePub: [UInt8]) throws -> [UInt8] {
+        // 将字节数组转换为 CryptoKit 的密钥类型
+        let privateKey = try Curve25519.KeyAgreement.PrivateKey(rawRepresentation: Data(priKey))
+        let publicKey = try Curve25519.KeyAgreement.PublicKey(rawRepresentation: Data(curvePub))
+        
+        // 生成共享密钥
+        let sharedSecret = try privateKey.sharedSecretFromKeyAgreement(with: publicKey)
+        
+        // 转换为字节数组
+        return Array(sharedSecret.withUnsafeBytes { Data($0) })
+}
+
 private let LocalAppNonce = "40981a5dc01567a287e10214c4b17f428bdb308b4dc3a968"
 
-func parseKey(from json: String) throws {
+func parseKey(from json: String, priKey:[UInt8]) throws ->AttachmentEncryptKey{
         guard let data = json.data(using: .utf8) else {
                 throw NSError(domain: "parseKey", code: 0, userInfo: [NSLocalizedDescriptionKey: "无法将字符串转换为 Data"])
         }
@@ -156,10 +211,45 @@ func parseKey(from json: String) throws {
         let keyAddress = try decoder.decode(KeyAddress.self, from: data)
         
         // 示例：记录解析结果，后续可在这里增加更多逻辑
-        NSLog("------>>> 解析到的 key: \(keyAddress.key)")
-        NSLog("------>>> 解析到的 address: \(keyAddress.address)")
+        //        NSLog("------>>> 解析到的 key: \(keyAddress.key)")
+        //        NSLog("------>>> 解析到的 address: \(keyAddress.address)")
         let noce = try decodeHex(LocalAppNonce)
-        NSLog("------>>> 解析到的 noce: \(noce)")
+        let curvePub = try decodeHex(keyAddress.address)
+        let cipherData = try decodeHex(keyAddress.key)
+        //        NSLog("------>>> 解析到的 noce: \(noce)")
+        //        NSLog("------>>> 解析到的 curvePub: \(curvePub)")
+        //        NSLog("------>>> 解析到的 cipherData: \(cipherData)")
         
-        // 在此处继续增加其他逻辑...
+        let sharedKey = try scalarMult(priKey: priKey, curvePub: curvePub)
+        //        NSLog("------>>> 共享密钥:\(sharedKey)")
+        
+        let decryptBmailKey = try decryptWithTweetNacl(cipherData: Data(cipherData), nonce: noce, key: sharedKey)
+        let bmailKeyStr = logDecryptedKey(from: decryptBmailKey)
+        
+        let bmailKey = try AttachmentEncryptKey.fromJson(bmailKeyStr)
+        //        NSLog("------>>> 文件的密钥:\(bmailKey)")
+        return bmailKey
 }
+
+func logDecryptedKey(from keyBytes: [UInt8]) -> String {
+        let keyData = Data(keyBytes)
+        
+        // 尝试用 UTF-8 解码
+        if let keyString = String(data: keyData, encoding: .utf8) {
+                return keyString
+        } else {
+                // 转换为十六进制字符串
+                let hexString = keyBytes.map { String(format: "%02x", $0) }.joined()
+                return hexString
+        }
+}
+
+func convertURLIfNeeded(originalURL: URL) -> URL {
+        let fileExtension = originalURL.pathExtension
+        if fileExtension.hasSuffix(BmailFileSuffix) {
+                return originalURL.deletingPathExtension()
+        } else {
+                return originalURL
+        }
+}
+

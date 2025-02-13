@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		690280D02D5D9FD30030F2D7 /* CryptoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69478A6E2D5C633800B6815E /* CryptoKit.framework */; };
+		690280D42D5DC50E0030F2D7 /* TweetNacl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 690280D32D5DC50D0030F2D7 /* TweetNacl.framework */; };
+		690280D52D5DC50E0030F2D7 /* TweetNacl.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 690280D32D5DC50D0030F2D7 /* TweetNacl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		692D59252D535D3700F3C5EC /* msgService in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2B3FB4BE2D51F9DB00A0DF15 /* msgService */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		69478A752D5C6AAA00B6815E /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69478A742D5C6AAA00B6815E /* CryptoSwift.framework */; };
 		69478A762D5C6AAA00B6815E /* CryptoSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 69478A742D5C6AAA00B6815E /* CryptoSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -48,6 +51,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				690280D52D5DC50E0030F2D7 /* TweetNacl.framework in Embed Frameworks */,
 				69478A762D5C6AAA00B6815E /* CryptoSwift.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -58,6 +62,7 @@
 /* Begin PBXFileReference section */
 		2B224ADA2D50B97200F3E892 /* BMailApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BMailApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2B3FB4BE2D51F9DB00A0DF15 /* msgService */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = msgService; sourceTree = BUILT_PRODUCTS_DIR; };
+		690280D32D5DC50D0030F2D7 /* TweetNacl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TweetNacl.framework; path = Carthage/Build/Mac/TweetNacl.framework; sourceTree = "<group>"; };
 		69478A6E2D5C633800B6815E /* CryptoKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CryptoKit.framework; path = System/Library/Frameworks/CryptoKit.framework; sourceTree = SDKROOT; };
 		69478A712D5C635F00B6815E /* libcommonCrypto.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcommonCrypto.tbd; path = usr/lib/system/libcommonCrypto.tbd; sourceTree = SDKROOT; };
 		69478A742D5C6AAA00B6815E /* CryptoSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CryptoSwift.framework; path = Carthage/Build/Mac/CryptoSwift.framework; sourceTree = "<group>"; };
@@ -121,7 +126,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				690280D02D5D9FD30030F2D7 /* CryptoKit.framework in Frameworks */,
 				69478A752D5C6AAA00B6815E /* CryptoSwift.framework in Frameworks */,
+				690280D42D5DC50E0030F2D7 /* TweetNacl.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -158,6 +165,7 @@
 		69478A6D2D5C633800B6815E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				690280D32D5DC50D0030F2D7 /* TweetNacl.framework */,
 				69478A742D5C6AAA00B6815E /* CryptoSwift.framework */,
 				69478A712D5C635F00B6815E /* libcommonCrypto.tbd */,
 				69478A6E2D5C633800B6815E /* CryptoKit.framework */,

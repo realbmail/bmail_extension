@@ -95,7 +95,6 @@ struct LoginView: View {
                 NSLog("------>>> login ......")
                 isLoading = true
                 DispatchQueue.global().async{
-                        
                         do{
                                 try walletStore.unlockWallet(with: password)
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {

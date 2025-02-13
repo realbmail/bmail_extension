@@ -1,1 +1,2 @@
 github "krzyzanowskim/CryptoSwift"
+github "bitmark-inc/tweetnacl-swiftwrap" ~> 1.0

@@ -46,12 +46,12 @@ struct WalletData: Codable {
         let version: Int
         let id: Int
         var priKey: [UInt8]?
+        var curvePriKey: [UInt8]?
         
         enum CodingKeys: String, CodingKey {
                 case address
                 case cipherData = "cipher_data"
                 case version, id
-                case priKey = "pri_key"
         }
 }
 
