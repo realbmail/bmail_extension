@@ -139,7 +139,7 @@ func main() {
                         
                         guard let data = message["data"] as? String,
                               let id = message["id"] as? String else{
-                                sendMessage(["status": "error", "error": "id , key 参数错误"])
+                                sendMessage(["status": "error", "error": "id , data 参数错误"])
                                 return
                         }
                         
@@ -168,7 +168,7 @@ func main() {
                 }
         }
         
-        NSLog("------>>>处理完成")
+        NSLog("------>>> 处理完成")
 }
 
 main()

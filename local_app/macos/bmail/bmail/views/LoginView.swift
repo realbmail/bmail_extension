@@ -51,7 +51,7 @@ struct LoginView: View {
                                 .frame(width: 100, height: 100)
                                 .padding(.top, 50)
                         
-                        Text(bmailAddress.isEmpty ? "BMail 地址" : bmailAddress)
+                        Text(bmailAddress.isEmpty ? "请先登录浏览器插件" : bmailAddress)
                                 .font(.system(size: 16))
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.5)

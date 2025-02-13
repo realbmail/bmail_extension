@@ -1,5 +1,6 @@
-sudo ln -sf "$(ls -d ~/xcodedata/Derived\ Data/BMailApp-*/Build/Products/Debug/BMailApp.app)" /Applications/BMailApp.app
 sudo ln -sf "$(ls -d ~/Xcode/DerivedData/BMailApp-*/Build/Products/Debug/BMailApp.app)" /Applications/BMailApp.app
+
+sudo ln -sf "$(ls -d ~/xcodedata/Derived\ Data/BMailApp-*/Build/Products/Debug/BMailApp.app)" /Applications/BMailApp.app
 
 mkdir -p ~/Library/Application\ Support/Google/Chrome/NativeMessagingHosts
 

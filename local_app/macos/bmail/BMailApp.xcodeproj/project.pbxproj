@@ -10,8 +10,6 @@
 		692D59252D535D3700F3C5EC /* msgService in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2B3FB4BE2D51F9DB00A0DF15 /* msgService */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		69478A752D5C6AAA00B6815E /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69478A742D5C6AAA00B6815E /* CryptoSwift.framework */; };
 		69478A762D5C6AAA00B6815E /* CryptoSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 69478A742D5C6AAA00B6815E /* CryptoSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		69478A782D5C6AC100B6815E /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69478A742D5C6AAA00B6815E /* CryptoSwift.framework */; };
-		69478A792D5C6AC100B6815E /* CryptoSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 69478A742D5C6AAA00B6815E /* CryptoSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,17 +49,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				69478A762D5C6AAA00B6815E /* CryptoSwift.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		69478A7A2D5C6AC100B6815E /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				69478A792D5C6AC100B6815E /* CryptoSwift.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -142,7 +129,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				69478A782D5C6AC100B6815E /* CryptoSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -215,7 +201,6 @@
 				2B3FB4BA2D51F9DB00A0DF15 /* Sources */,
 				2B3FB4BB2D51F9DB00A0DF15 /* Frameworks */,
 				2B3FB4BC2D51F9DB00A0DF15 /* CopyFiles */,
-				69478A7A2D5C6AC100B6815E /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
