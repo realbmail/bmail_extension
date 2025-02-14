@@ -23,4 +23,4 @@ resources/.arch-internal-preview.css
 .DS_Store
 /local_app/macos/bmail/Cartfile.resolved
 /local_app/macos/bmail/Carthage/
-/local_app/macos/BMailApp_PKG/Payload/BMailApp.app/
+/local_app/macos/BMailApp_PKG/Payload/Applications/BMailApp.app/

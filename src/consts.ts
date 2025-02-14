@@ -45,7 +45,7 @@ export const __dbKey_cur_key: string = '__dbKey_cur_key__';
 export const __dbKey_cur_addr: string = '__dbKey_cur_addr__';
 export const __bmail_mail_body_class_name = "bmail-encrypted-data-wrapper"
 export const ExtensionDownloadLink = "https://chromewebstore.google.com/detail/bmail/kjlhomfbkgfkkfdpcolkecfanmipiiic"
-export const HostAppDownloadLink = "https://mail.simplenets.org/file/bmailSDK.mac"
+export const HostAppDownloadLink = "https://mail.simplenets.org/file/BMailApp_Installer.pkg"
 
 export const API_Bind_Email = "/bind_account"
 export const API_Unbind_Email = "/unbind_account"
