@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# 获取当前控制台用户
+CURRENT_USER=$(stat -f "%Su" /dev/console)
+# 获取该用户的主目录
+USER_HOME=$(dscl . -read /Users/$CURRENT_USER NFSHomeDirectory | awk '{print $2}')
+
+# 目标目录
+TARGET_DIR="$USER_HOME/Library/Application Support/Google/Chrome/NativeMessagingHosts"
+
+# 创建目标目录（如果不存在）
+mkdir -p "$TARGET_DIR"
+
+# 复制 JSON 文件到目标目录（注意：这里使用 ${PWD}，确保 postinstall 脚本运行时当前目录是 Scripts 文件夹）
+cp "${PWD}/com.yushian.bmail.helper.json" "$TARGET_DIR"
+
+exit 0
