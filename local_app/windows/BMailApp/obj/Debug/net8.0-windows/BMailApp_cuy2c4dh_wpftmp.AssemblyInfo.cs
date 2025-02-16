@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BMailApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9628b7d3d883e46be9944396829f74ac41197c86")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1ab7f74559b3776a7664f5b0adc309df67b6159d")]
 [assembly: System.Reflection.AssemblyProductAttribute("BMailApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BMailApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
