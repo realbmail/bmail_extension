@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="登录" Height="600" Width="400" 
         WindowStartupLocation="CenterScreen"
-        Loaded="Window_Loaded">
+        Loaded="Window_Loaded"
+         Icon="Resources/logo.ico">
     <Grid x:Name="RootGrid">
         <!-- 主界面内容 -->
         <Grid x:Name="MainContent">

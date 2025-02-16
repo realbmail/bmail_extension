@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="BMailApp.MailAttachmentView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Loaded="UserControl_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <!-- 标题 -->
+        <TextBlock Text="BMail附件" FontSize="24" Margin="0,0,0,10"/>
+
+        <!-- 文件列表区域 -->
+        <Border Grid.Row="1" BorderThickness="1" BorderBrush="Gray" Padding="5">
+            <Grid>
+                <!-- 使用 ListBox 展示文件列表 -->
+                <ListBox x:Name="FilesListBox" SelectionChanged="FilesListBox_SelectionChanged"/>
+                <!-- 当没有文件时显示提示 -->
+                <TextBlock x:Name="NoFilesTextBlock"
+                           Text="目录中没有文件"
+                           Foreground="Gray"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Visibility="Collapsed"/>
+            </Grid>
+        </Border>
+    </Grid>
+    <!-- 添加右键菜单，支持刷新操作 -->
+    <UserControl.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="刷新" Click="RefreshMenuItem_Click"/>
+        </ContextMenu>
+    </UserControl.ContextMenu>
+</UserControl>

@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="BMailApp.SidebarView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Name="sidebarControl">
+    <StackPanel Orientation="Vertical" Margin="10" VerticalAlignment="Top">
+        <!-- “BMail附件”按钮 -->
+        <Button Content="BMail附件" Height="44" Margin="0,0,0,10" Click="MailAttachmentButton_Click"/>
+
+        <!-- 若需要“设置”按钮，可取消注释：
+        <Button Content="设置" Height="44" Margin="0,0,0,10" Click="SettingsButton_Click"/>
+        -->
+
+        <!-- “退出登录”按钮 -->
+        <Button Content="退出登录" Height="44" Click="LogoutButton_Click"/>
+    </StackPanel>
+</UserControl>

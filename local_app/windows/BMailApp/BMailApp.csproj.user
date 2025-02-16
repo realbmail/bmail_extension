@@ -10,12 +10,36 @@
     <Compile Update="LoginWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="MailAttachmentView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="MainView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="SettingView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="SideBarView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="MailAttachmentView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="MainView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="LoginWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="SettingView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="SideBarView.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
