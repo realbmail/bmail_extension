@@ -25,3 +25,5 @@ resources/.arch-internal-preview.css
 /local_app/macos/bmail/Carthage/
 /local_app/macos/BMailApp_PKG/Payload/Applications/BMailApp.app/
 /local_app/windows/BMailApp/.vs
+/local_app/windows/BMailApp/bin
+/local_app/windows/BMailApp/obj
