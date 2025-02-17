@@ -45,15 +45,3 @@ struct MainView: View {
                 }
         }
 }
-
-// 示例 ContentView，你可以根据实际需求替换为自己的内容
-struct ContentView: View {
-        var body: some View {
-                VStack {
-                        Text("这里是内容区域")
-                                .font(.title)
-                                .padding()
-                        Spacer()
-                }
-        }
-}

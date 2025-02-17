@@ -27,16 +27,16 @@ struct SidebarView: View {
                         }
                         .buttonStyle(PlainButtonStyle())
                         
-                        Button(action: {
-                                selectedContent = .settings
-                        }) {
-                                Label("设置", systemImage: "gearshape.fill")
-                                        .frame(maxWidth: .infinity, minHeight: 44)
-                                        .padding(.vertical, 8)
-                                        .padding(.horizontal, 12)
-                                        .background(Color.green.opacity(0.3))
-                        }
-                        .buttonStyle(PlainButtonStyle())
+//                        Button(action: {
+//                                selectedContent = .settings
+//                        }) {
+//                                Label("设置", systemImage: "gearshape.fill")
+//                                        .frame(maxWidth: .infinity, minHeight: 44)
+//                                        .padding(.vertical, 8)
+//                                        .padding(.horizontal, 12)
+//                                        .background(Color.green.opacity(0.3))
+//                        }
+//                        .buttonStyle(PlainButtonStyle())
                         
                         // “退出”按钮
                         Button(action: {
