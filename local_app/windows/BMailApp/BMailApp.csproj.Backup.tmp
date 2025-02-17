@@ -13,14 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="TweetNaCl-CSharp" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Resources\logo.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="TweetNaclSharp" Version="1.1.0" />
   </ItemGroup>
 
 </Project>

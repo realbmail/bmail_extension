@@ -14,16 +14,16 @@ namespace BMailApp
             walletStore = new WalletDataStore();
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            // 加载钱包数据，并更新界面显示
-            walletStore.LoadWalletData((walletData) =>
+            // 异步加载钱包数据，并更新界面显示
+            await walletStore.LoadWalletDataAsync((walletData) =>
             {
                 Dispatcher.Invoke(() =>
                 {
-                    if (walletData != null && walletData.address != null)
+                    if (walletData != null && walletData.Address != null)
                     {
-                        BmailAddressTextBlock.Text = walletData.address.bmailAddress;
+                        BmailAddressTextBlock.Text = walletData.Address.BmailAddress;
                     }
                 });
             });
@@ -32,7 +32,7 @@ namespace BMailApp
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             // 检查是否已经加载钱包数据
-            if (walletStore.walletData == null)
+            if (walletStore.WalletData == null)  // 修正为 WalletData（首字母大写）
             {
                 MessageBox.Show("请先登录BMail浏览器插件", "登录失败", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
@@ -45,7 +45,7 @@ namespace BMailApp
 
             try
             {
-                // 模拟异步解锁钱包（延时1秒）
+                // 异步解锁钱包
                 await Task.Run(() =>
                 {
                     System.Threading.Thread.Sleep(1000);
