@@ -1,7 +1,7 @@
 import {decodePubKey, loadWalletJsonFromDB, MailKey} from "./wallet";
 import browser from "webextension-polyfill";
 import {sendMsgToContent} from "./content_common";
-import {Local_App_Nonce, MsgType} from "./consts";
+import {HostAppMacDownloadLink, HostAppWinDownloadLink, Local_App_Nonce, MsgType} from "./consts";
 import {ed2CurvePub} from "./edwards25519";
 import nacl from "tweetnacl";
 import {decodeHex, encodeHex} from "./utils";
@@ -76,6 +76,23 @@ export async function sendDownloadAction(filePath: string) {
     }
 }
 
+async function DownloadUrl(): Promise<string> {
+    try {
+        // 调用浏览器API
+        const platformInfo = await browser.runtime.getPlatformInfo()
+        // 类型保护
+        if (platformInfo.os === 'win') {
+            return HostAppWinDownloadLink
+        } else if (platformInfo.os === 'mac') {
+            return HostAppMacDownloadLink
+        }
+        return 'https://mail.simplenets.org'
+    } catch (error) {
+        console.log('------>>>无法获取平台信息:', error)
+        return 'https://mail.simplenets.org'
+    }
+}
+
 export function AddMenuListener() {
     browser.contextMenus.onClicked.addListener(async (info) => {
         if (info.menuItemId === contextMenuId) {
@@ -86,7 +103,8 @@ export function AddMenuListener() {
             } catch (err) {
                 console.log("------>>>[contextMenus.onClicked]调用 Native Message 失败：", err);
                 if (err instanceof Error && err.message.includes("messaging host not found")) {
-                    await sendMsgToContent({action: MsgType.LocalAppNotInstall, message: ""})
+                    const url = await DownloadUrl()
+                    await sendMsgToContent({action: MsgType.LocalAppNotInstall, message: url})
                     return
                 }
             }

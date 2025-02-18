@@ -230,31 +230,14 @@ browser.runtime.onMessage.addListener((request, _sender, sendResponse: (response
         //     break;
         //
         case MsgType.LocalAppNotInstall:
-            getOS().then(link => {
-                console.log("------>>> current download link:", link)
-                showConfirmDialog(browser.i18n.getMessage("local_app_not_install"), browser.i18n.getMessage("download_local_app"), async () => {
-                    window.open(link, "_blank", "width=800,height=600");
-                })
+            const link = request.message
+            console.log("------>>> current download link:", link)
+            showConfirmDialog(browser.i18n.getMessage("local_app_not_install"), browser.i18n.getMessage("download_local_app"), async () => {
+                window.open(link, "_blank", "width=800,height=600");
             })
             sendResponse({success: true});
             break;
     }
+
     return true;
 });
-
-async function getOS(): Promise<string> {
-    try {
-        // 调用浏览器API
-        const platformInfo = await browser.runtime.getPlatformInfo()
-        // 类型保护
-        if (platformInfo.os === 'win') {
-            return HostAppWinDownloadLink
-        } else if (platformInfo.os === 'mac') {
-            return HostAppMacDownloadLink
-        }
-        return 'https://mail.simplenets.org'
-    } catch (error) {
-        console.log('------>>>无法获取平台信息:', error)
-        return 'https://mail.simplenets.org'
-    }
-}

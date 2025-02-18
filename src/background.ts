@@ -10,7 +10,12 @@ import {
     __dbKey_cur_account_details,
     __dbKey_cur_addr,
     __dbKey_cur_key,
-    __key_wallet_status, API_Bind_Email, API_Query_Bmail_Details, API_Query_By_EMails, API_Unbind_Email,
+    __key_wallet_status,
+    API_Bind_Email,
+    API_Query_Bmail_Details,
+    API_Query_By_EMails,
+    API_Unbind_Email, HostAppMacDownloadLink,
+    HostAppWinDownloadLink,
     MsgType,
     WalletStatus
 } from "./consts";
