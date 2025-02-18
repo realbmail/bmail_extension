@@ -138,7 +138,8 @@ namespace BMailApp
 
             if (!File.Exists(filePath))
             {
-                throw new FileNotFoundException("钱包数据文件不存在", filePath);
+                return null;
+                //throw new FileNotFoundException("钱包数据文件不存在", filePath);
             }
 
             // 读取文件数据

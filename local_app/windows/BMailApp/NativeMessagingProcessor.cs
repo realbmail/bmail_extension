@@ -115,3 +115,24 @@ namespace BMailApp
         public object Data { get; set; }
     }
 }
+
+/*
+ 
+
+using System.Reflection;
+using System.Diagnostics;
+
+// 获取当前程序的完整路径
+string exePath = Assembly.GetExecutingAssembly().Location;
+
+ProcessStartInfo psi = new ProcessStartInfo
+{
+    FileName = exePath,
+    Arguments = "--ui", // 传递参数以强制进入 UI 模式
+    UseShellExecute = false
+};
+
+Process.Start(psi);
+
+
+ */
