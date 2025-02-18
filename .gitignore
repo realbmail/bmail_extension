@@ -27,3 +27,4 @@ resources/.arch-internal-preview.css
 /local_app/windows/BMailApp/.vs
 /local_app/windows/BMailApp/bin
 /local_app/windows/BMailApp/obj
+/extension.zip
