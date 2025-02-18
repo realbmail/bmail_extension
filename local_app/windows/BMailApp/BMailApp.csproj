@@ -13,13 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
-  </ItemGroup>
-
-  <ItemGroup>
     <Resource Include="Resources\logo.ico" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="TweetNaclSharp" Version="1.1.0" />
   </ItemGroup>
 

@@ -1,14 +1,19 @@
-﻿using System.Configuration;
-using System.Data;
-using System.Windows;
+﻿using System.Windows;
 
 namespace BMailApp
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            // 如果标准输入被重定向，则认为是 Native Messaging 模式
+            if (Console.IsInputRedirected)
+            {
+                NativeMessagingProcessor.Process();
+                Environment.Exit(0);
+            }
+            // 否则进入 UI 模式
+            base.OnStartup(e);
+        }
     }
-
 }

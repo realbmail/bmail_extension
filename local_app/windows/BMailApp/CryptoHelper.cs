@@ -1,7 +1,5 @@
-﻿using System;
-using System.Linq;
+﻿using System.Security.Cryptography;
 using System.Text;
-using System.Security.Cryptography;
 using TweetNaclSharp;  // 引用 TweetNaCl‑CSharp
 
 namespace BMailApp
