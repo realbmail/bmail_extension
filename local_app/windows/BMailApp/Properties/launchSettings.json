@@ -1,8 +1,7 @@
 {
   "profiles": {
     "BMailApp": {
-      "commandName": "Project",
-      "commandLineArgs": "--ui"
+      "commandName": "Project"
     }
   }
 }

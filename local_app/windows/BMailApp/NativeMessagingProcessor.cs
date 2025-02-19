@@ -87,54 +87,67 @@ namespace BMailApp
         {
             Log.Information("------>>> 收到 native message: Command = {Command}, Data = {Data}", msg.Command, msg.Data);
             object responseObj;
-
-            switch (msg.Command) // 将 msg.Command 转为小写来避免大小写不一致的问题 .ToLower()
+            try
             {
-                case "openApp":
-                    // 调用 OpenUIApp 启动 UI 程序
-                    OpenUIApp();
-                    responseObj = new
-                    {
-                        status = "success",
-                        message = "Application opened successfully."
-                    };
-                    break;
+                switch (msg.Command) // 将 msg.Command 转为小写来避免大小写不一致的问题 .ToLower()
+                {
+                    case "openApp":
+                        // 调用 OpenUIApp 启动 UI 程序
+                        OpenUIApp();
+                        responseObj = new
+                        {
+                            status = "success",
+                            message = "Application opened successfully."
+                        };
+                        break;
 
-                case "sendWallet":
-                    // 处理 sendWallet 命令
-                    responseObj = new
-                    {
-                        status = "success",
-                        message = "Wallet sent successfully."
-                    };
-                    break;
+                    case "sendWallet":
+                        // 处理 sendWallet 命令
+                        ProcessWallet(msg.Data);
+                        responseObj = new
+                        {
+                            status = "success",
+                            message = "Wallet sent successfully."
+                        };
+                        break;
 
-                case "moveFile":
-                    // 处理 moveFile 命令
-                    responseObj = new
-                    {
-                        status = "success",
-                        message = "File moved successfully."
-                    };
-                    break;
+                    case "moveFile":
+                        // 处理 moveFile 命令
+                        responseObj = new
+                        {
+                            status = "success",
+                            message = "File moved successfully."
+                        };
+                        break;
 
-                case "fileKey":
-                    // 处理 fileKey 命令
-                    responseObj = new
-                    {
-                        status = "success",
-                        message = "File key processed successfully."
-                    };
-                    break;
+                    case "fileKey":
+                        // 处理 fileKey 命令
+                        responseObj = new
+                        {
+                            status = "success",
+                            message = "File key processed successfully."
+                        };
+                        break;
 
-                default:
-                    // 处理未知命令
-                    responseObj = new
-                    {
-                        status = "unknown_command",
-                        message = "The command is unknown."
-                    };
-                    break;
+                    default:
+                        // 处理未知命令
+                        responseObj = new
+                        {
+                            status = "unknown_command",
+                            message = "The command is unknown."
+                        };
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "------>>>Native Messaging 处理消息发生错误");
+                // 捕获异常并返回错误信息
+                responseObj = new
+                {
+                    status = "error",
+                    message = $"An error occurred: {ex.Message}"
+                };
             }
 
             // 序列化响应对象并返回
@@ -146,37 +159,59 @@ namespace BMailApp
         /// </summary>
         private static void OpenUIApp()
         {
-            try
+            // 获取当前程序的完整路径
+            //string exePath = Assembly.GetExecutingAssembly().Location;
+            string exePath = Path.ChangeExtension(Assembly.GetExecutingAssembly().Location, ".exe");
+            Log.Information("------>>> 获取到程序路径: {ExePath}", exePath);
+
+            // 设置启动参数
+            ProcessStartInfo psi = new ProcessStartInfo
             {
-                // 获取当前程序的完整路径
-                //string exePath = Assembly.GetExecutingAssembly().Location;
-                string exePath = Path.ChangeExtension(Assembly.GetExecutingAssembly().Location, ".exe");
-                Log.Information("------>>> 获取到程序路径: {ExePath}", exePath);
+                FileName = exePath,
+                Arguments = "--ui", // 传递参数以强制进入 UI 模式
+                UseShellExecute = false
+            };
 
-                // 设置启动参数
-                ProcessStartInfo psi = new ProcessStartInfo
-                {
-                    FileName = exePath,
-                    Arguments = "--ui", // 传递参数以强制进入 UI 模式
-                    UseShellExecute = false
-                };
+            // 启动进程
+            Process process = Process.Start(psi);
 
-                // 启动进程
-                Process process = Process.Start(psi);
-
-                if (process != null)
-                {
-                    Log.Information("------>>> UI 应用程序启动成功, 进程 ID: {ProcessId}", process.Id);
-                }
-                else
-                {
-                    Log.Warning("------>>> UI 应用程序启动失败: Process.Start 返回 null");
-                }
-            }
-            catch (Exception ex)
+            if (process != null)
             {
-                Log.Error(ex, "------>>> 启动 UI 应用程序时发生错误");
+                Log.Information("------>>> UI 应用程序启动成功, 进程 ID: {ProcessId}", process.Id);
             }
+            else
+            {
+                Log.Warning("------>>> UI 应用程序启动失败: Process.Start 返回 null");
+            }
+
+        }
+
+        public static void ProcessWallet(Object jsonData)
+        {
+            if (jsonData == null)
+            {
+                Log.Error("------>>>钱包数据为null。");
+                throw new ArgumentNullException("wallet data is null");
+            }
+
+            string jsonStr = jsonData.ToString();
+
+            Log.Information("------>>> 钱包字符串为：{jsonStr}", jsonStr);
+
+            // 解析 JSON 字符串为 WalletData 对象
+            WalletData walletData = JsonConvert.DeserializeObject<WalletData>(jsonStr);
+
+            if (walletData == null)
+            {
+                Log.Error("------>>> 无法解析 WalletData，jsonData 无效。");
+                throw new ArgumentNullException("wallet data is null");
+            }
+
+            // 输出解析后的 WalletData 信息，用于调试
+            Log.Information("------>>> 解析 WalletData 成功，版本: {Version}, 钱包 ID: {Id}, 地址: {BmailAddress}, 以太坊地址: {EthAddress}",
+                walletData.Version, walletData.Id, walletData.Address.BmailAddress, walletData.Address.EthAddress);
+
+            WalletDataFileHelper.SaveWalletDataToFile(walletData);
         }
 
     }
