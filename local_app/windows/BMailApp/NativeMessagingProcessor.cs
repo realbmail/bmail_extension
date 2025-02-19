@@ -20,7 +20,7 @@ namespace BMailApp
                 if (nativeMsg == null)
                 {
                     throw new Exception("read native message is null");
-                } 
+                }
                 // 处理消息并生成响应
                 string response = ProcessNativeMessage(nativeMsg);
                 // 按协议将响应写回标准输出
@@ -116,7 +116,7 @@ namespace BMailApp
                         break;
 
                     case "moveFile":
-                        // 处理 moveFile 命令
+                        moveFile(msg.FilePath);
                         responseObj = new
                         {
                             status = "success",
@@ -125,7 +125,9 @@ namespace BMailApp
                         break;
 
                     case "fileKey":
-                        // 处理 fileKey 命令
+
+                        FileKey(msg.Data, msg.KeyID);
+                        
                         responseObj = new
                         {
                             status = "success",
@@ -216,6 +218,70 @@ namespace BMailApp
                 walletData.Version, walletData.Id, walletData.Address.BmailAddress, walletData.Address.EthAddress);
 
             WalletDataFileHelper.SaveWalletDataToFile(walletData);
+        }
+
+        /// <summary>
+        /// 处理文件移动逻辑
+        /// </summary>
+        private static void moveFile(string? filePath)
+        {
+            if (filePath == null)
+            {
+                throw new ArgumentNullException("File path is null.");
+            }
+
+            // 获取当前用户的 Documents 目录
+            string documentsDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string targetDir = Path.Combine(documentsDir, "BMailAttachments");
+
+            // 如果目录不存在，创建它
+            if (!Directory.Exists(targetDir))
+            {
+                Directory.CreateDirectory(targetDir);
+            }
+
+            // 获取目标文件的文件名
+            string fileName = Path.GetFileName(filePath);
+            string targetFilePath = Path.Combine(targetDir, fileName);
+
+            // 移动文件到目标目录，保留文件名
+            if (File.Exists(filePath))
+            {
+                File.Move(filePath, targetFilePath);
+                Log.Information("------>>> 文件移动成功: {FileName}", fileName);
+            }
+            else
+            {
+                throw new FileNotFoundException($"文件 {filePath} 不存在");
+            }
+        }
+
+        /// <summary>
+        /// 处理文件键操作逻辑
+        /// </summary>
+        /// <summary>
+        /// 处理文件键操作逻辑
+        /// </summary>
+        private static void FileKey(object? data, string? id)
+        {
+            if (data == null || id == null)
+            {
+                throw new ArgumentNullException("Data or ID is null.");
+            }
+
+            // 创建文件名
+            string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BMailAttachments", "." + id);
+
+            // 如果文件已存在，不做处理
+            if (File.Exists(fileName))
+            {
+                Log.Information("------>>> 文件已存在，跳过创建: {FileName}", fileName);
+                return;
+            }
+
+            // 如果文件不存在，创建并写入内容
+            File.WriteAllText(fileName, data.ToString());
+            Log.Information("------>>> 文件已创建并写入数据: {FileName}", fileName);
         }
 
     }
