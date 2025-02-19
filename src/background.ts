@@ -14,9 +14,7 @@ import {
     API_Bind_Email,
     API_Query_Bmail_Details,
     API_Query_By_EMails,
-    API_Unbind_Email, HostAppMacDownloadLink,
-    HostAppWinDownloadLink,
-    MsgType,
+    API_Unbind_Email, MsgType,
     WalletStatus
 } from "./consts";
 import {extractAesKeyId, sendMsgToContent} from "./content_common";
