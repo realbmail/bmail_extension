@@ -24,7 +24,7 @@ namespace BMailApp
         /// <summary>
         /// 当用户点击退出按钮后触发
         /// </summary>
-        public event EventHandler LogoutRequested;
+        public event EventHandler? LogoutRequested;
 
         private void MailAttachmentButton_Click(object sender, RoutedEventArgs e)
         {

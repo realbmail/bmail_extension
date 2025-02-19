@@ -68,6 +68,10 @@ namespace BMailApp
 
                         // 生成 Ed25519 签名密钥对（种子必须为 32 字节）
                         var keyPair = Nacl.SignKeyPairFromSeed(priRaw);
+                        if (keyPair == null || keyPair.SecretKey == null)
+                        {
+                            throw new WalletException("failed to create private key of ed25519");
+                        }
                         return keyPair.SecretKey;
                     }
                 }
@@ -82,6 +86,8 @@ namespace BMailApp
             if (seed.Length != 32)
                 throw new WalletException("Seed must be 32 bytes");
             var keyPair = Nacl.SignKeyPairFromSeed(seed);
+            if (keyPair == null || keyPair.SecretKey == null || keyPair.PublicKey == null)
+                throw new WalletException("nacl keypair is null");
             return (keyPair.SecretKey, keyPair.PublicKey);
         }
 
@@ -126,7 +132,7 @@ namespace BMailApp
                 throw new WalletException($"Nonce must be {Nacl.SecretboxNonceLength} bytes");
             if (key.Length != Nacl.SecretboxKeyLength)
                 throw new WalletException($"Key must be {Nacl.SecretboxKeyLength} bytes");
-            byte[] plaintext = Nacl.SecretboxOpen(cipherData, nonce, key);
+            byte[]? plaintext = Nacl.SecretboxOpen(cipherData, nonce, key);
             if (plaintext == null)
                 throw new WalletException("TweetNaCl decryption failed");
             return plaintext;

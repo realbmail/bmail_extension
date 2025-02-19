@@ -7,7 +7,7 @@ namespace BMailApp
     public partial class MainView : UserControl, INotifyPropertyChanged
     {
         private ContentType selectedContent = ContentType.MailAttachment;
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         /// 当前选中的内容类型，默认为 BMail附件

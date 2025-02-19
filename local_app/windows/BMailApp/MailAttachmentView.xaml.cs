@@ -7,7 +7,7 @@ namespace BMailApp
     public partial class MailAttachmentView : UserControl
     {
         private List<string> filePaths = new List<string>();
-        private string selectedFile;
+        private string? selectedFile;
 
         public MailAttachmentView()
         {

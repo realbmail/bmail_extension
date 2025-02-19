@@ -15,48 +15,48 @@ namespace BMailApp
     public class Address
     {
         [JsonProperty("bmail_address")]
-        public string BmailAddress { get; set; }
+        public required string BmailAddress { get; set; }
 
         [JsonProperty("eth_address")]
-        public string EthAddress { get; set; }
+        public required string EthAddress { get; set; }
     }
 
     public class CipherData
     {
         [JsonProperty("cipher_txt")]
-        public string CipherTxt { get; set; }
+        public required string CipherTxt { get; set; }
 
         [JsonProperty("iv")]
-        public string Iv { get; set; }
+        public required string Iv { get; set; }
 
         [JsonProperty("salt")]
-        public string Salt { get; set; }
+        public required string Salt { get; set; }
 
         [JsonProperty("key_size")]
-        public int KeySize { get; set; }
+        public required int KeySize { get; set; }
 
         [JsonProperty("iterations")]
-        public int Iterations { get; set; }
+        public required int Iterations { get; set; }
     }
 
     public class WalletData
     {
         [JsonProperty("address")]
-        public Address Address { get; set; }
+        public required Address Address { get; set; }
 
         [JsonProperty("cipher_data")]
-        public CipherData CipherData { get; set; }
+        public required CipherData CipherData { get; set; }
 
         [JsonProperty("version")]
-        public int Version { get; set; }
+        public required int Version { get; set; }
 
         [JsonProperty("id")]
-        public int Id { get; set; }
+        public required int Id { get; set; }
 
         [JsonIgnore]
-        public byte[] PriKey { get; set; }
+        public byte[]? PriKey { get; set; }
 
         [JsonIgnore]
-        public byte[] CurvePriKey { get; set; }
+        public byte[]? CurvePriKey { get; set; }
     }
 }

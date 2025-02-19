@@ -1,4 +1,6 @@
-﻿namespace BMailApp
+﻿using Serilog;
+
+namespace BMailApp
 {
     public class WalletDataStore
     {
@@ -11,15 +13,20 @@
         /// 异步加载钱包数据，加载完成后调用回调
         /// </summary>
         /// <param name="completion">加载完成后的回调</param>
-        public async Task LoadWalletDataAsync(Action<WalletData> completion = null)
+        public async Task LoadWalletDataAsync(Action<WalletData>? completion = null)
         {
             try
             {
                 // 异步从文件中加载钱包数据
-                WalletData data = await Task.Run(() =>
+                WalletData? data = await Task.Run(static () =>
                 {
                     return WalletDataFileHelper.LoadBmailWallet();
                 });
+                if (data == null)
+                {
+                    Log.Error("------->>> load cached wallet data failed");
+                    return;
+                }
 
                 // 更新钱包数据（如果需要在 UI 线程中更新，可用 Dispatcher.Invoke）
                 WalletData = data;

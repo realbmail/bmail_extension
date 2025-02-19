@@ -22,8 +22,17 @@ namespace BMailApp
             {
                 throw new ArgumentException("JSON 字符串为空");
             }
-            return JsonConvert.DeserializeObject<WalletData>(jsonString);
+
+            var walletData = JsonConvert.DeserializeObject<WalletData>(jsonString);
+
+            if (walletData == null)
+            {
+                throw new InvalidOperationException("无法解析 JSON 为 WalletData 对象");
+            }
+
+            return walletData;
         }
+
 
         /// <summary>
         /// 将 WalletData 对象保存到应用程序数据目录下
@@ -57,7 +66,7 @@ namespace BMailApp
         /// 从应用程序数据目录下加载钱包数据
         /// </summary>
         /// <returns>解析成功返回 WalletData，否则抛出异常</returns>
-        public static WalletData LoadBmailWallet()
+        public static WalletData? LoadBmailWallet()
         {
             // 获取 Application Data 目录
             string appDataDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -69,14 +78,16 @@ namespace BMailApp
             if (!File.Exists(filePath))
             {
                 return null;
-                //throw new FileNotFoundException("钱包数据文件不存在", filePath);
             }
 
             // 读取文件数据
             string json = File.ReadAllText(filePath, Encoding.UTF8);
+
             // 解析 JSON 数据
-            WalletData walletData = JsonConvert.DeserializeObject<WalletData>(json);
+            WalletData? walletData = JsonConvert.DeserializeObject<WalletData>(json);
+
             return walletData;
         }
+
     }
 }

@@ -12,11 +12,15 @@ namespace BMailApp
         public static void Handle()
         {
             // 按 Native Messaging 协议读取消息：先读取4字节长度，再读取对应的JSON消息体
-            string jsonMessage = ReadNativeMessage();
+            string? jsonMessage = ReadNativeMessage();
             if (!string.IsNullOrEmpty(jsonMessage))
             {
                 // 反序列化JSON消息
                 var nativeMsg = JsonConvert.DeserializeObject<NativeMessage>(jsonMessage);
+                if (nativeMsg == null)
+                {
+                    throw new Exception("read native message is null");
+                } 
                 // 处理消息并生成响应
                 string response = ProcessNativeMessage(nativeMsg);
                 // 按协议将响应写回标准输出
@@ -28,7 +32,7 @@ namespace BMailApp
         /// 按 Native Messaging 协议从标准输入读取消息：先读取4个字节表示消息长度，再读取对应的JSON消息体
         /// </summary>
         /// <returns>读取到的JSON字符串</returns>
-        private static string ReadNativeMessage()
+        private static string? ReadNativeMessage()
         {
             try
             {
@@ -52,7 +56,7 @@ namespace BMailApp
             }
             catch (Exception ex)
             {
-                // 如有需要，可记录日志
+                Log.Error(ex, "------>>> read native message is null");
                 return null;
             }
         }
@@ -74,7 +78,7 @@ namespace BMailApp
             }
             catch (Exception ex)
             {
-                // 如有需要，可记录日志
+                Log.Error(ex, "------>>> read native message is null");
             }
         }
 
@@ -173,7 +177,7 @@ namespace BMailApp
             };
 
             // 启动进程
-            Process process = Process.Start(psi);
+            using Process? process = Process.Start(psi);
 
             if (process != null)
             {
@@ -186,20 +190,20 @@ namespace BMailApp
 
         }
 
-        public static void ProcessWallet(Object jsonData)
+        public static void ProcessWallet(Object? jsonData)
         {
-            if (jsonData == null)
+            if (jsonData == null || jsonData.ToString() == null)
             {
                 Log.Error("------>>>钱包数据为null。");
                 throw new ArgumentNullException("wallet data is null");
             }
 
-            string jsonStr = jsonData.ToString();
+            string jsonStr = jsonData.ToString()!;
 
             Log.Information("------>>> 钱包字符串为：{jsonStr}", jsonStr);
 
             // 解析 JSON 字符串为 WalletData 对象
-            WalletData walletData = JsonConvert.DeserializeObject<WalletData>(jsonStr);
+            WalletData? walletData = JsonConvert.DeserializeObject<WalletData>(jsonStr);
 
             if (walletData == null)
             {
@@ -222,9 +226,15 @@ namespace BMailApp
     public class NativeMessage
     {
         [JsonProperty("command")]
-        public string Command { get; set; }
+        public required string Command { get; set; }
 
         [JsonProperty("data")]
-        public object Data { get; set; }
+        public object? Data { get; set; }
+
+        [JsonProperty("filePath")]
+        public string? FilePath { get; set; }
+
+        [JsonProperty("id")]
+        public string? KeyID { get; set; }
     }
 }
