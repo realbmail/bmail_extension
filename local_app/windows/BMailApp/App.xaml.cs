@@ -21,14 +21,13 @@ namespace BMailApp
 
                 try
                 {
-                    NativeMessagingProcessor.Process();
+                    NativeMessagingProcessor.Handle();
                     Log.Information("------>>>Native Messaging 消息处理完成，应用程序正常退出。");
                     Environment.Exit(0);
                 }
                 catch (Exception ex)
                 {
-                    Log.Error("$------>>>Native Messaging 处理过程中发生错误: {ex.Message}");
-                    Log.Error(ex.StackTrace);
+                    Log.Error(ex, "------>>>Native Messaging 处理过程中发生错误");
                     Environment.Exit(1);
                 }
             }

@@ -1,11 +1,15 @@
 ﻿using Newtonsoft.Json;
 using System.Text;
+using System.Reflection;
+using System.Diagnostics;
+using Serilog;
+using System.IO;
 
 namespace BMailApp
 {
     public static class NativeMessagingProcessor
     {
-        public static void Process()
+        public static void Handle()
         {
             // 按 Native Messaging 协议读取消息：先读取4字节长度，再读取对应的JSON消息体
             string jsonMessage = ReadNativeMessage();
@@ -81,26 +85,100 @@ namespace BMailApp
         /// <returns>响应的JSON字符串</returns>
         private static string ProcessNativeMessage(NativeMessage msg)
         {
-            // 示例：如果命令为 "echo"，则返回原始数据
-            if (msg.Command == "echo")
+            Log.Information("------>>> 收到 native message: Command = {Command}, Data = {Data}", msg.Command, msg.Data);
+            object responseObj;
+
+            switch (msg.Command) // 将 msg.Command 转为小写来避免大小写不一致的问题 .ToLower()
             {
-                var responseObj = new
-                {
-                    status = "success",
-                    echo = msg.Data
-                };
-                return JsonConvert.SerializeObject(responseObj);
+                case "openApp":
+                    // 调用 OpenUIApp 启动 UI 程序
+                    OpenUIApp();
+                    responseObj = new
+                    {
+                        status = "success",
+                        message = "Application opened successfully."
+                    };
+                    break;
+
+                case "sendWallet":
+                    // 处理 sendWallet 命令
+                    responseObj = new
+                    {
+                        status = "success",
+                        message = "Wallet sent successfully."
+                    };
+                    break;
+
+                case "moveFile":
+                    // 处理 moveFile 命令
+                    responseObj = new
+                    {
+                        status = "success",
+                        message = "File moved successfully."
+                    };
+                    break;
+
+                case "fileKey":
+                    // 处理 fileKey 命令
+                    responseObj = new
+                    {
+                        status = "success",
+                        message = "File key processed successfully."
+                    };
+                    break;
+
+                default:
+                    // 处理未知命令
+                    responseObj = new
+                    {
+                        status = "unknown_command",
+                        message = "The command is unknown."
+                    };
+                    break;
             }
 
-            // 根据需要添加更多命令处理逻辑
-
-            // 默认响应：未知命令
-            var defaultResponse = new
-            {
-                status = "success"
-            };
-            return JsonConvert.SerializeObject(defaultResponse);
+            // 序列化响应对象并返回
+            return JsonConvert.SerializeObject(responseObj);
         }
+
+        /// <summary>
+        /// 启动 UI 应用程序
+        /// </summary>
+        private static void OpenUIApp()
+        {
+            try
+            {
+                // 获取当前程序的完整路径
+                //string exePath = Assembly.GetExecutingAssembly().Location;
+                string exePath = Path.ChangeExtension(Assembly.GetExecutingAssembly().Location, ".exe");
+                Log.Information("------>>> 获取到程序路径: {ExePath}", exePath);
+
+                // 设置启动参数
+                ProcessStartInfo psi = new ProcessStartInfo
+                {
+                    FileName = exePath,
+                    Arguments = "--ui", // 传递参数以强制进入 UI 模式
+                    UseShellExecute = false
+                };
+
+                // 启动进程
+                Process process = Process.Start(psi);
+
+                if (process != null)
+                {
+                    Log.Information("------>>> UI 应用程序启动成功, 进程 ID: {ProcessId}", process.Id);
+                }
+                else
+                {
+                    Log.Warning("------>>> UI 应用程序启动失败: Process.Start 返回 null");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "------>>> 启动 UI 应用程序时发生错误");
+            }
+        }
+
     }
 
     /// <summary>
@@ -115,24 +193,3 @@ namespace BMailApp
         public object Data { get; set; }
     }
 }
-
-/*
- 
-
-using System.Reflection;
-using System.Diagnostics;
-
-// 获取当前程序的完整路径
-string exePath = Assembly.GetExecutingAssembly().Location;
-
-ProcessStartInfo psi = new ProcessStartInfo
-{
-    FileName = exePath,
-    Arguments = "--ui", // 传递参数以强制进入 UI 模式
-    UseShellExecute = false
-};
-
-Process.Start(psi);
-
-
- */
