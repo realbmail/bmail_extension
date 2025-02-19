@@ -97,7 +97,7 @@ namespace BMailApp
             // 默认响应：未知命令
             var defaultResponse = new
             {
-                status = "unknown_command"
+                status = "success"
             };
             return JsonConvert.SerializeObject(defaultResponse);
         }
