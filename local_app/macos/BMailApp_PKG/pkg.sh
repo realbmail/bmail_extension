@@ -18,22 +18,34 @@ pkgbuild --root "$BASE_DIR/Payload" \
          --install-location "/" \
          --scripts "$BASE_DIR/Scripts" \
          "$BASE_DIR/BMailApp.pkg"
-
 if [ $? -ne 0 ]; then
     echo "Error: pkgbuild 生成失败"
     exit 1
 fi
+
+# 2.1 验证 BMailApp.pkg 内部结构
+pkgutil --expand "$BASE_DIR/BMailApp.pkg" "$BASE_DIR/BMailApp_Expanded"
+tree "$BASE_DIR/BMailApp_Expanded"
+echo "=======>>>> 查看 BMailApp_Expanded/PackageInfo 中的 install-location："
+grep "install-location" "$BASE_DIR/BMailApp_Expanded/PackageInfo"
+rm -rf "$BASE_DIR/BMailApp_Expanded"
 
 # 3. 使用 productbuild 生成临时安装包 BMailApp_tmp.pkg
 echo "=======>>>> Step 3: 运行 productbuild 生成临时安装包..."
 productbuild --distribution "$BASE_DIR/distribution.xml" \
              --package-path "$BASE_DIR" \
              "$BASE_DIR/BMailApp_tmp.pkg"
-
 if [ $? -ne 0 ]; then
     echo "Error: productbuild 生成失败"
     exit 1
 fi
+
+# 3.1 验证 BMailApp_tmp.pkg 内部结构
+pkgutil --expand "$BASE_DIR/BMailApp_tmp.pkg" "$BASE_DIR/BMailApp_tmp_Expanded"
+tree "$BASE_DIR/BMailApp_tmp_Expanded"
+echo "=======>>>> 查看 BMailApp_tmp_Expanded/Distribution 中的 install-location："
+grep "install-location" "$BASE_DIR/BMailApp_tmp_Expanded/Distribution"
+rm -rf "$BASE_DIR/BMailApp_tmp_Expanded"
 
 # 4. 为避免安装时直接引用本地的 Payload 文件，将 Payload 目录重命名（或移动）出去
 echo "=======>>>> Step 4: 重命名 Payload 目录以避免直接引用本地文件..."
@@ -44,49 +56,17 @@ echo "=======>>>> Step 5: 使用 productsign 签名..."
 productsign --sign "Developer ID Installer: Yushian (Beijing) Technology Co., Ltd. (2XYK8RBB6M)" \
             "$BASE_DIR/BMailApp_tmp.pkg" \
             "$BASE_DIR/BMailApp_Installer.pkg"
-
 if [ $? -ne 0 ]; then
     echo "Error: productsign 签名失败"
     exit 1
 fi
 
-# 6. 如果签名成功，恢复 Payload_backup -> Payload
-echo "=======>>>> Step 6: 恢复 Payload 目录..."
-mv "$BASE_DIR/Payload_backup" "$BASE_DIR/Payload"
+# 6. 如果需要恢复 Payload 目录供后续使用，可以将其恢复到其他目录，但安装测试时请确保构建目录中无 Payload
+# echo "=======>>>> Step 6: 恢复 Payload 目录..."
+# mv "$BASE_DIR/Payload_backup" "$BASE_DIR/Payload"
 
 # 7. 删除临时包 BMailApp_tmp.pkg（可选）
 echo "=======>>>> Step 7: 删除临时包 BMailApp_tmp.pkg..."
 rm -f "$BASE_DIR/BMailApp_tmp.pkg"
-
-# 8. 使用 notarytool 提交安装包进行公证
-echo "=======>>>> Step 8: 提交安装包进行公证 (notarytool)..."
-xcrun notarytool submit "BMailApp_Installer.pkg" \
-    --keychain-profile "MyNotaryProfile" \
-    --wait
-
-if [ $? -ne 0 ]; then
-    echo "Error: notarytool 提交失败"
-    exit 1
-fi
-
-# 9. 使用 stapler 将公证信息捆绑到安装包中
-echo "=======>>>> Step 9: 捆绑公证信息 (stapler)..."
-xcrun stapler staple "BMailApp_Installer.pkg"
-
-if [ $? -ne 0 ]; then
-    echo "Error: stapler 操作失败"
-    exit 1
-fi
-
-# 10. 使用 pkgutil 检查安装包签名和公证信息
-echo "=======>>>> Step 10: 使用 pkgutil 检查安装包签名和公证信息..."
-NOTARIZATION_OUTPUT=$(pkgutil --check-signature "BMailApp_Installer.pkg")
-echo "$NOTARIZATION_OUTPUT"
-if echo "$NOTARIZATION_OUTPUT" | grep -q "Notarization: trusted by the Apple notary service"; then
-    echo "=======>>>> Notarization check passed: Package is notarized."
-else
-    echo "Error: Package is not notarized! Notarization info missing."
-    exit 1
-fi
 
 echo "=======>>>> 完成！请使用生成的 $BASE_DIR/BMailApp_Installer.pkg 进行安装。"

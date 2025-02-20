@@ -7,7 +7,6 @@
     <choice id="default" visible="false">
         <pkg-ref id="com.yushian.bmail.pkg"/>
     </choice>
-    <pkg-ref id="com.yushian.bmail.pkg" version="1.0" auth="Root" installLocation="/">
-        BMailApp.pkg
-    </pkg-ref>
+    <pkg-ref id="com.yushian.bmail.pkg" version="1.0" auth="Root">BMailApp.pkg</pkg-ref>
+    <install-location>/</install-location>
 </installer-gui-script>
