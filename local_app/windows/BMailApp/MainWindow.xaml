@@ -6,6 +6,7 @@
         WindowStartupLocation="CenterScreen"
         Icon="Resources/logo.ico"
         Loaded="Window_Loaded">
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>

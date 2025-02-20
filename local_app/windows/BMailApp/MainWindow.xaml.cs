@@ -7,7 +7,7 @@ namespace BMailApp
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private ContentType selectedContent = ContentType.MailAttachment;
+        private ContentType selectedContent = ContentType.None;
         public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
@@ -33,6 +33,7 @@ namespace BMailApp
             DataContext = this;
             // 默认选中 MailAttachment
             SelectedContent = ContentType.MailAttachment;
+            //UpdateContent();
         }
 
         protected void OnPropertyChanged(string propertyName) =>
