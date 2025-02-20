@@ -89,7 +89,8 @@ namespace BMailApp
         /// <returns>响应的JSON字符串</returns>
         private static string ProcessNativeMessage(NativeMessage msg)
         {
-            Log.Information("------>>> 收到 native message: Command = {Command}, Data = {Data}", msg.Command, msg.Data);
+            Log.Information("------>>> 收到 native message: Command = {Command}, Data = {Data}, file={file} id={ID}",
+                msg.Command, msg.Data, msg.FilePath, msg.KeyID);
             object responseObj;
             try
             {
@@ -116,7 +117,7 @@ namespace BMailApp
                         break;
 
                     case "moveFile":
-                        moveFile(msg.FilePath);
+                        moveOrReplaceFile(msg.FilePath);
                         responseObj = new
                         {
                             status = "success",
@@ -127,8 +128,8 @@ namespace BMailApp
                     case "fileKey":
 
                         FileKey(msg.Data, msg.KeyID);
-                        
-                         responseObj = new
+
+                        responseObj = new
                         {
                             status = "success",
                             message = "File key processed successfully."
@@ -223,7 +224,7 @@ namespace BMailApp
         /// <summary>
         /// 处理文件移动逻辑
         /// </summary>
-        private static void moveFile(string? filePath)
+        private static void moveOrReplaceFile(string? filePath)
         {
             if (filePath == null)
             {
@@ -237,6 +238,7 @@ namespace BMailApp
             // 如果目录不存在，创建它
             if (!Directory.Exists(targetDir))
             {
+                Log.Information("------>>> 创建目录: {targetDir}", targetDir);
                 Directory.CreateDirectory(targetDir);
             }
 
@@ -244,15 +246,20 @@ namespace BMailApp
             string fileName = Path.GetFileName(filePath);
             string targetFilePath = Path.Combine(targetDir, fileName);
 
-            // 移动文件到目标目录，保留文件名
-            if (File.Exists(filePath))
+            if (!File.Exists(filePath))
             {
-                File.Move(filePath, targetFilePath);
-                Log.Information("------>>> 文件移动成功: {FileName}", fileName);
+                throw new FileNotFoundException($"文件 {filePath} 不存在");
+            }
+
+            if (File.Exists(targetFilePath))
+            {
+                File.Replace(filePath, targetFilePath, null);
+                Log.Information("------>>> 覆盖原有文件: {targetFilePath}", targetFilePath);
             }
             else
             {
-                throw new FileNotFoundException($"文件 {filePath} 不存在");
+                File.Move(filePath, targetFilePath);
+                Log.Information("------>>> 穿件新的加密文件: {targetFilePath}", targetFilePath);
             }
         }
 
