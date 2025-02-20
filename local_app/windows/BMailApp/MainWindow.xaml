@@ -4,9 +4,18 @@
         xmlns:local="clr-namespace:BMailApp"
         Title="BMailApp" Height="450" Width="800"
         WindowStartupLocation="CenterScreen"
-        Icon="Resources/logo.ico">
+        Icon="Resources/logo.ico"
+        Loaded="Window_Loaded">
     <Grid>
-        <!-- 将 MainView 添加为窗口内容 -->
-        <local:MainView/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <!-- 左侧导航栏 -->
+        <local:SidebarView x:Name="Sidebar"
+                           SelectedContent="{Binding SelectedContent, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=Window}}"
+                           LogoutRequested="Sidebar_LogoutRequested"/>
+        <!-- 右侧内容区域 -->
+        <ContentControl x:Name="ContentArea" Grid.Column="1"/>
     </Grid>
 </Window>

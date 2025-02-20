@@ -13,9 +13,6 @@
     <Compile Update="MailAttachmentView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="MainView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="SettingView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -25,9 +22,6 @@
   </ItemGroup>
   <ItemGroup>
     <Page Update="MailAttachmentView.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="MainView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MainWindow.xaml">
