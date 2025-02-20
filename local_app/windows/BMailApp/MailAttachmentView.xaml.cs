@@ -44,11 +44,27 @@ namespace BMailApp
             }
         }
 
+        private void OpenMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (FilesListBox.SelectedItem != null)
+            {
+                selectedFile = FilesListBox.SelectedItem.ToString();
+                // 添加打开文件的逻辑
+                MessageBox.Show($"打开文件: {selectedFile}");
+            }
+        }
+
+
         private void DeleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
             if (FilesListBox.SelectedItem != null)
             {
                 selectedFile = FilesListBox.SelectedItem.ToString();
+                if (selectedFile == null)
+                {
+                    LoadFiles();
+                    return;
+                }
                 // 在此添加删除逻辑
                 // 示例：删除文件并刷新列表
                 string attachmentsDirectory = WalletDataFileHelper.GetOrCreateTargetDir();
