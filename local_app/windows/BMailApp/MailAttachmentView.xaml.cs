@@ -56,8 +56,8 @@ namespace BMailApp
                 if (File.Exists(filePath))
                 {
                     File.Delete(filePath);
-                    MessageBox.Show($"已删除文件: {selectedFile}");
                     LoadFiles();
+                    MessageBox.Show($"已删除文件: {selectedFile}");
                 }
             }
         }
