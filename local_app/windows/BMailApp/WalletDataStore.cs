@@ -55,6 +55,10 @@ namespace BMailApp
                 // 更新钱包数据：保存完整私钥和转换后的 Curve25519 私钥
                 WalletData.PriKey = decryptedKey;
                 WalletData.CurvePriKey = CryptoHelper.Ed2CurvePri(decryptedKey);
+
+                //Log.Information("------>>> PriKey raw data: " + string.Join(",", decryptedKey));
+                //Log.Information("------>>> CurvePriKey raw data: " + string.Join(",", WalletData.CurvePriKey));
+
             }
             catch (Exception ex)
             {

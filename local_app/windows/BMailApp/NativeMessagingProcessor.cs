@@ -231,16 +231,7 @@ namespace BMailApp
                 throw new ArgumentNullException("File path is null.");
             }
 
-            // 获取当前用户的 Documents 目录
-            string documentsDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            string targetDir = Path.Combine(documentsDir, "BMailAttachments");
-
-            // 如果目录不存在，创建它
-            if (!Directory.Exists(targetDir))
-            {
-                Log.Information("------>>> 创建目录: {targetDir}", targetDir);
-                Directory.CreateDirectory(targetDir);
-            }
+            string targetDir = WalletDataFileHelper.GetOrCreateTargetDir();
 
             // 获取目标文件的文件名
             string fileName = Path.GetFileName(filePath);
@@ -276,8 +267,9 @@ namespace BMailApp
                 throw new ArgumentNullException("Data or ID is null.");
             }
 
+            string targetDir = WalletDataFileHelper.GetOrCreateTargetDir();
             // 创建文件名
-            string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "BMailAttachments", "." + id);
+            string fileName = Path.Combine(targetDir, "." + id);
 
             // 如果文件已存在，不做处理
             if (File.Exists(fileName))

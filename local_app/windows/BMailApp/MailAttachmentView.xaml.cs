@@ -40,7 +40,8 @@ namespace BMailApp
         private void LoadFiles()
         {
             // 假设附件存放在 "C:\Attachments" 文件夹中
-            string attachmentsDirectory = "C:\\Attachments";
+            string attachmentsDirectory = WalletDataFileHelper.GetOrCreateTargetDir();
+
             if (Directory.Exists(attachmentsDirectory))
             {
                 filePaths = new List<string>(Directory.GetFiles(attachmentsDirectory));

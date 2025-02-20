@@ -11,6 +11,24 @@ namespace BMailApp
     /// </summary>
     public static class WalletDataFileHelper
     {
+        public static readonly string AttachmentFolderName = "BMailAttachments";
+
+        public static string GetOrCreateTargetDir()
+        {
+            // 获取当前用户的 Documents 目录
+            string documentsDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string targetDir = Path.Combine(documentsDir, AttachmentFolderName);
+
+            // 如果目录不存在，创建它
+            if (!Directory.Exists(targetDir))
+            {
+                Log.Information("------>>> 创建目录: {targetDir}", targetDir);
+                Directory.CreateDirectory(targetDir);
+            }
+
+            return targetDir;
+        }
+
         /// <summary>
         /// 从 JSON 字符串中解析出 WalletData 对象
         /// </summary>
