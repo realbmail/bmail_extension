@@ -164,10 +164,46 @@ namespace BMailApp
         /// <summary>
         /// 启动 UI 应用程序
         /// </summary>
+        /// 
+        private static Process? IsUIProcessRunning()
+        {
+            // 获取当前进程名称和所有同名进程
+            var currentProcessName = Process.GetCurrentProcess().ProcessName;
+            var processes = Process.GetProcessesByName(currentProcessName);
+            int currentProcessId = Process.GetCurrentProcess().Id;
+
+            Log.Information("------>>检查 UI 进程：找到 {Count} 个 '{ProcessName}' 进程。", processes.Length, currentProcessName);
+            foreach (var process in processes)
+            {
+                Log.Information("------>>> 进程名称: {ProcessName}, 进程 ID: {ProcessId}", process.ProcessName, process.Id);
+            }
+
+            // 筛选出当前进程之外的第一个进程
+            var otherProcess = processes.FirstOrDefault(p => p.Id != currentProcessId);
+
+            if (otherProcess != null)
+            {
+                Log.Information("------>>> 检测到其他 UI 进程正在运行。");
+            }
+            else
+            {
+                Log.Information("-------->>> 没有检测到其他 UI 进程。");
+            }
+
+            return otherProcess;
+        }
+
+
         private static void OpenUIApp()
         {
-            // 获取当前程序的完整路径
-            //string exePath = Assembly.GetExecutingAssembly().Location;
+            Process? otherProcess = IsUIProcessRunning();
+            if (otherProcess != null)
+            {
+                WindowHelper.BringWindowToFront(otherProcess);
+                return;
+            }
+           
+
             string exePath = Path.ChangeExtension(Assembly.GetExecutingAssembly().Location, ".exe");
             Log.Information("------>>> 获取到程序路径: {ExePath}", exePath);
 
@@ -280,6 +316,7 @@ namespace BMailApp
 
             // 如果文件不存在，创建并写入内容
             File.WriteAllText(fileName, data.ToString());
+            File.SetAttributes(fileName, File.GetAttributes(fileName) | FileAttributes.Hidden);
             Log.Information("------>>> 文件已创建并写入数据: {FileName}", fileName);
         }
 

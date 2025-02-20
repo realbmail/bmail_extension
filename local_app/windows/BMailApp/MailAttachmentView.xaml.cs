@@ -44,7 +44,9 @@ namespace BMailApp
 
             if (Directory.Exists(attachmentsDirectory))
             {
-                filePaths = new List<string>(Directory.GetFiles(attachmentsDirectory));
+                filePaths = Directory.GetFiles(attachmentsDirectory)
+                              .Where(file => (File.GetAttributes(file) & FileAttributes.Hidden) == 0)
+                              .ToList();
             }
             else
             {
