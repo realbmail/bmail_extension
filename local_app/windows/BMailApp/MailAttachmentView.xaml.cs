@@ -34,6 +34,35 @@ namespace BMailApp
             }
         }
 
+        private void DecryptMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (FilesListBox.SelectedItem != null)
+            {
+                selectedFile = FilesListBox.SelectedItem.ToString();
+                // 在此添加解密逻辑
+                MessageBox.Show($"解密文件: {selectedFile}");
+            }
+        }
+
+        private void DeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (FilesListBox.SelectedItem != null)
+            {
+                selectedFile = FilesListBox.SelectedItem.ToString();
+                // 在此添加删除逻辑
+                // 示例：删除文件并刷新列表
+                string attachmentsDirectory = WalletDataFileHelper.GetOrCreateTargetDir();
+                string filePath = System.IO.Path.Combine(attachmentsDirectory, selectedFile);
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                    MessageBox.Show($"已删除文件: {selectedFile}");
+                    LoadFiles();
+                }
+            }
+        }
+
+
         /// <summary>
         /// 加载附件文件列表，示例中从指定目录读取文件路径（请根据实际情况修改）
         /// </summary>
