@@ -157,14 +157,16 @@ runtime.onInstalled.addListener((details: Runtime.OnInstalledDetailsType) => {
 });
 
 runtime.onStartup.addListener(() => {
-    console.log('------>>> Service Worker onStartup......');
-    updateIcon(false);
+    setTimeout(() => {
+        console.log('------>>> Service Worker onStartup......');
+        updateIcon(false);
 
-    initDatabase().then(() => {
-        createContextMenu().then()
-        AddMenuListener();
-        console.log("------>>> context menu setup success")
-    });
+        initDatabase().then(() => {
+            createContextMenu().then()
+            AddMenuListener();
+            console.log("------>>> context menu setup success")
+        });
+    }, 1000); // 延迟 1 秒执行
 });
 
 runtime.onSuspend.addListener(() => {
