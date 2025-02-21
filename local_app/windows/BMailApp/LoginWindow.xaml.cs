@@ -4,18 +4,16 @@ namespace BMailApp
 {
     public partial class LoginWindow : Window
     {
-        private WalletDataStore walletStore;
 
         public LoginWindow()
         {
             InitializeComponent();
-            walletStore = new WalletDataStore();
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             // 异步加载钱包数据，并更新界面显示
-            await walletStore.LoadWalletDataAsync((walletData) =>
+            await WalletDataStore.Instance.LoadWalletDataAsync((walletData) =>
             {
                 Dispatcher.Invoke(() =>
                 {
@@ -30,7 +28,7 @@ namespace BMailApp
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             // 检查是否已经加载钱包数据
-            if (walletStore.WalletData == null)  // 修正为 WalletData（首字母大写）
+            if (WalletDataStore.Instance.WalletData == null)  // 修正为 WalletData（首字母大写）
             {
                 MessageBox.Show("请先登录BMail浏览器插件", "登录失败", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
@@ -47,7 +45,7 @@ namespace BMailApp
                 await Task.Run(() =>
                 {
                     System.Threading.Thread.Sleep(1000);
-                    walletStore.UnlockWallet(password);
+                    WalletDataStore.Instance.UnlockWallet(password);
                 });
 
                 // 登录成功后，打开主界面

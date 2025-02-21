@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Serilog;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -49,7 +50,14 @@ namespace BMailApp
                 return;
             }
 
-            DecryptFile(selectedFile);
+            try
+            {
+                DecryptFile(selectedFile);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"解密文件失败: {ex.Message}");
+            }
         }
 
         private void OpenFileByFileName(string? fileName)
@@ -175,7 +183,17 @@ namespace BMailApp
             string attachmentsDirectory = WalletDataFileHelper.GetOrCreateTargetDir();
             string filePath = System.IO.Path.Combine(attachmentsDirectory, fileName);
 
-            byte[]? curvePriKey = WalletDataStore.WalletData.CurvePriKey;
+            WalletData? walletData = WalletDataStore.Instance.WalletData;
+            byte[]? curvePriKey = (walletData?.CurvePriKey) ?? throw new Exception("请先解密账号");
+
+
+            string extractedID = CryptoHelper.ExtractIDFromFileName(fileName);
+            Log.Information($"------>>> extracted id is:{extractedID}");
+
+            string keyContent = CryptoHelper.ReadContentByKeyId(extractedID);
+
+
+
         }
     }
 }

@@ -1,5 +1,8 @@
-﻿using System.Security.Cryptography;
+﻿using Newtonsoft.Json;
+using System.IO;
+using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using TweetNaclSharp;  // 引用 TweetNaCl‑CSharp
 
 namespace BMailApp
@@ -136,6 +139,152 @@ namespace BMailApp
             if (plaintext == null)
                 throw new WalletException("TweetNaCl decryption failed");
             return plaintext;
+        }
+
+        /// <summary>
+        /// 使用 TweetNaCl‑CSharp 进行 Curve25519 密钥协商（即 X25519 算法），
+        /// 计算共享密钥：priKey 与 curvePub 进行标量乘法，返回共享密钥字节数组。
+        /// </summary>
+        /// <param name="priKey">32 字节的私钥</param>
+        /// <param name="curvePub">32 字节的公钥</param>
+        /// <returns>共享密钥的字节数组</returns>
+
+        public static byte[] ScalarMult(byte[] priKey, byte[] curvePub)
+        {
+            if (priKey == null || priKey.Length != 32)
+                throw new ArgumentException("私钥必须为32字节", nameof(priKey));
+            if (curvePub == null || curvePub.Length != 32)
+                throw new ArgumentException("公钥必须为32字节", nameof(curvePub));
+
+            var sharedSecret = Nacl.ScalarMult(priKey, curvePub);
+
+            if (sharedSecret == null || sharedSecret.Length != 32)
+                throw new InvalidOperationException("Key agreement failed");
+
+            return sharedSecret;
+        }
+
+
+
+        public static string ExtractIDFromFileName(string fileName)
+        {
+            // 定义正则表达式，匹配数字后紧跟 "_bmail"
+            var regex = new Regex(@"(\d+)_bmail");
+            var match = regex.Match(fileName);
+            if (match.Success && match.Groups.Count > 1)
+            {
+                return match.Groups[1].Value;
+            }
+            else
+            {
+                throw new ArgumentException($"文件名格式不符合预期：{fileName}");
+            }
+        }
+
+        public static string ReadContentByKeyId(string id)
+        {
+            string targetDir = WalletDataFileHelper.GetOrCreateTargetDir();
+            // 拼接文件路径，文件名为“.”加上 id
+            string keyFilePath = Path.Combine(targetDir, "." + id);
+            // 读取文件内容并返回
+            return File.ReadAllText(keyFilePath);
+        }
+
+    }
+
+    // 用于反序列化 JSON 的数据结构，属性名称与 JSON 键对应
+    public class KeyAddress
+    {
+        public required string Key { get; set; }
+        public required string Address { get; set; }
+    }
+
+    /// <summary>
+    /// 表示附件的加密密钥，格式为 "id_hexData"
+    /// 其中 hexData 是经过十六进制编码后的二进制数据，
+    /// 前 32 字节为 key，接下来的 24 字节为 nonce
+    /// </summary>
+    public class AttachmentEncryptKey
+    {
+        public string Id { get; }
+        public byte[] Key { get; }
+        public byte[] Nonce { get; }
+
+        public AttachmentEncryptKey(string id, byte[] key, byte[] nonce)
+        {
+            Id = id;
+            Key = key;
+            Nonce = nonce;
+        }
+
+        /// <summary>
+        /// 从格式为 "id_hexData" 的字符串构造 AttachmentEncryptKey 对象
+        /// </summary>
+        public static AttachmentEncryptKey FromJson(string aekStr)
+        {
+            int underscoreIndex = aekStr.IndexOf('_');
+            if (underscoreIndex == -1)
+                throw new WalletException("Invalid input string format.");
+
+            string id = aekStr.Substring(0, underscoreIndex);
+            string hexData = aekStr.Substring(underscoreIndex + 1);
+            byte[] combined = CryptoHelper.DecodeHex(hexData);
+
+            int keyLength = 32;   // nacl.box.secretKeyLength
+            int nonceLength = 24; // nacl.secretbox.nonceLength
+
+            if (combined.Length < keyLength + nonceLength)
+                throw new WalletException($"Insufficient data: required {keyLength + nonceLength}, actual {combined.Length}");
+
+            byte[] key = new byte[keyLength];
+            byte[] nonce = new byte[nonceLength];
+            Array.Copy(combined, 0, key, 0, keyLength);
+            Array.Copy(combined, keyLength, nonce, 0, nonceLength);
+
+            return new AttachmentEncryptKey(id, key, nonce);
+        }
+    }
+
+
+    /// <summary>
+    /// 用于解析附件密钥的工具类
+    /// </summary>
+    public static class KeyParser
+    {
+        // 定义本地应用的 nonce（应为 24 字节的十六进制字符串，即 48 个字符）
+        private const string LocalAppNonce = "your_nonce_hex_string_of_48_characters"; // 请根据实际情况替换
+
+        /// <summary>
+        /// 解析 JSON 格式的 key 数据，并利用传入的 priKey（私钥）计算共享密钥，
+        /// 解密得到附件密钥字符串，最后构造 AttachmentEncryptKey 对象返回
+        /// </summary>
+        /// <param name="json">包含 key 与 address 的 JSON 字符串</param>
+        /// <param name="priKey">调用方传入的私钥字节数组</param>
+        public static AttachmentEncryptKey ParseKey(string json, byte[] priKey)
+        {
+            // 反序列化 JSON 为 KeyAddress 对象
+            KeyAddress? keyAddress = JsonConvert.DeserializeObject<KeyAddress>(json);
+            if (keyAddress == null)
+                throw new WalletException("Failed to parse JSON to KeyAddress.");
+
+            // 将 LocalAppNonce、keyAddress.Address、keyAddress.Key 均视为十六进制字符串解码成字节数组
+            byte[] noce = CryptoHelper.DecodeHex(LocalAppNonce);
+            byte[] curvePub = CryptoHelper.DecodeHex(keyAddress.Address);
+            byte[] cipherData = CryptoHelper.DecodeHex(keyAddress.Key);
+
+            // 计算共享密钥：priKey 与 curvePub 进行 scalar multiplication
+            byte[] sharedKey = CryptoHelper.ScalarMult(priKey, curvePub);
+
+            // 使用共享密钥对 cipherData 进行解密
+            byte[] decryptedBmailKeyBytes = CryptoHelper.DecryptWithTweetNaCl(cipherData, noce, sharedKey);
+
+            // 将解密得到的字节数组转换为 UTF8 编码字符串
+            string bmailKeyStr = Encoding.UTF8.GetString(decryptedBmailKeyBytes);
+
+            // 解析得到的字符串构造 AttachmentEncryptKey 对象（格式要求为 "id_hexData"）
+            AttachmentEncryptKey bmailKey = AttachmentEncryptKey.FromJson(bmailKeyStr);
+
+            return bmailKey;
         }
     }
 }

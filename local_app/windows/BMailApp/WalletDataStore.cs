@@ -2,12 +2,24 @@
 
 namespace BMailApp
 {
-    public class WalletDataStore
+    public sealed class WalletDataStore
     {
+        // 使用 Lazy<T> 确保线程安全的单例实现
+        private static readonly Lazy<WalletDataStore> lazyInstance =
+            new Lazy<WalletDataStore>(() => new WalletDataStore());
+
         /// <summary>
-        /// 当前加载的钱包数据
+        /// 获取全局唯一的 WalletDataStore 实例
         /// </summary>
-        public WalletData? WalletData { get; private set; }
+        public static WalletDataStore Instance => lazyInstance.Value;
+
+        // 私有构造函数，防止外部实例化
+        private WalletDataStore() { }
+
+        /// <summary>
+        /// 全系统唯一的、可读写的钱包数据
+        /// </summary>
+        public WalletData? WalletData { get; set; }
 
         /// <summary>
         /// 异步加载钱包数据，加载完成后调用回调
@@ -18,17 +30,18 @@ namespace BMailApp
             try
             {
                 // 异步从文件中加载钱包数据
-                WalletData? data = await Task.Run(static () =>
+                WalletData? data = await Task.Run(() =>
                 {
                     return WalletDataFileHelper.LoadBmailWallet();
                 });
+
                 if (data == null)
                 {
                     Log.Error("------->>> load cached wallet data failed");
                     return;
                 }
 
-                // 更新钱包数据（如果需要在 UI 线程中更新，可用 Dispatcher.Invoke）
+                // 更新全局钱包数据
                 WalletData = data;
                 completion?.Invoke(data);
             }
@@ -55,10 +68,6 @@ namespace BMailApp
                 // 更新钱包数据：保存完整私钥和转换后的 Curve25519 私钥
                 WalletData.PriKey = decryptedKey;
                 WalletData.CurvePriKey = CryptoHelper.Ed2CurvePri(decryptedKey);
-
-                //Log.Information("------>>> PriKey raw data: " + string.Join(",", decryptedKey));
-                //Log.Information("------>>> CurvePriKey raw data: " + string.Join(",", WalletData.CurvePriKey));
-
             }
             catch (Exception ex)
             {

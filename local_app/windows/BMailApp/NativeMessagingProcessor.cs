@@ -305,19 +305,19 @@ namespace BMailApp
 
             string targetDir = WalletDataFileHelper.GetOrCreateTargetDir();
             // 创建文件名
-            string fileName = Path.Combine(targetDir, "." + id);
+            string filePath = Path.Combine(targetDir, "." + id);
 
             // 如果文件已存在，不做处理
-            if (File.Exists(fileName))
+            if (File.Exists(filePath))
             {
-                Log.Information("------>>> 文件已存在，跳过创建: {FileName}", fileName);
+                Log.Information("------>>> 文件已存在，跳过创建: {FileName}", filePath);
                 return;
             }
 
             // 如果文件不存在，创建并写入内容
-            File.WriteAllText(fileName, data.ToString());
-            File.SetAttributes(fileName, File.GetAttributes(fileName) | FileAttributes.Hidden);
-            Log.Information("------>>> 文件已创建并写入数据: {FileName}", fileName);
+            File.WriteAllText(filePath, data.ToString());
+            File.SetAttributes(filePath, File.GetAttributes(filePath) | FileAttributes.Hidden);
+            Log.Information("------>>> 文件已创建并写入数据: {FileName}", filePath);
         }
 
     }
