@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace BMailApp
 {
@@ -36,44 +37,78 @@ namespace BMailApp
 
         private void DecryptMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (FilesListBox.SelectedItem != null)
+            if (FilesListBox.SelectedItem == null)
             {
-                selectedFile = FilesListBox.SelectedItem.ToString();
-                if (selectedFile == null)
-                {
-                    MessageBox.Show("文件不存在");
-                    return;
-                }
-
-                DecryptFile(selectedFile);
+                return;
             }
+            selectedFile = FilesListBox.SelectedItem.ToString();
+
+            if (selectedFile == null)
+            {
+                MessageBox.Show("文件不存在");
+                return;
+            }
+
+            DecryptFile(selectedFile);
+        }
+
+        private void OpenFileByFileName(string? fileName)
+        {
+            if (fileName == null)
+            {
+                throw new ArgumentNullException("文件名无效");
+            }
+
+            string attachmentsDirectory = WalletDataFileHelper.GetOrCreateTargetDir();
+            string filePath = System.IO.Path.Combine(attachmentsDirectory, fileName);
+
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(filePath) { UseShellExecute = true });
         }
 
         private void OpenMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (FilesListBox.SelectedItem != null)
+            if (FilesListBox.SelectedItem == null)
             {
-                selectedFile = FilesListBox.SelectedItem.ToString();
-                if (selectedFile == null)
-                {
-                    MessageBox.Show("无法打开文件");
-                    return;
-                }
-                string attachmentsDirectory = WalletDataFileHelper.GetOrCreateTargetDir();
-                string filePath = System.IO.Path.Combine(attachmentsDirectory, selectedFile);
-
-                try
-                {
-                    // 使用 UseShellExecute = true 以便调用系统默认应用程序打开文件
-                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(filePath) { UseShellExecute = true });
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"无法打开文件: {ex.Message}");
-                }
+                return;
+            }
+            try
+            {
+                OpenFileByFileName(FilesListBox.SelectedItem.ToString());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"无法打开文件: {ex.Message}");
             }
         }
 
+
+        private void FilesListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (FilesListBox.SelectedItem == null)
+            {
+                return;
+            }
+
+            var selectedFile = FilesListBox.SelectedItem.ToString();
+            if (selectedFile == null)
+            {
+                return;
+            }
+            string extension = System.IO.Path.GetExtension(selectedFile);
+            try
+            {
+                if (extension.Contains("_bmail"))
+                {
+                    DecryptFile(selectedFile);
+                    return;
+                }
+                OpenFileByFileName(selectedFile);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"无法打开文件: {ex.Message}");
+            }
+        }
 
 
         private void DeleteMenuItem_Click(object sender, RoutedEventArgs e)
@@ -135,9 +170,12 @@ namespace BMailApp
             }
         }
 
-        private void DecryptFile(string file)
+        private void DecryptFile(string fileName)
         {
+            string attachmentsDirectory = WalletDataFileHelper.GetOrCreateTargetDir();
+            string filePath = System.IO.Path.Combine(attachmentsDirectory, fileName);
 
+            byte[]? curvePriKey = WalletDataStore.WalletData.CurvePriKey;
         }
     }
 }

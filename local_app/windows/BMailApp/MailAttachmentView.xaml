@@ -19,7 +19,9 @@
         <Border Grid.Row="1" BorderThickness="1" BorderBrush="Gray" Padding="5">
             <Grid>
                 <!-- 使用 ListBox 展示文件列表 -->
-                <ListBox x:Name="FilesListBox" SelectionChanged="FilesListBox_SelectionChanged">
+                <ListBox x:Name="FilesListBox" 
+                         SelectionChanged="FilesListBox_SelectionChanged"
+                         MouseDoubleClick="FilesListBox_MouseDoubleClick">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <!-- DataContext 为文件名字符串 -->
