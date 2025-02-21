@@ -39,8 +39,13 @@ namespace BMailApp
             if (FilesListBox.SelectedItem != null)
             {
                 selectedFile = FilesListBox.SelectedItem.ToString();
-                // 在此添加解密逻辑
-                MessageBox.Show($"解密文件: {selectedFile}");
+                if (selectedFile == null)
+                {
+                    MessageBox.Show("文件不存在");
+                    return;
+                }
+
+                DecryptFile(selectedFile);
             }
         }
 
@@ -49,10 +54,26 @@ namespace BMailApp
             if (FilesListBox.SelectedItem != null)
             {
                 selectedFile = FilesListBox.SelectedItem.ToString();
-                // 添加打开文件的逻辑
-                MessageBox.Show($"打开文件: {selectedFile}");
+                if (selectedFile == null)
+                {
+                    MessageBox.Show("无法打开文件");
+                    return;
+                }
+                string attachmentsDirectory = WalletDataFileHelper.GetOrCreateTargetDir();
+                string filePath = System.IO.Path.Combine(attachmentsDirectory, selectedFile);
+
+                try
+                {
+                    // 使用 UseShellExecute = true 以便调用系统默认应用程序打开文件
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(filePath) { UseShellExecute = true });
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"无法打开文件: {ex.Message}");
+                }
             }
         }
+
 
 
         private void DeleteMenuItem_Click(object sender, RoutedEventArgs e)
@@ -112,6 +133,11 @@ namespace BMailApp
                     FilesListBox.Items.Add(System.IO.Path.GetFileName(file));
                 }
             }
+        }
+
+        private void DecryptFile(string file)
+        {
+
         }
     }
 }
