@@ -199,10 +199,42 @@ namespace BMailApp
             string attachmentsDirectory = WalletDataFileHelper.GetOrCreateTargetDir();
             string filePath = System.IO.Path.Combine(attachmentsDirectory, fileName);
             string decryptFilePath = Path.ChangeExtension(filePath, null);
+            string uniqueFilePath = GetUniqueFilePath(decryptFilePath);
 
             byte[] bmailFileData = File.ReadAllBytes(filePath);
             byte[]? plaintext = Nacl.SecretboxOpen(bmailFileData, bmailKey.Nonce, bmailKey.Key) ?? throw new Exception("解码内容为空");
-            File.WriteAllBytes(decryptFilePath, plaintext);
+            File.WriteAllBytes(uniqueFilePath, plaintext);
         }
+
+        /// <summary>
+        /// 如果文件已存在，则在文件名后追加 (1), (2) ... 直到找到一个不存在的文件名
+        /// </summary>
+        /// <param name="filePath">原始文件路径</param>
+        /// <returns>唯一的文件路径</returns>
+        public static string GetUniqueFilePath(string filePath)
+        {
+            if(filePath == null) return "";
+
+            if (!File.Exists(filePath))
+                return filePath;
+
+            string? directory = Path.GetDirectoryName(filePath);
+            if (!Directory.Exists(directory)) return filePath;
+
+
+            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(filePath);
+            string extension = Path.GetExtension(filePath);
+            int count = 1;
+            string newFilePath;
+
+            do
+            {
+                newFilePath = Path.Combine(directory, $"{fileNameWithoutExtension}({count}){extension}");
+                count++;
+            } while (File.Exists(newFilePath));
+
+            return newFilePath;
+        }
+
     }
 }
