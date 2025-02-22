@@ -243,16 +243,9 @@ namespace BMailApp
 
             return new AttachmentEncryptKey(id, key, nonce);
         }
-    }
-
-
-    /// <summary>
-    /// 用于解析附件密钥的工具类
-    /// </summary>
-    public static class KeyParser
-    {
+ 
         // 定义本地应用的 nonce（应为 24 字节的十六进制字符串，即 48 个字符）
-        private const string LocalAppNonce = "your_nonce_hex_string_of_48_characters"; // 请根据实际情况替换
+        private const string LocalAppNonce = "40981a5dc01567a287e10214c4b17f428bdb308b4dc3a968"; // 请根据实际情况替换
 
         /// <summary>
         /// 解析 JSON 格式的 key 数据，并利用传入的 priKey（私钥）计算共享密钥，

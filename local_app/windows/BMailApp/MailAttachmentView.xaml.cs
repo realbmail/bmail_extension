@@ -1,8 +1,11 @@
 ﻿using Serilog;
 using System.IO;
+using System.Security.Cryptography.Xml;
+using System.Security.Policy;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using TweetNaclSharp;
 
 namespace BMailApp
 {
@@ -53,6 +56,7 @@ namespace BMailApp
             try
             {
                 DecryptFile(selectedFile);
+                LoadFiles();
             }
             catch (Exception ex)
             {
@@ -108,6 +112,7 @@ namespace BMailApp
                 if (extension.Contains("_bmail"))
                 {
                     DecryptFile(selectedFile);
+                    LoadFiles();
                     return;
                 }
                 OpenFileByFileName(selectedFile);
@@ -180,9 +185,6 @@ namespace BMailApp
 
         private void DecryptFile(string fileName)
         {
-            string attachmentsDirectory = WalletDataFileHelper.GetOrCreateTargetDir();
-            string filePath = System.IO.Path.Combine(attachmentsDirectory, fileName);
-
             WalletData? walletData = WalletDataStore.Instance.WalletData;
             byte[]? curvePriKey = (walletData?.CurvePriKey) ?? throw new Exception("请先解密账号");
 
@@ -192,8 +194,15 @@ namespace BMailApp
 
             string keyContent = CryptoHelper.ReadContentByKeyId(extractedID);
 
+            AttachmentEncryptKey bmailKey = AttachmentEncryptKey.ParseKey(keyContent, curvePriKey);
 
+            string attachmentsDirectory = WalletDataFileHelper.GetOrCreateTargetDir();
+            string filePath = System.IO.Path.Combine(attachmentsDirectory, fileName);
+            string decryptFilePath = Path.ChangeExtension(filePath, null);
 
+            byte[] bmailFileData = File.ReadAllBytes(filePath);
+            byte[]? plaintext = Nacl.SecretboxOpen(bmailFileData, bmailKey.Nonce, bmailKey.Key) ?? throw new Exception("解码内容为空");
+            File.WriteAllBytes(decryptFilePath, plaintext);
         }
     }
 }
