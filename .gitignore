@@ -31,3 +31,5 @@ resources/.arch-internal-preview.css
 /local_app/macos/BMailApp_PKG/bin/BMailApp_Installer.pkg
 /local_app/windows/BMailApp_exe/BMailAppp/Debug
 /local_app/windows/BMailApp_exe/BMailAppp/Release
+/local_app/windows/BMailApp.CustomInstaller/bin
+/local_app/windows/BMailApp.CustomInstaller/obj

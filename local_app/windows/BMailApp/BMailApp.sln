@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BMailApp", "BMailApp.csproj
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "BMailApppInstall", "..\BMailApp_exe\BMailAppp\BMailAppp.vdproj", "{3D24F769-A807-3CF1-383D-3E89689B4D23}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BMailApp.CustomInstaller", "..\BMailApp.CustomInstaller\BMailApp.CustomInstaller.csproj", "{7706B6E4-9D21-4B38-A0B9-306B31F7291D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{959E8E86-DF8A-4D43-900E-C3B7D0548347}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3D24F769-A807-3CF1-383D-3E89689B4D23}.Debug|Any CPU.ActiveCfg = Debug
 		{3D24F769-A807-3CF1-383D-3E89689B4D23}.Release|Any CPU.ActiveCfg = Release
+		{7706B6E4-9D21-4B38-A0B9-306B31F7291D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7706B6E4-9D21-4B38-A0B9-306B31F7291D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7706B6E4-9D21-4B38-A0B9-306B31F7291D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7706B6E4-9D21-4B38-A0B9-306B31F7291D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
