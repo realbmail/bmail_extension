@@ -50,7 +50,7 @@ struct MailAttachmentView: View {
                                 object: nil,
                                 queue: OperationQueue.main
                         ) { notification in
-                                print("收到文件移动通知: \(notification.userInfo?["path"] ?? "")")
+//                                print("------>>>收到文件移动通知: \(notification.userInfo?["path"] ?? "")")
                                 loadFiles()
                         }
                 }

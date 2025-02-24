@@ -64,7 +64,7 @@ struct FileRow: View {
                 .background(isSelected ? Color.blue.opacity(0.3) : Color.clear)
                 .contentShape(Rectangle())
                 .onTapGesture(count: 2) { // ADDED: Double-click gesture recognizer
-                        openDecryptFile() // Call openDecryptFile on double-click
+                        openOrDecryptFile() // Call openDecryptFile on double-click
                 }
                 .contextMenu {
                         let fileExtension = fileURL.pathExtension.lowercased()
@@ -76,7 +76,7 @@ struct FileRow: View {
                                 }
                         }else{
                                 Button(action: {
-                                        openDecryptFile()
+                                        NSWorkspace.shared .open(fileURL)
                                 }) {
                                         Label("打开文件", systemImage: "doc.text")
                                 }
@@ -101,8 +101,7 @@ struct FileRow: View {
         }
         
         private func decryptBmailFile() {
-                
-                NSLog("------>>> 需要解析的文件: \(fileURL)")
+                //                NSLog("------>>> 需要解析的文件: \(fileURL)")
                 
                 guard let priKey = walletStore.walletData?.curvePriKey else {
                         alertMessage = "请首先解密账号"
@@ -113,8 +112,11 @@ struct FileRow: View {
                 //                NSLog("------>>> 解析到的 priKey: \(priKey)")
                 
                 do {
-                        let extractedID = try extractIDFromFileName(fileURL: fileURL)
-                        //                        NSLog("------>>> 提取到的ID：\(extractedID)")
+                        guard let extractedID = try extractIDFromFileName(fileURL: fileURL) else{
+                                alertMessage = "此文件不是BMail文件"
+                                showAlert = true
+                                return;
+                        }
                         
                         // 调用新的封装函数读取文件内容
                         let fileContent = try readFileContent(extractedID: extractedID)
@@ -125,11 +127,12 @@ struct FileRow: View {
                         
                         let bmailFileData = try Data(contentsOf: fileURL)
                         let decryptFileUrl = convertURLIfNeeded(originalURL: fileURL)
+                        let uniqueURL = uniqueFileURL(for: decryptFileUrl)
                         
                         let decryptBmailKey = try decryptWithTweetNacl(cipherData: bmailFileData,
                                                                        nonce: bmailKey.nonce, key: bmailKey.key)
                         
-                        try Data(decryptBmailKey).write(to: decryptFileUrl)
+                        try Data(decryptBmailKey).write(to: uniqueURL)
                         
                         DistributedNotificationCenter.default().post(name: Notification.Name("FileMovedNotification"),
                                                                      object: nil,
@@ -141,30 +144,33 @@ struct FileRow: View {
                 }
         }
         
-        func openDecryptFile(){
-                NSWorkspace.shared .open(fileURL)
+        func openOrDecryptFile(){
+                let fileExtension = fileURL.pathExtension.lowercased()
+                if fileExtension.hasSuffix(BmailFileSuffix) {
+                        decryptBmailFile()
+                }else{
+                        NSWorkspace.shared .open(fileURL)
+                }
         }
 }
 
 
-func extractIDFromFileName(fileURL: URL) throws -> String {
+func extractIDFromFileName(fileURL: URL) throws -> String? {
         let fileName = fileURL.lastPathComponent
         // 正则表达式匹配形如 "bitcoin.pdf.1732846845512_bmail" 中的 "1732846845512"
         let pattern = #"(\d+)_bmail"#
         
-        do {
-                let regex = try NSRegularExpression(pattern: pattern)
-                let range = NSRange(fileName.startIndex..<fileName.endIndex, in: fileName)
-                if let match = regex.firstMatch(in: fileName, options: [], range: range),
-                   let numberRange = Range(match.range(at: 1), in: fileName) {
-                        let numberString = String(fileName[numberRange])
-                        return numberString
-                } else {
-                        throw FileRowError.invalidFileName("文件名格式不符合预期：\(fileName)")
-                }
-        } catch {
-                throw FileRowError.invalidFileName("正则表达式错误：\(error.localizedDescription)")
+        let regex = try NSRegularExpression(pattern: pattern)
+        let range = NSRange(fileName.startIndex..<fileName.endIndex, in: fileName)
+        if let match = regex.firstMatch(in: fileName, options: [], range: range),
+           let numberRange = Range(match.range(at: 1), in: fileName) {
+                let numberString = String(fileName[numberRange])
+                //                NSLog("------>>> 提取到的ID：\(numberString)")
+                return numberString
         }
+        
+        return nil
+        
 }
 
 func readFileContent(extractedID: String) throws -> String {
@@ -253,3 +259,21 @@ func convertURLIfNeeded(originalURL: URL) -> URL {
         }
 }
 
+/// 如果目标文件已存在，返回一个新的不重复的 URL
+func uniqueFileURL(for originalURL: URL) -> URL {
+        let fileManager = FileManager.default
+        var fileURL = originalURL
+        var count = 1
+        // 获取原文件的目录、基本文件名和扩展名
+        let directory = originalURL.deletingLastPathComponent()
+        let baseName = originalURL.deletingPathExtension().lastPathComponent
+        let ext = originalURL.pathExtension
+        
+        // 当文件存在时，循环生成新的文件名
+        while fileManager.fileExists(atPath: fileURL.path) {
+                let newName = "\(baseName)(\(count))"
+                fileURL = directory.appendingPathComponent(newName).appendingPathExtension(ext)
+                count += 1
+        }
+        return fileURL
+}

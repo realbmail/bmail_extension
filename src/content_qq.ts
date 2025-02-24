@@ -374,7 +374,7 @@ function addDecryptBtnForAttachment(template: HTMLTemplateElement) {
             console.log("------>>> no need to add decrypt button to this attachment element");
             continue;
         }
-        const toolbar = attachment.querySelector(".xmail-ui-hyperlink.attach-link")?.parentNode
+        const toolbar = attachment.querySelector(".attach-operate-btn")?.parentNode
         if (!toolbar || toolbar.childNodes.length < 2) {
             console.log("------>>> download tool bar not found");
             continue;

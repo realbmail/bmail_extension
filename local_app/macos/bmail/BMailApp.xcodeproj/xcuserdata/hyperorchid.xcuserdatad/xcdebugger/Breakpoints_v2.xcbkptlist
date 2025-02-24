@@ -7,17 +7,17 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "30E19000-3FCF-4655-A70E-D06D80A58661"
+            uuid = "8EE7CEF4-A5E1-4A53-A6A0-1F35EB2931B3"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "bmail/views/FileRow.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "193"
-            endingLineNumber = "193"
-            landmarkName = "scalarMult(priKey:curvePub:)"
-            landmarkType = "9">
+            startingLineNumber = "137"
+            endingLineNumber = "137"
+            landmarkName = "decryptBmailFile()"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

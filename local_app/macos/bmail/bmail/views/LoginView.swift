@@ -107,6 +107,7 @@ struct LoginView: View {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                         isLoggedIn = true
                                         isLoading = false
+                                        password = ""
                                 }
                         }catch{
                                 NSLog("----->>> decrypt error=\(error.localizedDescription)")

@@ -13,9 +13,7 @@ func createDirectoryIfNeeded(at path: String) throws {
         if !fileManager.fileExists(atPath: path) {
                 try fileManager.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
                 NSLog("------>>> 目录创建成功：\(path)")
-        } else {
-                NSLog("------>>> 目录已存在：\(path)")
-        }
+        } 
 }
 
 /// 在用户的 Application Support 目录下创建 "BMailAppData" 目录，并返回该目录的 URL
@@ -30,7 +28,7 @@ func createAppDataDirectory()throws -> URL {
         let targetDir = documentsDir.appendingPathComponent(AttachmentDir, isDirectory: true)
         
         try createDirectoryIfNeeded(at: targetDir.path)
-        NSLog("------>>> 应用数据目录路径：\(targetDir.path)")
+//        NSLog("------>>> 应用数据目录路径：\(targetDir.path)")
         return targetDir
 }
 
