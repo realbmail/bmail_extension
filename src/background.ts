@@ -144,6 +144,7 @@ self.addEventListener('activate', (event) => {
         AddMenuListener();
         console.log("------>>> context menu setup success")
     });
+    processedDownloads.clear();
 });
 
 runtime.onInstalled.addListener((details: Runtime.OnInstalledDetailsType) => {
@@ -474,13 +475,13 @@ browser.downloads.onCreated.addListener(async (downloadItem) => {
         return;
     }
 
-    // console.log("------>>> new download item:", downloadItem)
-
     if (initiatedDownloadUrls.has(downloadUrl)) {
         console.log("------>>> duplicate item download:", downloadItem)
         initiatedDownloadUrls.delete(downloadUrl);
         return;
     }
+
+    // console.log("------>>> new download item id is:", downloadItem.id)
 
     if (downloadUrl.includes("outlook.live.com")) {
         outlookDownloadItems.add(downloadItem.id);
@@ -551,7 +552,6 @@ browser.downloads.onChanged.addListener(async (delta) => {
     const items = await browser.downloads.search({id: downloadId});
     const downloadFile = items[0];
     let fileName = downloadFile.filename;
-    // console.log("------>>> downloads on change file name: ", fileName);
     const newDownloadFilePath = await sendDownloadAction(fileName);
 
     if (!outlookDownloadItems.has(downloadId)) {
