@@ -12,6 +12,8 @@ struct LoginView: View {
         
         @EnvironmentObject var walletStore: WalletDataStore
         
+        @State private var showDownloadView = false // 控制下载视图的显示
+        
         var body: some View {
                 ZStack {
                         if isLoggedIn {
@@ -22,6 +24,15 @@ struct LoginView: View {
                         
                         if isLoading {
                                 LoadingView(loadingText: "正在登录...")
+                        }
+                        
+                        if showDownloadView {
+                                // 在这里显示下载视图
+                                DownloadView(downloadURL: URL(string: "https://mail.simplenets.org/file/extension.zip")!)
+                                        .frame(width: 400, height: 300)
+                                        .background(Color.white)
+                                        .cornerRadius(20)
+                                        .shadow(radius: 10)
                         }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -51,17 +62,46 @@ struct LoginView: View {
                                 .frame(width: 100, height: 100)
                                 .padding(.top, 50)
                         
-                        Text(bmailAddress.isEmpty ? "请先登录浏览器插件" : bmailAddress)
-                                .font(.system(size: 16))
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.5)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding()
-                                .background(
-                                        RoundedRectangle(cornerRadius: 10)
-                                                .stroke(Color.gray, lineWidth: 1)
-                                )
+                        if bmailAddress.isEmpty {
+                                // 如果 bmailAddress 为空，则显示两个下载按钮
+                                HStack(spacing: 20) {
+                                        Button(action: {
+                                                downloadExtension()
+                                        }) {
+                                                Text("本地安装")
+                                                        .frame(maxWidth: .infinity)
+                                                        .padding()
+                                                        .background(Color.blue)
+                                                        .foregroundColor(.white)
+                                                        .cornerRadius(10)
+                                        }
+                                        
+                                        Button(action: {
+                                                openWebStoreLink()
+                                        }) {
+                                                Text("Web Store 安装")
+                                                        .frame(maxWidth: .infinity)
+                                                        .padding()
+                                                        .background(Color.green)
+                                                        .foregroundColor(.white)
+                                                        .cornerRadius(10)
+                                        }
+                                }
                                 .padding(.horizontal, 20)
+                        } else {
+                                // 否则显示 bmailAddress
+                                Text(bmailAddress)
+                                        .font(.system(size: 16))
+                                        .lineLimit(1)
+                                        .minimumScaleFactor(0.5)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .padding()
+                                        .background(
+                                                RoundedRectangle(cornerRadius: 10)
+                                                        .stroke(Color.gray, lineWidth: 1)
+                                        )
+                                        .padding(.horizontal, 20)
+                        }
                         
                         SecureField("密码", text: $password)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -92,7 +132,6 @@ struct LoginView: View {
         }
         
         private func login() {
-                
                 guard (walletStore.walletData?.address.bmailAddress) != nil else{
                         showAlert = true
                         alertMessage = "请先登录BMail浏览器插件"
@@ -128,6 +167,18 @@ struct LoginView: View {
                         window.setContentSize(windowSize)
                         window.minSize = windowSize
                         window.center()
+                }
+        }
+        
+        private func downloadExtension() {
+                // 显示下载界面
+                showDownloadView = true
+        }
+        
+        private func openWebStoreLink() {
+                // 通过浏览器打开 Chrome Web Store 链接
+                if let url = URL(string: "https://chromewebstore.google.com/detail/bmail/kjlhomfbkgfkkfdpcolkecfanmipiiic") {
+                        NSWorkspace.shared.open(url)
                 }
         }
 }
