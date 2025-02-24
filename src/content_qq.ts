@@ -374,28 +374,33 @@ function addDecryptBtnForAttachment(template: HTMLTemplateElement) {
             console.log("------>>> no need to add decrypt button to this attachment element");
             continue;
         }
-        const toolbar = attachment.querySelector(".attach-operate-btn")?.parentNode
+        const toolbar = attachment.querySelector(".attach-operate-btn")
         if (!toolbar || toolbar.childNodes.length < 2) {
             console.log("------>>> download tool bar not found");
             continue;
         }
         const clone = bmailDownloadLi.cloneNode(true) as HTMLElement;
         clone.textContent = browser.i18n.getMessage('bmail_attachment_decrypt');
-        const downBtn = toolbar.childNodes[1] as HTMLElement;
+        const downBtn = toolbar.childNodes[0] as HTMLElement;
         addDecryptBtnToAttachmentItem(downBtn, clone, parsedId.id);
-        toolbar.append(clone);
+        attachment.querySelector(".attach-info")?.append(clone);
+        // toolbar.insertBefore(clone, downBtn)//.append(clone);
     }
 }
 
 function addDecryptBtnToAttachmentItem(downloadBtn: HTMLElement, clone: HTMLElement, aekID: string) {
-    clone.addEventListener('click', async () => {
+    clone.addEventListener('click', async (event) => {
+        // 阻止事件冒泡
+        event.stopPropagation();
+        // event.preventDefault()
+
+        const statusRsp = await sendMessageToBackground('', MsgType.CheckIfLogin)
+        if (statusRsp.success < 0) {
+            return;
+        }
+
         const aesKey = loadAKForReading(aekID);
         if (!aesKey) {
-            const statusRsp = await sendMessageToBackground('', MsgType.CheckIfLogin)
-            if (statusRsp.success < 0) {
-                return;
-            }
-
             showTipsDialog("Tips", browser.i18n.getMessage("decrypt_mail_body_first"))
             return;
         }

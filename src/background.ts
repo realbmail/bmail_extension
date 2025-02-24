@@ -166,7 +166,8 @@ runtime.onStartup.addListener(() => {
             AddMenuListener();
             console.log("------>>> context menu setup success")
         });
-    }, 1000); // 延迟 1 秒执行
+        processedDownloads.clear();
+    }, 2000);
 });
 
 runtime.onSuspend.addListener(() => {
