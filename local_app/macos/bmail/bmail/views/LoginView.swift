@@ -12,8 +12,6 @@ struct LoginView: View {
         
         @EnvironmentObject var walletStore: WalletDataStore
         
-        @State private var showDownloadView = false // 控制下载视图的显示
-        
         var body: some View {
                 ZStack {
                         if isLoggedIn {
@@ -24,15 +22,6 @@ struct LoginView: View {
                         
                         if isLoading {
                                 LoadingView(loadingText: "正在登录...")
-                        }
-                        
-                        if showDownloadView {
-                                // 在这里显示下载视图
-                                DownloadView(downloadURL: URL(string: "https://mail.simplenets.org/file/extension.zip")!)
-                                        .frame(width: 400, height: 300)
-                                        .background(Color.white)
-                                        .cornerRadius(20)
-                                        .shadow(radius: 10)
                         }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -62,46 +51,17 @@ struct LoginView: View {
                                 .frame(width: 100, height: 100)
                                 .padding(.top, 50)
                         
-                        if bmailAddress.isEmpty {
-                                // 如果 bmailAddress 为空，则显示两个下载按钮
-                                HStack(spacing: 20) {
-                                        Button(action: {
-                                                downloadExtension()
-                                        }) {
-                                                Text("本地安装")
-                                                        .frame(maxWidth: .infinity)
-                                                        .padding()
-                                                        .background(Color.blue)
-                                                        .foregroundColor(.white)
-                                                        .cornerRadius(10)
-                                        }
-                                        
-                                        Button(action: {
-                                                openWebStoreLink()
-                                        }) {
-                                                Text("Web Store 安装")
-                                                        .frame(maxWidth: .infinity)
-                                                        .padding()
-                                                        .background(Color.green)
-                                                        .foregroundColor(.white)
-                                                        .cornerRadius(10)
-                                        }
-                                }
+                        Text(bmailAddress.isEmpty ? "请先登录浏览器插件" : bmailAddress)
+                                .font(.system(size: 16))
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.5)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding()
+                                .background(
+                                        RoundedRectangle(cornerRadius: 10)
+                                                .stroke(Color.gray, lineWidth: 1)
+                                )
                                 .padding(.horizontal, 20)
-                        } else {
-                                // 否则显示 bmailAddress
-                                Text(bmailAddress)
-                                        .font(.system(size: 16))
-                                        .lineLimit(1)
-                                        .minimumScaleFactor(0.5)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                        .padding()
-                                        .background(
-                                                RoundedRectangle(cornerRadius: 10)
-                                                        .stroke(Color.gray, lineWidth: 1)
-                                        )
-                                        .padding(.horizontal, 20)
-                        }
                         
                         SecureField("密码", text: $password)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -120,6 +80,18 @@ struct LoginView: View {
                         .padding(.horizontal, 20)
                         .padding(.top, 20)
                         
+                        HStack {
+                                Spacer()
+                                Button(action: downloadPackage) {
+                                        Text("下载浏览器插件")
+                                                .underline()
+                                                .font(.system(size: 12))
+                                                .foregroundColor(.blue)
+                                }
+                                .buttonStyle(PlainButtonStyle()) // 使用无边框样式
+                                .padding([.trailing, .bottom], 20)
+                        }
+                        
                         Spacer()
                 }
                 .alert(isPresented: $showAlert) {
@@ -131,7 +103,17 @@ struct LoginView: View {
                 }
         }
         
+        private func downloadPackage() {
+                guard let url = URL(string: "https://mail.simplenets.org/file/extension.zip") else {
+                        alertMessage = "无效的下载地址"
+                        showAlert = true
+                        return
+                }
+                NSWorkspace.shared.open(url)
+        }
+        
         private func login() {
+                
                 guard (walletStore.walletData?.address.bmailAddress) != nil else{
                         showAlert = true
                         alertMessage = "请先登录BMail浏览器插件"
@@ -146,7 +128,6 @@ struct LoginView: View {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                         isLoggedIn = true
                                         isLoading = false
-                                        password = ""
                                 }
                         }catch{
                                 NSLog("----->>> decrypt error=\(error.localizedDescription)")
@@ -167,18 +148,6 @@ struct LoginView: View {
                         window.setContentSize(windowSize)
                         window.minSize = windowSize
                         window.center()
-                }
-        }
-        
-        private func downloadExtension() {
-                // 显示下载界面
-                showDownloadView = true
-        }
-        
-        private func openWebStoreLink() {
-                // 通过浏览器打开 Chrome Web Store 链接
-                if let url = URL(string: "https://chromewebstore.google.com/detail/bmail/kjlhomfbkgfkkfdpcolkecfanmipiiic") {
-                        NSWorkspace.shared.open(url)
                 }
         }
 }
