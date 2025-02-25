@@ -13,12 +13,12 @@ export const AppCmdSendWallet = "sendWallet"
 export const AppCmdMoveFile = "moveFile"
 export const AppCmdFileKey = "fileKey"
 
-export async function createContextMenu() {
+export async function createContextMenu(): Promise<boolean> {
 
     const wallet = await loadWalletJsonFromDB();
     if (!wallet) {
         console.log("------>>>[createContextMenu] context menu: no local wallet found")
-        return
+        return true;
     }
 
     try {
@@ -26,13 +26,15 @@ export async function createContextMenu() {
         const result = await browser.runtime.sendNativeMessage(hostLocalAppName, msg);
         if (result.status !== "success") {
             console.log("------>>>[createContextMenu] context menu: local app run failed:", result.info);
-            return
         }
+        console.log("------>>> context menu setup success")
     } catch (err) {
         console.log("------>>>[createContextMenu] context menu: 调用 Native Message 失败：", err);
     }
 
-    addContextMenu()
+    addContextMenu();
+
+    return false;
 }
 
 function addContextMenu() {

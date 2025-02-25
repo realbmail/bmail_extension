@@ -116,10 +116,14 @@ async function createAlarm(): Promise<void> {
 }
 
 alarms.onAlarm.addListener(timerTaskWork);
-
+let needResetContextMenu = false;
 async function timerTaskWork(alarm: any): Promise<void> {
     if (alarm.name === __alarm_name__) {
-        // console.log("------>>> Alarm Triggered!");
+        if (needResetContextMenu) {
+            console.log("------>>> Alarm Triggered! need reset context menu");
+            await setupUninstallUrl();
+            needResetContextMenu = await createContextMenu();
+        }
     }
 }
 
@@ -135,9 +139,10 @@ function serviceInit() {
     updateIcon(false);
 
     initDatabase().then(() => {
-        createContextMenu().then()
+        createContextMenu().then(needReload => {
+            needResetContextMenu = needReload;
+        });
         AddMenuListener();
-        console.log("------>>> context menu setup success")
         setupUninstallUrl().then();
     });
     processedDownloads.clear();
@@ -438,7 +443,6 @@ async function bindingAction(isUnbind: boolean, email: string, sendResponse: (re
         sendResponse({success: 1, message: (srvRsp as Uint8Array)[0]});
 
         loadAccountDetailsFromSrv(addr.bmail_address).then()
-        setupUninstallUrl().then();
     } catch (e) {
         const err = e as Error;
         console.log("------>>> bind account failed:", err);
