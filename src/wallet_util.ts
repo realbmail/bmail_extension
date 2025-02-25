@@ -1,14 +1,15 @@
-import {castToMemWallet, DbWallet, MailAddress, newWallet, loadWalletJsonFromDB} from "./wallet";
+import {castToMemWallet, DbWallet, MailAddress, newWallet, loadWalletJsonFromDB, MailKey} from "./wallet";
 import {__tableNameWallet, checkAndInitDatabase, databaseAddItem} from "./database";
 import {sessionRemove, sessionSet} from "./session_storage";
 import {
     __dbKey_cur_account_details,
     __dbKey_cur_addr,
-    __dbKey_cur_key,
+    __dbKey_cur_key, __dbKey_uninstall_data,
     __key_wallet_status,
     WalletStatus
 } from "./consts";
 import browser from "webextension-polyfill";
+import {decodeHex} from "./utils";
 
 const ICON_PATHS = {
     loggedIn: {
@@ -54,7 +55,34 @@ export async function openWallet(pwd: string): Promise<MailAddress | null> {
     await sessionSet(__dbKey_cur_key, mKey.rawPriKey());
     await sessionSet(__dbKey_cur_addr, mKey.address);
     updateIcon(true);
+
+    // await saveUninstallData(mKey);
+
     return mKey.address;
+}
+
+export class UninstallData {
+    public address: string;
+    public uTime: number;
+    public signature: string | undefined;
+
+    constructor(address: string, uTime: number) {
+        this.address = address;
+        this.uTime = uTime;
+    }
+}
+
+async function saveUninstallData(mKey: MailKey) {
+
+    const priData = mKey.rawPriKey();
+    const unixTimestamp: number = Math.floor(Date.now() / 1000);
+    const uData = new UninstallData(mKey.address.bmail_address, unixTimestamp)
+
+    const encoder = new TextEncoder();
+    const dataToSign = encoder.encode(JSON.stringify(uData));
+
+    uData.signature = MailKey.signData(new Uint8Array(priData), dataToSign);
+    await browser.storage.local.set({[__dbKey_uninstall_data]: uData})
 }
 
 export async function closeWallet(): Promise<void> {

@@ -55,5 +55,8 @@ export const API_Query_Bmail_Details = "/query_account"
 export const API_Active_Account = "/account_active"
 export const API_Active_By_Email = "/active_by_email"
 export const API_Decrypt_By_Admin = "/decrypt_by_admin"
+export const API_Uninstall_User = "/uninstall_user"
 
 export const Local_App_Nonce = "40981a5dc01567a287e10214c4b17f428bdb308b4dc3a968"
+
+export const __dbKey_uninstall_data: string = '__dbKey_uninstall_data__';

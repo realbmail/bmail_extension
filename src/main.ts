@@ -10,7 +10,6 @@ import {initDashBoard} from "./main_dashboard";
 import {__dbKey_cur_key, __key_wallet_status, WalletStatus} from "./consts";
 import {loadWalletJsonFromDB} from "./wallet";
 import {initSetting} from "./main_setting";
-import {createContextMenu} from "./local_app";
 
 document.addEventListener("DOMContentLoaded", initBMailExtension as EventListener);
 

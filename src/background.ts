@@ -2,7 +2,7 @@
 import browser, {Runtime} from "webextension-polyfill";
 import {closeDatabase, initDatabase} from "./database";
 import {resetStorage, sessionGet, sessionSet} from "./session_storage";
-import {MailAddress, MailKey} from "./wallet";
+import {loadWalletJsonFromDB, MailAddress, MailKey} from "./wallet";
 import {BMRequestToSrv, decodeHex, extractJsonString, extractNameFromUrl} from "./utils";
 import {BMailBody, decodeMail, encodeMail, initMailBodyVersion, MailFlag} from "./bmail_body";
 import {BMailAccount, QueryReq, EmailReflects, BindAction} from "./proto/bmail_srv";
@@ -14,12 +14,12 @@ import {
     API_Bind_Email,
     API_Query_Bmail_Details,
     API_Query_By_EMails,
-    API_Unbind_Email, MsgType,
+    API_Unbind_Email, API_Uninstall_User, MsgType,
     WalletStatus
 } from "./consts";
 import {extractAesKeyId, sendMsgToContent} from "./content_common";
 import {openWallet, updateIcon} from "./wallet_util";
-import {getAdminAddress} from "./setting";
+import {getAdminAddress, getContactSrv} from "./setting";
 import {parseEmailTemplate} from "./main_common";
 import {AddMenuListener, createContextMenu, sendAkToLocalApp, sendDownloadAction} from "./local_app";
 
@@ -129,12 +129,7 @@ self.addEventListener('install', (event) => {
     evt.waitUntil(createAlarm());
 });
 
-self.addEventListener('activate', (event) => {
-    const extendableEvent = event as ExtendableEvent;
-    extendableEvent.waitUntil((self as unknown as ServiceWorkerGlobalScope).clients.claim());
-    console.log('------>>> Service Worker activating......');
-    resetStorage().then();
-
+function serviceInit() {
     const manifestData = browser.runtime.getManifest();
     initMailBodyVersion(manifestData.version);
     updateIcon(false);
@@ -143,8 +138,17 @@ self.addEventListener('activate', (event) => {
         createContextMenu().then()
         AddMenuListener();
         console.log("------>>> context menu setup success")
+        setupUninstallUrl().then();
     });
     processedDownloads.clear();
+}
+
+self.addEventListener('activate', (event) => {
+    const extendableEvent = event as ExtendableEvent;
+    extendableEvent.waitUntil((self as unknown as ServiceWorkerGlobalScope).clients.claim());
+    console.log('------>>> Service Worker activating......');
+    resetStorage().then();
+    serviceInit();
 });
 
 runtime.onInstalled.addListener((details: Runtime.OnInstalledDetailsType) => {
@@ -160,15 +164,8 @@ runtime.onInstalled.addListener((details: Runtime.OnInstalledDetailsType) => {
 runtime.onStartup.addListener(() => {
     setTimeout(() => {
         console.log('------>>> Service Worker onStartup......');
-        updateIcon(false);
-
-        initDatabase().then(() => {
-            createContextMenu().then()
-            AddMenuListener();
-            console.log("------>>> context menu setup success")
-        });
-        processedDownloads.clear();
-    }, 2000);
+        serviceInit();
+    }, 5000);
 });
 
 runtime.onSuspend.addListener(() => {
@@ -590,9 +587,20 @@ async function handleExistingDownloads() {
             console.log("------>>> download item doesn't exist:", downloadItem.filename)
             return;
         }
-
         processedDownloads.add(downloadItem.url); // 添加到已处理集合
     });
 }
 
 handleExistingDownloads().then();
+
+async function setupUninstallUrl() {
+    const hostUrl = await getContactSrv();
+    const wallet = await loadWalletJsonFromDB();
+    if (!wallet) {
+        console.log("------>>> no wallet locally");
+        return
+    }
+    const uninstallUrl = `${hostUrl}${API_Uninstall_User}?address=${wallet.address.bmail_address}`
+    await browser.runtime.setUninstallURL(uninstallUrl);
+}
+

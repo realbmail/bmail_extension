@@ -4,7 +4,6 @@ import {
     ECEncryptedFailed,
     ECInternalError,
     ECWalletClosed,
-    HostAppMacDownloadLink, HostAppWinDownloadLink,
     Inject_Msg_Flag,
     MsgType
 } from "./consts";
