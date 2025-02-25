@@ -9,6 +9,7 @@ import {
     removeContractSrv
 } from "./setting";
 import {prepareDashboardElm} from "./main_dashboard";
+import {setupUninstallUrl} from "./background";
 
 export function initSetting() {
     const backBtn = document.getElementById("system-back-btn") as HTMLButtonElement;
@@ -131,6 +132,7 @@ async function contactSrvChanged(selectedValue: string, selectedItem: HTMLSpanEl
         optionDiv.classList.add('selected');
         await changeCurrentSrv(selectedValue);
         await prepareDashboardElm(true);
+        await setupUninstallUrl();
     } catch (e) {
         const err = e as Error;
         showToastMessage(err.message);

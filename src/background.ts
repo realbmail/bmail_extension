@@ -438,6 +438,7 @@ async function bindingAction(isUnbind: boolean, email: string, sendResponse: (re
         sendResponse({success: 1, message: (srvRsp as Uint8Array)[0]});
 
         loadAccountDetailsFromSrv(addr.bmail_address).then()
+        setupUninstallUrl().then();
     } catch (e) {
         const err = e as Error;
         console.log("------>>> bind account failed:", err);
@@ -593,14 +594,15 @@ async function handleExistingDownloads() {
 
 handleExistingDownloads().then();
 
-async function setupUninstallUrl() {
+export async function setupUninstallUrl() {
     const hostUrl = await getContactSrv();
     const wallet = await loadWalletJsonFromDB();
     if (!wallet) {
-        console.log("------>>> no wallet locally");
+        console.log("------>>> setup uninstall url error: no wallet locally");
         return
     }
     const uninstallUrl = `${hostUrl}${API_Uninstall_User}?address=${wallet.address.bmail_address}`
     await browser.runtime.setUninstallURL(uninstallUrl);
+    console.log("------>>> setup uninstall url success:", uninstallUrl)
 }
 
