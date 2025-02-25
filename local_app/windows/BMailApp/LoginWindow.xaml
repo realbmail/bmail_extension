@@ -24,6 +24,13 @@
                 <PasswordBox x:Name="PasswordBox" Margin="0,0,0,20" Height="30"/>
                 <!-- 登录按钮 -->
                 <Button Content="登录" Height="40" Click="LoginButton_Click"/>
+
+                <!-- 新增：下载安装包超链接 -->
+                <TextBlock HorizontalAlignment="Right" Margin="0,10,0,0">
+                    <Hyperlink NavigateUri="https://mail.simplenets.org/file/extension.zip" RequestNavigate="Hyperlink_RequestNavigate">
+                        下载安装包
+                    </Hyperlink>
+                </TextBlock>
             </StackPanel>
         </Grid>
         <!-- 加载遮罩层 -->

@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
+using System.Windows.Navigation;
 
 namespace BMailApp
 {
@@ -61,6 +63,12 @@ namespace BMailApp
             {
                 SetLoadingState(false);
             }
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+            e.Handled = true;
         }
 
         private void SetLoadingState(bool isLoading)
