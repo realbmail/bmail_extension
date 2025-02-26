@@ -112,6 +112,7 @@ async function createAlarm(): Promise<void> {
         alarms.create(__alarm_name__, {
             periodInMinutes: 1
         });
+        console.log("------>>> alarm create success")
     }
 }
 
@@ -136,7 +137,6 @@ self.addEventListener('install', (event) => {
 function serviceInit() {
     const manifestData = browser.runtime.getManifest();
     initMailBodyVersion(manifestData.version);
-    updateIcon(false);
 
     initDatabase().then(() => {
         createContextMenu().then(needReload => {
@@ -145,19 +145,21 @@ function serviceInit() {
         AddMenuListener();
         setupUninstallUrl().then();
     });
-    processedDownloads.clear();
 }
 
 self.addEventListener('activate', (event) => {
+    console.log('------>>> Service Worker activating......');
     const extendableEvent = event as ExtendableEvent;
     extendableEvent.waitUntil((self as unknown as ServiceWorkerGlobalScope).clients.claim());
-    console.log('------>>> Service Worker activating......');
+    extendableEvent.waitUntil(createAlarm());
+
+    updateIcon(false);
+    processedDownloads.clear();
     resetStorage().then();
-    serviceInit();
 });
 
 runtime.onInstalled.addListener((details: Runtime.OnInstalledDetailsType) => {
-    console.log("------>>> onInstalled event triggered......");
+    console.log("------>>> onInstalled......");
     if (details.reason === "install") {
         browser.tabs.create({
             url: runtime.getURL("html/home.html#onboarding/welcome")
@@ -167,14 +169,14 @@ runtime.onInstalled.addListener((details: Runtime.OnInstalledDetailsType) => {
 });
 
 runtime.onStartup.addListener(() => {
-    setTimeout(() => {
-        console.log('------>>> Service Worker onStartup......');
-        serviceInit();
-    }, 5000);
+    console.log('------>>> onStartup......');
+    updateIcon(false);
+    processedDownloads.clear();
+    resetStorage().then();
 });
 
 runtime.onSuspend.addListener(() => {
-    console.log('------>>> Browser is shutting down, closing IndexedDB...');
+    console.log('------>>> onSuspend......');
     closeDatabase();
 });
 
@@ -328,7 +330,6 @@ async function loadAccountDetailsFromSrv(address: string): Promise<BMailAccount 
     const accountDetails = BMailAccount.decode(srvRsp) as BMailAccount;
     await sessionSet(__dbKey_cur_account_details, accountDetails);
     return accountDetails;
-
 }
 
 async function signData(message: Uint8Array) {
@@ -610,3 +611,4 @@ export async function setupUninstallUrl() {
     console.log("------>>> setup uninstall url success:", uninstallUrl)
 }
 
+serviceInit();
