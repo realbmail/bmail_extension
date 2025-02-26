@@ -14,6 +14,9 @@ struct LoginView: View {
         
         var body: some View {
                 ZStack {
+                        
+                        Color.red.ignoresSafeArea()
+                        
                         if isLoggedIn {
                                 MainView(isLoggedIn: $isLoggedIn)
                         } else {
@@ -148,6 +151,8 @@ struct LoginView: View {
                         window.setContentSize(windowSize)
                         window.minSize = windowSize
                         window.center()
+                        
+                        window.standardWindowButton(.zoomButton)?.isHidden = true
                 }
         }
 }
