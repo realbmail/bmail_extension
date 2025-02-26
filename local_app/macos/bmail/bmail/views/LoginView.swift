@@ -15,7 +15,7 @@ struct LoginView: View {
         var body: some View {
                 ZStack {
                         
-                        Color.red.ignoresSafeArea()
+                        Color.white.ignoresSafeArea()
                         
                         if isLoggedIn {
                                 MainView(isLoggedIn: $isLoggedIn)
@@ -143,6 +143,8 @@ struct LoginView: View {
                 }
         }
         
+        static let fixedSizeWindowDelegate = FixedSizeWindowDelegate()
+        
         func adjustWindow() {
                 DispatchQueue.main.async {
                         NSLog("------>>> adjust login window......")
@@ -150,9 +152,24 @@ struct LoginView: View {
                         let windowSize = NSSize(width: 400, height: 600)
                         window.setContentSize(windowSize)
                         window.minSize = windowSize
+                        window.maxSize = windowSize
+                        window.delegate = LoginView.fixedSizeWindowDelegate
                         window.center()
                         
                         window.standardWindowButton(.zoomButton)?.isHidden = true
                 }
+        }
+}
+
+// 自定义窗口代理
+final class FixedSizeWindowDelegate: NSObject, NSWindowDelegate {
+        // 禁用双击标题栏触发的缩放
+        func windowShouldZoom(_ window: NSWindow, toFrame newFrame: NSRect) -> Bool {
+                return false
+        }
+        
+        // 禁用拖拽窗口角落调整大小，始终返回当前大小
+        func windowWillResize(_ sender: NSWindow, to frameSize: NSSize) -> NSSize {
+                return sender.frame.size
         }
 }
