@@ -68,28 +68,31 @@ struct LoginView: View {
                                 )
                                 .padding(.horizontal, 20).padding(.top, 10)
                         
-                        SecureField("密码", text: $password)
+                        SecureField("Password", text: $password)
+                                .textFieldStyle(PlainTextFieldStyle())
+                                .font(.system(size: 16))
+                                .foregroundColor(.black)
                                 .padding()
-                                .background(RoundedRectangle(cornerRadius: 10).fill(Color(red: 238/255, green: 240/255, blue: 241/255))) // 修改背景颜色为 SwiftUI 兼容语法
-                                .font(.system(size: 16)) // 设置字体大小
-                                .foregroundColor(Color.black) // 修改文字颜色
-                                .padding(.horizontal, 20)
-                                .disabled(disableInput)
-                                .padding(.top, 10) // 增加与上方元素的间距
+                                .background(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .fill(Color(red: 238/255, green: 240/255, blue: 241/255))
+                                )
+                                .padding(.horizontal, 20).padding(.top, 10)
                         
-                        Button(action: {
-                                login()
-                        }) {
+                        
+                        Button(action: { login() }) {
                                 Text("登录")
-                                        .frame(maxWidth: .infinity)
-                                        .padding()
-                                        .background(Color(red: 241/255, green: 134/255, blue: 82/255)) // 修改背景颜色
-                                        .foregroundColor(.white) // 修改字体颜色
-                                        .font(.system(size: 16, weight: .medium)) // 设置字体大小和加粗
-                                        .cornerRadius(10)
-                        }
-                        .padding(.horizontal, 20)
-                        .padding(.top, -10)
+                                    .font(.system(size: 16, weight: .medium))
+                                    .foregroundColor(.white)
+                                    .padding(.vertical, 12)
+                                    .frame(maxWidth: .infinity)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 8)
+                                                            .fill(Color(red: 241/255, green: 134/255, blue: 82/255))
+                                    )
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            .padding(.horizontal, 20).padding(.top, -5)
                         
                         HStack {
                                 Spacer()
