@@ -74,36 +74,37 @@ struct LoginView: View {
                                 .foregroundColor(.black)
                                 .padding()
                                 .background(
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .fill(Color(red: 238/255, green: 240/255, blue: 241/255))
+                                        RoundedRectangle(cornerRadius: 10)
+                                                .fill(Color(red: 238/255, green: 240/255, blue: 241/255))
                                 )
                                 .padding(.horizontal, 20).padding(.top, 10)
                         
                         
                         Button(action: { login() }) {
                                 Text("登录")
-                                    .font(.system(size: 16, weight: .medium))
-                                    .foregroundColor(.white)
-                                    .padding(.vertical, 12)
-                                    .frame(maxWidth: .infinity)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 8)
-                                                            .fill(Color(red: 241/255, green: 134/255, blue: 82/255))
-                                    )
-                            }
-                            .buttonStyle(PlainButtonStyle())
-                            .padding(.horizontal, 20).padding(.top, -5)
+                                        .font(.system(size: 16, weight: .medium))
+                                        .foregroundColor(.white)
+                                        .padding(.vertical, 12)
+                                        .frame(maxWidth: .infinity)
+                                        .background(
+                                                RoundedRectangle(cornerRadius: 8)
+                                                        .fill(Color(red: 241/255, green: 134/255, blue: 82/255))
+                                        )
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        .padding(.horizontal, 20).padding(.top, -5)
                         
                         HStack {
                                 Spacer()
                                 Button(action: downloadPackage) {
                                         Text("下载浏览器插件")
+                                                .font(.system(size: 12, weight: .medium))
+                                                .foregroundColor(Color(red: 241/255, green: 134/255, blue: 82/255))
                                                 .underline()
-                                                .font(.system(size: 12))
-                                                .foregroundColor(.blue)
                                 }
-                                .buttonStyle(PlainButtonStyle()) // 使用无边框样式
-                                .padding([.trailing, .bottom], 20)
+                                .buttonStyle(PlainButtonStyle())
+                                .padding(.trailing, 20)
+                                .padding(.bottom, 20)
                         }
                         
                         Spacer()
