@@ -12,20 +12,25 @@ struct MainView: View {
         
         var body: some View {
                 NavigationSplitView {
-                        SidebarView(isLoggedIn: $isLoggedIn, selectedContent: $selectedContent).background(Color.white)
+                        SidebarView(isLoggedIn: $isLoggedIn, selectedContent: $selectedContent)
+                                .background(Color.white)
+                                .frame(minWidth: 200, idealWidth: 250, maxWidth: 300)
                 } detail: {
-                        switch selectedContent {
-                        case .mailAttachment:
-                                MailAttachmentView()
-                        case .settings:
-                                SettingView()
-                        case .none:
-                                Text("请选择功能")
+                        Group {
+                                switch selectedContent {
+                                case .mailAttachment:
+                                        MailAttachmentView()
+                                case .settings:
+                                        SettingView()
+                                case .none:
+                                        Text("请选择功能")
+                                }
                         }
-                }.background(Color.white)
-                        .onAppear {
-                                adjustWindow()
-                        }
+                        // 隐藏 detail 部分默认的 toolbar（包括侧边栏切换按钮）
+                        .toolbar(.hidden)
+                }
+                .background(Color.white)
+                .onAppear { adjustWindow()}
         }
         
         func adjustWindow() {
@@ -35,6 +40,9 @@ struct MainView: View {
                         window.setContentSize(windowSize)
                         window.minSize = windowSize
                         window.center()
+                        // 隐藏标题栏
+                        window.titleVisibility = .hidden
+                        window.titlebarAppearsTransparent = true
                 }
         }
 }

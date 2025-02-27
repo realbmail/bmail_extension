@@ -15,9 +15,6 @@ struct MailAttachmentView: View {
         
         var body: some View {
                 VStack(alignment: .leading) {
-                        Text("BMail附件")
-                                .font(.title)
-                                .padding(.bottom, 10)
                         
                         if fileURLs.isEmpty {
                                 // 当没有文件时，显示提示文本，并且该区域支持右键菜单

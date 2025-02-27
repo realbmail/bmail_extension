@@ -70,14 +70,14 @@ struct LoginView: View {
                         
                         SecureField("Password", text: $password)
                                 .textFieldStyle(PlainTextFieldStyle())
-                                .font(.system(size: 16))
+                                .font(.system(size: 12))
                                 .foregroundColor(.black)
-                                .padding()
+                                .padding(12)
                                 .background(
                                         RoundedRectangle(cornerRadius: 10)
                                                 .fill(Color(red: 238/255, green: 240/255, blue: 241/255))
                                 )
-                                .padding(.horizontal, 20).padding(.top, 10)
+                                .padding(.horizontal, 20)
                         
                         
                         Button(action: { login() }) {
