@@ -45,3 +45,12 @@ struct MainView: View {
                 }
         }
 }
+
+#if DEBUG
+struct MainView_Previews: PreviewProvider {
+    static var previews: some View {
+        MainView(isLoggedIn: .constant(true))
+            .previewLayout(.fixed(width: 1200, height: 800))
+    }
+}
+#endif
