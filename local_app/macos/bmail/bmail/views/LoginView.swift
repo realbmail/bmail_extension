@@ -47,28 +47,35 @@ struct LoginView: View {
         }
         
         private var loginContent: some View {
+                
                 VStack(spacing: 20) {
                         Image("logo")
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 100, height: 100)
-                                .padding(.top, 50)
+                                .frame(width: 80, height: 80)
+                                .padding(.top, 80)
                         
                         Text(bmailAddress.isEmpty ? "请先登录浏览器插件" : bmailAddress)
-                                .font(.system(size: 16))
+                                .font(.system(size: 14, weight: .medium))
+                                .foregroundColor(Color(red: 4/255, green: 6/255, blue: 46/255)) // 修改颜色
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.5)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding()
                                 .background(
                                         RoundedRectangle(cornerRadius: 10)
-                                                .stroke(Color.gray, lineWidth: 1)
+                                                .fill(Color(red: 248/255, green: 249/255, blue: 249/255))
                                 )
-                                .padding(.horizontal, 20)
+                                .padding(.horizontal, 20).padding(.top, 10)
                         
                         SecureField("密码", text: $password)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                                .padding(.horizontal, 20).disabled(disableInput)
+                                .padding()
+                                .background(RoundedRectangle(cornerRadius: 10).fill(Color(red: 238/255, green: 240/255, blue: 241/255))) // 修改背景颜色为 SwiftUI 兼容语法
+                                .font(.system(size: 16)) // 设置字体大小
+                                .foregroundColor(Color.black) // 修改文字颜色
+                                .padding(.horizontal, 20)
+                                .disabled(disableInput)
+                                .padding(.top, 10) // 增加与上方元素的间距
                         
                         Button(action: {
                                 login()
@@ -76,12 +83,13 @@ struct LoginView: View {
                                 Text("登录")
                                         .frame(maxWidth: .infinity)
                                         .padding()
-                                        .background(Color.blue)
-                                        .foregroundColor(.white)
+                                        .background(Color(red: 241/255, green: 134/255, blue: 82/255)) // 修改背景颜色
+                                        .foregroundColor(.white) // 修改字体颜色
+                                        .font(.system(size: 16, weight: .medium)) // 设置字体大小和加粗
                                         .cornerRadius(10)
                         }
                         .padding(.horizontal, 20)
-                        .padding(.top, 20)
+                        .padding(.top, -10)
                         
                         HStack {
                                 Spacer()
@@ -173,3 +181,17 @@ final class FixedSizeWindowDelegate: NSObject, NSWindowDelegate {
                 return sender.frame.size
         }
 }
+
+
+#if DEBUG
+struct LoginView_Previews: PreviewProvider {
+        static var previews: some View {
+                let walletStore = WalletDataStore()
+                
+                return LoginView()
+                        .environmentObject(walletStore)
+                        .frame(width: 400, height: 600)
+                        .previewLayout(.sizeThatFits)
+        }
+}
+#endif
