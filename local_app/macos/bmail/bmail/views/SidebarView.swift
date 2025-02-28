@@ -34,6 +34,7 @@ struct SidebarView: View {
                         }) {
                                 HStack(spacing: 8) {
                                         Image("attachment")
+                                                .frame(width: 28, height: 28, alignment: .center)
                                         Text("Attachment")
                                                 .font(.system(size: 12, weight: .regular))
                                 }
@@ -56,6 +57,7 @@ struct SidebarView: View {
                         }) {
                                 HStack(spacing: 8) {
                                         Image("settings")
+                                                .frame(width: 28, height: 28, alignment: .center)
                                         Text("Settings")
                                                 .font(.system(size: 12, weight: .regular))
                                 }
