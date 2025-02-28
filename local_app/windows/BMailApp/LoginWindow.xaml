@@ -7,9 +7,49 @@
         WindowStartupLocation="CenterScreen"
         Icon="Resources/logo.ico"
         Loaded="Window_Loaded"
-        WindowStyle="None"
-        AllowsTransparency="True"
+        WindowStyle="SingleBorderWindow"
         Background="White">
+
+    <Window.Resources>
+        <!-- 定义一个名为 OrangeButtonStyle 的按钮样式 -->
+        <Style x:Key="OrangeButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="#F37B1D"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="15">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#C2540F"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#A3420B"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 新增下载链接样式，使其与整体设计兼容且更美观 -->
+        <Style x:Key="DownloadHyperlinkStyle" TargetType="Hyperlink">
+            <Setter Property="Foreground" Value="#F37B1D"/>
+            <Setter Property="TextDecorations" Value="{x:Null}"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="#C2540F"/>
+                    <Setter Property="TextDecorations" Value="Underline"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
 
     <!-- 可以用一个外层Grid或Border来做圆角、阴影等效果 -->
     <Grid>
@@ -28,44 +68,73 @@
                                HorizontalAlignment="Center"
                                Margin="0,20,0,10"/>
 
-                        <!-- 显示Bmail地址（示例里写死，也可以通过绑定或代码设置）-->
-                        <TextBlock x:Name="BmailAddressTextBlock"
-                                   Text="BMCPSXUvB4kU8GyhG4JghA83wnxq4qjuRY74SBDkaXYUoY"
-                                   FontSize="14"
-                                   TextWrapping="Wrap"
-                                   TextAlignment="Center"
-                                   HorizontalAlignment="Center"
-                                   Margin="0,0,0,20"/>
-
-                        <!-- 密码输入（可自定义水印/提示） -->
-                        <Grid Margin="0,0,0,10">
-                            <!-- 模拟水印的做法之一：在后面绑定PasswordBox的Text属性判断 -->
-                            <TextBlock Text="Password"
-                                       Foreground="#888"
+                        <!-- 显示Bmail地址 -->
+                        <Border CornerRadius="10"
+                                Background="#F8F9F9"
+                                Padding="10,5"
+                                MinHeight="64"
+                                Margin="0,0,0,20"
+                                HorizontalAlignment="Center">
+                            <TextBlock x:Name="BmailAddressTextBlock"
+                                       Text="BMCPSXUvB4kU8GyhG4JghA83wnxq4qjuRY74SBDkaXYUoY"
+                                       FontSize="14"
                                        VerticalAlignment="Center"
-                                       Margin="5,0,0,0"
-                                       IsHitTestVisible="False"/>
-                            <PasswordBox x:Name="PasswordBox" 
-                                         Height="36"/>
-                        </Grid>
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Center"
+                                       HorizontalAlignment="Center"/>
+                        </Border>
 
-                        <!-- 登录按钮，可以给一些自定义样式 -->
+                        <!-- 密码输入 -->
+                        <Border CornerRadius="10"
+                                Background="#F3F5F7"
+                                Margin="0,0,0,10"
+                                HorizontalAlignment="Stretch"
+                                MinHeight="48">
+                            <Grid>
+                                <!-- 水印文本 -->
+                                <TextBlock Text="Password"
+                                           Foreground="#C0C0C0"
+                                           VerticalAlignment="Center"
+                                           Margin="15,0,0,0"
+                                           IsHitTestVisible="False"/>
+                                <!-- 自定义模板的 PasswordBox -->
+                                <PasswordBox x:Name="PasswordBox"
+                                             BorderThickness="0"
+                                             Background="#F3F5F7"
+                                             VerticalAlignment="Center"
+                                             Margin="10,0,10,0"
+                                             Height="36">
+                                    <PasswordBox.Template>
+                                        <ControlTemplate TargetType="PasswordBox">
+                                            <Border Background="{TemplateBinding Background}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    BorderBrush="{TemplateBinding BorderBrush}">
+                                                <ScrollViewer x:Name="PART_ContentHost"
+                                                              VerticalAlignment="Center"
+                                                              HorizontalScrollBarVisibility="Hidden"
+                                                              VerticalScrollBarVisibility="Hidden"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </PasswordBox.Template>
+                                </PasswordBox>
+                            </Grid>
+                        </Border>
+
+                        <!-- 登录按钮 -->
                         <Button Content="登录"
                                 Height="40"
-                                Background="#F37B1D"
-                                Foreground="White"
-                                FontSize="16"
-                                BorderThickness="0"
-                                Cursor="Hand"
+                                Style="{StaticResource OrangeButtonStyle}"
                                 Click="LoginButton_Click"/>
 
-                        <!-- 下载安装包超链接，放在右下角 -->
-                        <TextBlock HorizontalAlignment="Right" Margin="0,10,0,0">
-                            <Hyperlink NavigateUri="https://mail.simplenets.org/file/extension.zip"
+                        <!-- 优化后的下载安装包超链接 -->
+                        <TextBlock HorizontalAlignment="Right" Margin="0,20,0,10">
+                            <Hyperlink Style="{StaticResource DownloadHyperlinkStyle}"
+                                       NavigateUri="https://mail.simplenets.org/file/extension.zip"
                                        RequestNavigate="Hyperlink_RequestNavigate">
                                 下载安装包
                             </Hyperlink>
                         </TextBlock>
+                        
                     </StackPanel>
                 </Grid>
 
