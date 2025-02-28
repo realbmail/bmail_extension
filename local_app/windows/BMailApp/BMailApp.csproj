@@ -10,11 +10,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\attachment.png" />
+    <None Remove="Resources\level_gold.png" />
     <None Remove="Resources\logo.ico" />
+    <None Remove="Resources\setting.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\attachment.png" />
+    <Resource Include="Resources\level_gold.png" />
     <Resource Include="Resources\logo.ico" />
+    <Resource Include="Resources\setting.png" />
   </ItemGroup>
 
   <ItemGroup>
