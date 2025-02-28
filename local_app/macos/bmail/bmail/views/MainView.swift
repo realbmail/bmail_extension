@@ -30,6 +30,7 @@ struct MainView: View {
                 }
                 .background(Color.white)
                 .onAppear { adjustWindow()}
+                
         }
         
         func adjustWindow() {
@@ -39,10 +40,11 @@ struct MainView: View {
                         window.setContentSize(windowSize)
                         window.minSize = windowSize
                         window.center()
-                        // 隐藏标题栏
+                        
                         window.titleVisibility = .hidden
                         window.titlebarAppearsTransparent = true
-
+                        window.delegate = nil
+                        
                 }
         }
 }

@@ -32,9 +32,9 @@ struct MailAttachmentView: View {
                                 .listStyle(PlainListStyle())
                         }
                         
-                        Spacer()
                 }
-                .padding()
+                .background(Color.red)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .contextMenu {
                         Button("Reload") {
                                 loadFiles()
@@ -47,7 +47,7 @@ struct MailAttachmentView: View {
                                 object: nil,
                                 queue: OperationQueue.main
                         ) { notification in
-//                                print("------>>>收到文件移动通知: \(notification.userInfo?["path"] ?? "")")
+                                //                                print("------>>>收到文件移动通知: \(notification.userInfo?["path"] ?? "")")
                                 loadFiles()
                         }
                 }
@@ -66,3 +66,13 @@ struct MailAttachmentView: View {
                 fileURLs = loadBmailAttachmentUrls()
         }
 }
+
+#if DEBUG
+struct MailAttachmentView_Previews: PreviewProvider {
+        static var previews: some View {
+                MailAttachmentView()
+                        .previewLayout(.sizeThatFits)
+                        .padding()
+        }
+}
+#endif
