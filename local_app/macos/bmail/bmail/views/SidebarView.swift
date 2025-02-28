@@ -99,8 +99,6 @@ struct SidebarView: View {
                                 )
                         }
                 }
-                // 限定侧边栏宽度
-                .frame(minWidth: 180, maxWidth: 220)
                 .background(Color.white)
         }
 }

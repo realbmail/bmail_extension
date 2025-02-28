@@ -14,7 +14,6 @@ struct MainView: View {
                 NavigationSplitView {
                         SidebarView(isLoggedIn: $isLoggedIn, selectedContent: $selectedContent)
                                 .background(Color.white)
-                                .frame(minWidth: 200, idealWidth: 250, maxWidth: 300)
                 } detail: {
                         Group {
                                 switch selectedContent {
@@ -43,6 +42,7 @@ struct MainView: View {
                         // 隐藏标题栏
                         window.titleVisibility = .hidden
                         window.titlebarAppearsTransparent = true
+
                 }
         }
 }
