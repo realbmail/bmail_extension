@@ -54,18 +54,37 @@ struct FileRow: View {
                         iconImage
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .frame(width: 16, height: 16)
+                                .frame(width: 32, height: 32)
+                        
+                        
                         Text(fileURL.lastPathComponent)
                                 .lineLimit(1)
                                 .truncationMode(.tail)
+                                .font(.system(size: 14))
+                                .foregroundColor(.black)
                         Spacer()
                 }
-                .padding(4)
-                .background(isSelected ? Color.blue.opacity(0.3) : Color.clear)
+                .frame(height: 64)
+                .padding(.horizontal, 12)
+                .background(
+                        ZStack {
+                                if isSelected {
+                                    // 选中时：浅橙背景
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(Color(red: 255/255, green: 239/255, blue: 231/255))
+                                } else {
+                                    // 未选中时：白色背景 + 灰色描边
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(Color.white)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .stroke(Color(red: 238/255, green: 240/255, blue: 241/255), lineWidth: 1)
+                                        )
+                                }
+                            }
+                )
                 .contentShape(Rectangle())
-                .onTapGesture(count: 2) { // ADDED: Double-click gesture recognizer
-                        openOrDecryptFile() // Call openDecryptFile on double-click
-                }
+                .onTapGesture(count: 2) { openOrDecryptFile()}
                 .contextMenu {
                         let fileExtension = fileURL.pathExtension.lowercased()
                         if fileExtension.hasSuffix(BmailFileSuffix) {

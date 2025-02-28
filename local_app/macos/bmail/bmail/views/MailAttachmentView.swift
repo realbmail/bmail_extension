@@ -17,23 +17,27 @@ struct MailAttachmentView: View {
                 VStack(alignment: .leading) {
                         
                         if fileURLs.isEmpty {
-                                // 当没有文件时，显示提示文本，并且该区域支持右键菜单
                                 Text("No Bmail files")
                                         .foregroundColor(.gray)
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                         } else {
                                 List(fileURLs, id: \.self) { fileURL in
                                         FileRow(fileURL: fileURL, isSelected: fileURL == selectedFile)
-                                                .contentShape(Rectangle())  // 扩大点击区域到整行
+//                                                .contentShape(Rectangle())
+                                                .listRowInsets(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
+                                                .listRowBackground(Color.clear)
                                                 .onTapGesture {
                                                         selectedFile = fileURL
                                                 }
                                                 .listRowSeparator(.hidden)
                                 }
                                 .listStyle(PlainListStyle())
+                                .scrollContentBackground(.hidden)
                         }
-                        
                 }
-                .background(Color.red)
+                .padding(.horizontal, 24)
+                .padding(.vertical, 16)
+                .background(Color.white)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .contextMenu {
                         Button("Reload") {

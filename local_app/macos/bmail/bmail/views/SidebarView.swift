@@ -53,12 +53,13 @@ struct SidebarView: View {
                         
                         // “设置”按钮
                         Button(action: {
-                                selectedContent = .settings
+//                                selectedContent = .settings
+                                showLogoutConfirmation = true
                         }) {
                                 HStack(spacing: 8) {
                                         Image("settings")
                                                 .frame(width: 28, height: 28, alignment: .center)
-                                        Text("Settings")
+                                        Text("Sign Out")
                                                 .font(.system(size: 12, weight: .regular))
                                 }
                                 .foregroundColor(.primary)
@@ -77,19 +78,19 @@ struct SidebarView: View {
                         Spacer()
                         
                         // “退出”按钮
-                        Button(action: {
-                                showLogoutConfirmation = true
-                        }) {
-                                HStack(spacing: 8) {
-                                        Image(systemName: "arrow.backward.circle")
-                                        Text("Sign Out")
-                                }
-                                .foregroundColor(.red)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.vertical, 8)
-                                .padding(.horizontal, 16)
-                        }
-                        .buttonStyle(PlainButtonStyle())
+//                        Button(action: {
+//                                showLogoutConfirmation = true
+//                        }) {
+//                                HStack(spacing: 8) {
+//                                        Image(systemName: "arrow.backward.circle")
+//                                        Text("Sign Out")
+//                                }
+//                                .foregroundColor(.red)
+//                                .frame(maxWidth: .infinity, alignment: .leading)
+//                                .padding(.vertical, 8)
+//                                .padding(.horizontal, 16)
+//                        }
+//                        .buttonStyle(PlainButtonStyle())
                         .alert(isPresented: $showLogoutConfirmation) {
                                 Alert(
                                         title: Text("Sign Out"),
