@@ -11,9 +11,14 @@
 
   <ItemGroup>
     <None Remove="Resources\attachment.png" />
+    <None Remove="Resources\file.png" />
     <None Remove="Resources\level_gold.png" />
     <None Remove="Resources\logo.ico" />
     <None Remove="Resources\setting.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\file.png" />
   </ItemGroup>
 
   <ItemGroup>
