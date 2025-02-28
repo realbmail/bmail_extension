@@ -14,24 +14,39 @@ struct SidebarView: View {
         var body: some View {
                 VStack(alignment: .leading, spacing: 0) {
                         // 顶部标题
-                        Text("Enterprise Tier")
-                                .font(.system(size: 18, weight: .semibold))
-                                .padding(.top, 20)
-                                .padding(.leading, 16)
+                        HStack(spacing: 8) {
+                                Image("level_gold")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 20, height: 20)
+                                
+                                Text("Enterprise Tier")
+                                        .font(.system(size: 14, weight: .semibold))
+                                        .foregroundColor(Color(red: 133/255, green: 133/255, blue: 153/255))
+                        }
+                        .padding(.top, 20)
+                        .padding(.leading, 16)
                         
+                        Divider().padding(.vertical, 8)
                         
-                        // “BMail附件”按钮
                         Button(action: {
                                 selectedContent = .mailAttachment
                         }) {
                                 HStack(spacing: 8) {
                                         Image("attachment")
-                                        Text("Bmail Attachment")
+                                        Text("Attachment")
+                                                .font(.system(size: 12, weight: .regular))
                                 }
                                 .foregroundColor(.primary)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(.vertical, 8)
                                 .padding(.horizontal, 16)
+                                .background(
+                                        selectedContent == .mailAttachment
+                                        ? Color(red: 238/255, green: 240/255, blue: 241/255)
+                                        : Color.clear
+                                )
+                                .contentShape(Rectangle())
                         }
                         .buttonStyle(PlainButtonStyle())
                         
@@ -42,11 +57,18 @@ struct SidebarView: View {
                                 HStack(spacing: 8) {
                                         Image("settings")
                                         Text("Settings")
+                                                .font(.system(size: 12, weight: .regular))
                                 }
                                 .foregroundColor(.primary)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(.vertical, 8)
                                 .padding(.horizontal, 16)
+                                .background(
+                                        selectedContent == .settings
+                                        ? Color(red: 238/255, green: 240/255, blue: 241/255)
+                                        : Color.clear
+                                )
+                                .contentShape(Rectangle())
                         }
                         .buttonStyle(PlainButtonStyle())
                         
