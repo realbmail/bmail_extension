@@ -23,7 +23,7 @@ struct MainView: View {
                                 case .settings:
                                         SettingView()
                                 case .none:
-                                        Text("请选择功能")
+                                        Text("No menu selected")
                                 }
                         }
                         // 隐藏 detail 部分默认的 toolbar（包括侧边栏切换按钮）

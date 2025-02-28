@@ -25,8 +25,8 @@ struct SidebarView: View {
                                 selectedContent = .mailAttachment
                         }) {
                                 HStack(spacing: 8) {
-                                        Image(systemName: "doc.on.doc")
-                                        Text("Bmail附件")
+                                        Image("attachment")
+                                        Text("Bmail Attachment")
                                 }
                                 .foregroundColor(.primary)
                                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -40,8 +40,8 @@ struct SidebarView: View {
                                 selectedContent = .settings
                         }) {
                                 HStack(spacing: 8) {
-                                        Image(systemName: "gearshape.fill")
-                                        Text("设置")
+                                        Image("settings")
+                                        Text("Settings")
                                 }
                                 .foregroundColor(.primary)
                                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -58,7 +58,7 @@ struct SidebarView: View {
                         }) {
                                 HStack(spacing: 8) {
                                         Image(systemName: "arrow.backward.circle")
-                                        Text("退出登录")
+                                        Text("Sign Out")
                                 }
                                 .foregroundColor(.red)
                                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -68,9 +68,9 @@ struct SidebarView: View {
                         .buttonStyle(PlainButtonStyle())
                         .alert(isPresented: $showLogoutConfirmation) {
                                 Alert(
-                                        title: Text("确认退出"),
-                                        message: Text("确定要退出吗？"),
-                                        primaryButton: .destructive(Text("退出"), action: {
+                                        title: Text("Sign Out"),
+                                        message: Text("Are you sure to sign out？"),
+                                        primaryButton: .destructive(Text("Sign Out"), action: {
                                                 isLoggedIn = false
                                         }),
                                         secondaryButton: .cancel()

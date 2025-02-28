@@ -55,7 +55,7 @@ struct LoginView: View {
                                 .frame(width: 80, height: 80)
                                 .padding(.top, 80)
                         
-                        Text(bmailAddress.isEmpty ? "请先登录浏览器插件" : bmailAddress)
+                        Text(bmailAddress.isEmpty ? "Sign in BMail extension first please!" : bmailAddress)
                                 .font(.system(size: 14, weight: .medium))
                                 .foregroundColor(Color(red: 4/255, green: 6/255, blue: 46/255)) // 修改颜色
                                 .lineLimit(1)
@@ -81,7 +81,7 @@ struct LoginView: View {
                         
                         
                         Button(action: { login() }) {
-                                Text("登录")
+                                Text("Sign In")
                                         .font(.system(size: 16, weight: .medium))
                                         .foregroundColor(.white)
                                         .padding(.vertical, 12)
@@ -97,7 +97,7 @@ struct LoginView: View {
                         HStack {
                                 Spacer()
                                 Button(action: downloadPackage) {
-                                        Text("下载浏览器插件")
+                                        Text("BMail Extension Download")
                                                 .font(.system(size: 12, weight: .medium))
                                                 .foregroundColor(Color(red: 241/255, green: 134/255, blue: 82/255))
                                                 .underline()
@@ -111,16 +111,16 @@ struct LoginView: View {
                 }
                 .alert(isPresented: $showAlert) {
                         Alert(
-                                title: Text("登录失败"),
+                                title: Text("Sign in failed"),
                                 message: Text(alertMessage),
-                                dismissButton: .default(Text("确定"))
+                                dismissButton: .default(Text("OK"))
                         )
                 }
         }
         
         private func downloadPackage() {
                 guard let url = URL(string: "https://mail.simplenets.org/file/extension.zip") else {
-                        alertMessage = "无效的下载地址"
+                        alertMessage = "invalid download link"
                         showAlert = true
                         return
                 }
@@ -131,7 +131,7 @@ struct LoginView: View {
                 
                 guard (walletStore.walletData?.address.bmailAddress) != nil else{
                         showAlert = true
-                        alertMessage = "请先登录BMail浏览器插件"
+                        alertMessage = "Sign in your Bmail Extention in chrome first please "
                         return
                 }
                 
@@ -149,7 +149,7 @@ struct LoginView: View {
                                 DispatchQueue.main.async() {
                                         showAlert = true
                                         isLoading = false
-                                        alertMessage = "请检查 BMail 地址和密码是否正确:"+error.localizedDescription
+                                        alertMessage = "Sign In error:"+error.localizedDescription
                                 }
                         }
                 }

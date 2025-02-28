@@ -18,7 +18,7 @@ struct MailAttachmentView: View {
                         
                         if fileURLs.isEmpty {
                                 // 当没有文件时，显示提示文本，并且该区域支持右键菜单
-                                Text("目录中没有文件")
+                                Text("No Bmail files")
                                         .foregroundColor(.gray)
                         } else {
                                 List(fileURLs, id: \.self) { fileURL in
@@ -36,7 +36,7 @@ struct MailAttachmentView: View {
                 }
                 .padding()
                 .contextMenu {
-                        Button("刷新") {
+                        Button("Reload") {
                                 loadFiles()
                         }
                 }

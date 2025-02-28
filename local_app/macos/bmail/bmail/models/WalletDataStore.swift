@@ -19,9 +19,9 @@ enum WalletError: LocalizedError {
         var errorDescription: String? {
                 switch self {
                 case .walletNotLoaded:
-                        return "钱包数据尚未加载。"
+                        return "Bmail wallet load failed"
                 case .decryptionFailed(let error):
-                        return "解锁钱包时出错：\(error.localizedDescription)"
+                        return "Decrypt wallet failed：\(error.localizedDescription)"
                 }
         }
 }

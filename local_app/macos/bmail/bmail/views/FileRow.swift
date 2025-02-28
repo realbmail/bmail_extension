@@ -15,11 +15,11 @@ enum FileRowError: Error, LocalizedError {
         var errorDescription: String? {
                 switch self {
                 case .invalidFileName(let message):
-                        return "无法提取文件ID：\(message)"
+                        return "no file id found：\(message)"
                 case .fileNotFound(let path):
-                        return "文件不存在：\(path)"
+                        return "file not found：\(path)"
                 case .readingFileFailed(let message):
-                        return "读取文件内容失败：\(message)"
+                        return "read file failed：\(message)"
                 }
         }
 }
@@ -72,13 +72,13 @@ struct FileRow: View {
                                 Button(action: {
                                         decryptBmailFile()
                                 }) {
-                                        Label("解密文件", systemImage: "doc.text")
+                                        Label("Decrypt", systemImage: "doc.text")
                                 }
                         }else{
                                 Button(action: {
                                         NSWorkspace.shared .open(fileURL)
                                 }) {
-                                        Label("打开文件", systemImage: "doc.text")
+                                        Label("Open", systemImage: "doc.text")
                                 }
                         }
                         
@@ -86,17 +86,17 @@ struct FileRow: View {
                         Button(action: {
                                 do {
                                         try FileManager.default.removeItem(at: fileURL)
-                                        print("删除成功：\(fileURL.path)")
+                                        NSLog("------>>> 删除成功：\(fileURL.path)")
                                         NotificationCenter.default.post(name: Notification.Name("RefreshFileList"), object: nil)
                                 } catch {
-                                        print("删除失败：\(error.localizedDescription)")
+                                        NSLog("------>>> 删除失败：\(error.localizedDescription)")
                                 }
                         }) {
-                                Label("删除", systemImage: "trash")
+                                Label("Delete", systemImage: "trash")
                         }
                 }
                 .alert(isPresented: $showAlert) {
-                        Alert(title: Text("错误"), message: Text(alertMessage), dismissButton: .default(Text("确定")))
+                        Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
                 }
         }
         
@@ -104,7 +104,7 @@ struct FileRow: View {
                 //                NSLog("------>>> 需要解析的文件: \(fileURL)")
                 
                 guard let priKey = walletStore.walletData?.curvePriKey else {
-                        alertMessage = "请首先解密账号"
+                        alertMessage = "Decrypt wallet please"
                         showAlert = true
                         return;
                 }
@@ -113,7 +113,7 @@ struct FileRow: View {
                 
                 do {
                         guard let extractedID = try extractIDFromFileName(fileURL: fileURL) else{
-                                alertMessage = "此文件不是BMail文件"
+                                alertMessage = "This is not a Bmail file"
                                 showAlert = true
                                 return;
                         }
@@ -139,7 +139,7 @@ struct FileRow: View {
                                                                      userInfo: ["path": decryptFileUrl.path])
                         
                 } catch {
-                        alertMessage = "解密过程中出现错误：\(error.localizedDescription)"
+                        alertMessage = "Decrypt Error：\(error.localizedDescription)"
                         showAlert = true
                 }
         }
@@ -185,7 +185,7 @@ func readFileContent(extractedID: String) throws -> String {
         do {
                 return try String(contentsOf: targetFileURL, encoding: .utf8)
         } catch {
-                throw FileRowError.readingFileFailed("无法读取文件内容：\(error.localizedDescription)")
+                throw FileRowError.readingFileFailed("Read file Content Error：\(error.localizedDescription)")
         }
 }
 
