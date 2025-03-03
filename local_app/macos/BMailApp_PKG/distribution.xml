@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<installer-gui-script minSpecVersion="1">
+<installer-gui-script minSpecVersion="2">
     <title>BMailApp Installer</title>
+    <options customize="never" require-scripts="false" rootVolumeOnly="true"/>
+    <!-- 关键：限制安装到系统目录 -->
+    <domains enable_anywhere="false" enable_localSystem="true"/>
     <choices-outline>
         <line choice="default"/>
     </choices-outline>
     <choice id="default" visible="false">
         <pkg-ref id="com.yushian.bmail.pkg"/>
     </choice>
-    <pkg-ref id="com.yushian.bmail.pkg" version="1.0" auth="Root">BMailApp.pkg</pkg-ref>
-    <install-location>/</install-location>
+    <pkg-ref id="com.yushian.bmail.pkg" version="1.0" onConclusion="none">BMailApp.pkg</pkg-ref>
 </installer-gui-script>
