@@ -32,4 +32,4 @@ else
     exit 1
 fi
 
-echo "=======>>>> 完成！请使用生成的 $BASE_DIR/bin//BMailApp_Installer.pkg 进行安装。"
+echo "=======>>>> 完成！请使用生成的 $BASE_DIR/bin/BMailApp_Installer.pkg 进行安装。"
