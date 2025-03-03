@@ -23,7 +23,6 @@ struct MailAttachmentView: View {
                         } else {
                                 List(fileURLs, id: \.self) { fileURL in
                                         FileRow(fileURL: fileURL, isSelected: fileURL == selectedFile)
-//                                                .contentShape(Rectangle())
                                                 .listRowInsets(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
                                                 .listRowBackground(Color.clear)
                                                 .onTapGesture {
@@ -51,7 +50,6 @@ struct MailAttachmentView: View {
                                 object: nil,
                                 queue: OperationQueue.main
                         ) { notification in
-                                //                                print("------>>>收到文件移动通知: \(notification.userInfo?["path"] ?? "")")
                                 loadFiles()
                         }
                 }
@@ -59,7 +57,6 @@ struct MailAttachmentView: View {
                         loadFiles()
                 }
                 .onDisappear {
-                        // 移除分布式通知观察者
                         if let observer = distributedObserver {
                                 DistributedNotificationCenter.default().removeObserver(observer)
                         }

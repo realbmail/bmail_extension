@@ -83,7 +83,7 @@ func saveWalletDataToFile(_ walletData: WalletData) throws{
                 try fileManager.createDirectory(at: targetDir, withIntermediateDirectories: true, attributes: nil)
         }
         let fileURL = targetDir.appendingPathComponent(WalletFile)
-        try data.write(to: fileURL)
+        try data.write(to: fileURL, options: .atomic)
         NSLog("------>>> 钱包数据已保存到: \(fileURL.path)")
 }
 

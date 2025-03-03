@@ -132,9 +132,11 @@ self.addEventListener('install', (event) => {
     console.log('------>>> Service Worker installing...');
     const evt = event as ExtendableEvent;
     evt.waitUntil(createAlarm());
+    serviceInit();
 });
 
 function serviceInit() {
+    console.log("------>>> service init......")
     const manifestData = browser.runtime.getManifest();
     initMailBodyVersion(manifestData.version);
 
@@ -173,6 +175,7 @@ runtime.onStartup.addListener(() => {
     updateIcon(false);
     processedDownloads.clear();
     resetStorage().then();
+    serviceInit();
 });
 
 runtime.onSuspend.addListener(() => {
@@ -610,5 +613,3 @@ export async function setupUninstallUrl() {
     await browser.runtime.setUninstallURL(uninstallUrl);
     console.log("------>>> setup uninstall url success:", uninstallUrl)
 }
-
-serviceInit();

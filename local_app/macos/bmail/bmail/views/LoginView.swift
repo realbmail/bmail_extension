@@ -35,7 +35,6 @@ struct LoginView: View {
                                         bmailAddress = walletData.address.bmailAddress
                                 }
                         }
-                        
                 }.onChange(of: isLoading) { oldValue, newValue in
                         disableInput = newValue
                 }.onChange(of: isLoggedIn) { oldValue, newValue in
