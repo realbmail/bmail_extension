@@ -34,7 +34,7 @@ fi
 echo "=======>>>> Step 4: 运行 pkgbuild..."
 pkgbuild --root "$TMP_PAYLOAD_DIR/Payload" \
          --identifier com.yushian.bmail.pkg \
-         --version 1.0 \
+         --version 1.1 \
          --install-location "/" \
          --component-plist "$BASE_DIR/Components.plist" \
          --scripts "$BASE_DIR/Scripts" \
