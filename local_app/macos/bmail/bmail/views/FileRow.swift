@@ -108,7 +108,7 @@ struct FileRow: View {
                         Button(action: {
                                 do {
                                         try FileManager.default.removeItem(at: fileURL)
-//                                        NSLog("------>>> 删除成功：\(fileURL.path)")
+                                        //                                        NSLog("------>>> 删除成功：\(fileURL.path)")
                                         NotificationCenter.default.post(name: Notification.Name("RefreshFileList"), object: nil)
                                 } catch {
                                         NSLog("------>>> 删除失败：\(error.localizedDescription)")
@@ -169,8 +169,16 @@ struct FileRow: View {
         }
         
         func showInFinder(){
-                NSLog("------>>> 需要打开的文件: \(fileURL)")
-                NSWorkspace.shared.activateFileViewerSelecting([fileURL])
+                NSLog("------>>> 需要打开的文件: \(fileURL.path)")
+                
+                if !FileManager.default.fileExists(atPath: fileURL.path) {
+                        NSLog("文件不存在: \(fileURL.path)")
+                        return
+                }
+                
+                DispatchQueue.main.async {
+                        NSWorkspace.shared.activateFileViewerSelecting([fileURL])
+                }
         }
 }
 

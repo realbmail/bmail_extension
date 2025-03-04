@@ -129,7 +129,7 @@ async function timerTaskWork(alarm: any): Promise<void> {
 }
 
 self.addEventListener('install', (event) => {
-    console.log('------>>> Service Worker installing...');
+    console.log('------>>> Service Worker installing......');
     const evt = event as ExtendableEvent;
     evt.waitUntil(createAlarm());
     serviceInit();

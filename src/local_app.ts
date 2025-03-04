@@ -26,14 +26,14 @@ export async function createContextMenu(): Promise<boolean> {
         const result = await browser.runtime.sendNativeMessage(hostLocalAppName, msg);
         if (result.status !== "success") {
             console.log("------>>>[createContextMenu] context menu: local app run failed:", result.info);
+        } else {
+            console.log("------>>> wallet send success")
         }
-        console.log("------>>> context menu setup success")
     } catch (err) {
         console.log("------>>>[createContextMenu] context menu: 调用 Native Message 失败：", err);
     }
 
     addContextMenu();
-
     return false;
 }
 
