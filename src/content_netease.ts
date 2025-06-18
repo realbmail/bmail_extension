@@ -431,7 +431,7 @@ class Provider implements ContentPageProvider {
         return queryEmailAddrNetEase() ?? "";
     }
 
-    async processAttachmentDownload(_fileName?: string, _attachmentData?: any): Promise<void> {
+    async processAttachmentDownload(_fileName?: string, _attachmentData?: any, hasLocalApp?: boolean): Promise<void> {
     }
 }
 

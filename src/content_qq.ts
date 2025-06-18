@@ -863,8 +863,7 @@ async function monitorQQMailReadingOldVersion(template: HTMLTemplateElement) {
         return;
     }
 
-    const div = document.getElementById("mainFrameContainer") as HTMLElement;
-    let iframe = div.querySelector('iframe[name="mainFrame"]') as HTMLIFrameElement | null;
+    const iframe = document.getElementById("mainFrameContainer")?.querySelector('iframe[name="mainFrame"]') as HTMLIFrameElement | null;
     if (!iframe) {
         return;
     }
@@ -1032,13 +1031,13 @@ class Provider implements ContentPageProvider {
         return queryEmailAddrQQ() ?? "";
     }
 
-    async processAttachmentDownload(_fileName?: string, attachmentData?: any): Promise<void> {
+    async processAttachmentDownload(_fileName?: string, attachmentData?: any, hasLocalApp?: boolean): Promise<void> {
         // console.log("-------->>>", attachmentData)
-        await downloadAndDecryptAgain(attachmentData);
+        await downloadAndDecryptAgain(attachmentData, hasLocalApp);
     }
 }
 
-async function downloadAndDecryptAgain(attachmentData?: any) {
+async function downloadAndDecryptAgain(attachmentData?: any, hasLocalApp?: boolean) {
     if (!attachmentData) {
         console.log("------>>> miss parameters:downloadUrl");
         return;

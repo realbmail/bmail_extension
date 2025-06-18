@@ -219,7 +219,7 @@ browser.runtime.onMessage.addListener((request, _sender, sendResponse: (response
                 sendResponse({success: true});
                 return;
             }
-            provider.processAttachmentDownload(request.fileName, request.attachment).then();
+            provider.processAttachmentDownload(request.fileName, request.attachment, request.hasLocalApp).then();
             sendResponse({success: true});
             break;
 

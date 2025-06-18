@@ -21,7 +21,14 @@ import {extractAesKeyId, sendMsgToContent} from "./content_common";
 import {openWallet, updateIcon} from "./wallet_util";
 import {getAdminAddress, getContactSrv} from "./setting";
 import {parseEmailTemplate} from "./main_common";
-import {AddMenuListener, createContextMenu, sendAkToLocalApp, sendDownloadAction} from "./local_app";
+import {
+    AddMenuListener,
+    AppCmdOpen,
+    createContextMenu,
+    hostLocalAppName,
+    sendAkToLocalApp,
+    sendDownloadAction
+} from "./local_app";
 
 const runtime = browser.runtime;
 const alarms = browser.alarms;
@@ -96,6 +103,9 @@ runtime.onMessage.addListener((request: any, _sender: Runtime.MessageSender, sen
                     return
                 }
                 await sendAkToLocalApp(request.data.id, request.data.key, mKey);
+
+                const msg = {command: AppCmdOpen, data: ""};
+                const result = await browser.runtime.sendNativeMessage(hostLocalAppName, msg);
             });
             sendResponse({success: 1, data: ""});
             return true;
@@ -118,6 +128,7 @@ async function createAlarm(): Promise<void> {
 
 alarms.onAlarm.addListener(timerTaskWork);
 let needResetContextMenu = false;
+
 async function timerTaskWork(alarm: any): Promise<void> {
     if (alarm.name === __alarm_name__) {
         if (needResetContextMenu) {
@@ -577,11 +588,13 @@ browser.downloads.onChanged.addListener(async (delta) => {
         return;
     }
 
+    let hasLocalApp = false;
     if (newDownloadFilePath) {
         fileName = newDownloadFilePath;
+        hasLocalApp = true;
     }
 
-    await sendMsgToContent({action: MsgType.BMailDownload, fileName: fileName})
+    await sendMsgToContent({action: MsgType.BMailDownload, fileName: fileName, hasLocalApp: hasLocalApp})
 
     outlookDownloadItems.delete(downloadId);
 });

@@ -472,8 +472,8 @@ class Provider implements ContentPageProvider {
         return queryEmailAddrOutLook() ?? "";
     }
 
-    async processAttachmentDownload(fileName?: string, _attachmentData?: any): Promise<void> {
-        await procDownloadFile(fileName);
+    async processAttachmentDownload(fileName?: string, _attachmentData?: any, hasLocalApp?: boolean): Promise<void> {
+        await procDownloadFile(fileName, hasLocalApp);
     }
 }
 
@@ -619,7 +619,7 @@ function extractFileNameWithExtension(filePath: string): string | null {
     }
 }
 
-async function procDownloadFile(filePath?: string) {
+async function procDownloadFile(filePath?: string, hasLocalApp: boolean = false) {
     if (!filePath) {
         console.log("------>>> miss parameters:filePath");
         return;
@@ -632,11 +632,13 @@ async function procDownloadFile(filePath?: string) {
     }
 
     const aesKey = loadAKForReading(aekId.id);
-    if (aesKey) {
+    if (aesKey && !!hasLocalApp) {
         sendMessageToBackground({
             key: AttachmentEncryptKey.toJson(aesKey),
             id: aekId.id,
         }, MsgType.KeyForLocalApp).then();
+
+        return;
     }
 
     const dialog = document.getElementById("bmail-decrypt-dialog") as HTMLElement
