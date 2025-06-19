@@ -564,7 +564,7 @@ const resolveContactDetailStack: Array<(value: string) => void> = [];
 
 function monitorQQContact() {
     observeForElementDirect(document.body, 0, () => {
-        return document.querySelector(".xmail-cmp-contact-card")
+        return document.querySelector(".xmail-cmp-contact-card") as HTMLElement
     }, async () => {
 
         const contactDetail = document.querySelector(".xmail-cmp-contact-card");
@@ -585,7 +585,7 @@ function monitorQQContact() {
 
 
 async function monitorComposeAction(template: HTMLTemplateElement) {
-    let frameMainDiv = document.querySelector(".frame-main") as HTMLElement;
+    let frameMainDiv = document.querySelector(".frame-middle") as HTMLElement;
     if (!frameMainDiv) {
         console.log("------>>>compose action: this is not for qq new version");
         return;
