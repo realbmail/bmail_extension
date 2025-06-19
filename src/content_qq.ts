@@ -569,7 +569,7 @@ function monitorQQContact() {
 
         const contactDetail = document.querySelector(".xmail-cmp-contact-card");
         let email = ""
-        const emailDiv = contactDetail?.querySelector(".cmp-card-email span") as HTMLElement
+        const emailDiv = contactDetail?.querySelector(".cmp-basic-email span") as HTMLElement
         if (emailDiv) {
             console.log("------>>>current email:=>", emailDiv.innerText);
             email = emailDiv.innerText.trim();
@@ -1032,25 +1032,21 @@ class Provider implements ContentPageProvider {
     }
 
     async processAttachmentDownload(_fileName?: string, attachmentData?: any, hasLocalApp?: boolean): Promise<void> {
-        // console.log("-------->>>", attachmentData)
-        await downloadAndDecryptAgain(attachmentData, hasLocalApp);
-    }
-}
+        console.log("-------->>>", hasLocalApp);
+        if (!attachmentData) {
+            console.log("------>>> miss parameters:downloadUrl");
+            return;
+        }
+        const aesKey = loadAKForReading(attachmentData.aekID);
+        if (!aesKey) {
+            showTipsDialog("warn", browser.i18n.getMessage("bmail_file_key_invalid"))
+            return;
+        }
 
-async function downloadAndDecryptAgain(attachmentData?: any, hasLocalApp?: boolean) {
-    if (!attachmentData) {
-        console.log("------>>> miss parameters:downloadUrl");
-        return;
+        const encryptedData = new Uint8Array(attachmentData.data);
+        const fileName = attachmentData.fileName;
+        decryptAttachmentFileData(encryptedData, aesKey, fileName);
     }
-    const aesKey = loadAKForReading(attachmentData.aekID);
-    if (!aesKey) {
-        showTipsDialog("warn", browser.i18n.getMessage("bmail_file_key_invalid"))
-        return;
-    }
-
-    const encryptedData = new Uint8Array(attachmentData.data);
-    const fileName = attachmentData.fileName;
-    decryptAttachmentFileData(encryptedData, aesKey, fileName);
 }
 
 (window as any).contentPageProvider = new Provider();
