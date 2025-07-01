@@ -259,6 +259,7 @@ async function encryptMailAndSendQQ(mailBody: HTMLElement, receiverTable: HTMLEl
         if (!success) {
             return;
         }
+
         sendDiv.click();
     } catch (e) {
         console.log("------>>> mail crypto err:", e);
