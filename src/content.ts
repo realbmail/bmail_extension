@@ -53,12 +53,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log("----->>> no need to insert bmail elements", currentUrl)
         return;
     }
-    console.log("----->>> need to insert bmail elements:", currentUrl)
+    // console.log("----->>> need to insert bmail elements:", currentUrl)
     addCustomStyles('css/common.css');
     const template = await parseContentHtml('html/inject.html');
     appendTipDialog(template);
     translateInjectedElm();
-    console.log("------>>> shared content init success");
+    console.log("------>>>✅ shared content init success");
 });
 
 

@@ -24,7 +24,7 @@ async function createBmailObj() {
         }
     };
 
-    console.log("++++++>>>bmail object inject success");
+    console.log("++++++>>>✅ bmail object inject success");
 }
 
 function dispatchMessage() {

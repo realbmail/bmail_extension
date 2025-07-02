@@ -272,6 +272,12 @@ function monitorReadingArea(template: HTMLTemplateElement, mainArea: HTMLElement
     let oldElement: HTMLElement | null;
     observeForElement(mainArea, 200, () => {
         const readerElm = mainArea.querySelector(".mail-list-page-reader-body.reader-body-children") as HTMLElement;
+        if (!readerElm) {
+            const decryptBtn = mainArea.querySelector(".ui-ellipsis-toolbar-btns")?.querySelector(".bmail-btn_in_compose-div-qq");
+            if (!!decryptBtn) {
+                decryptBtn.remove();
+            }
+        }
         if (oldElement === readerElm) {
             return null;
         }
@@ -283,7 +289,7 @@ function monitorReadingArea(template: HTMLTemplateElement, mainArea: HTMLElement
 }
 
 async function monitorQQMailReading(template: HTMLTemplateElement) {
-    const mainArea = document.querySelector(".frame-main") as HTMLElement | null;
+    const mainArea = document.querySelector(".mail_app") as HTMLElement | null;
     if (!mainArea) {
         console.log("------>>> no mail reading area found");
         return;
@@ -298,7 +304,7 @@ function addCryptoBtnToReadingMailQQ(template: HTMLTemplateElement, mainArea?: H
     if (mainArea) {
         parentDiv = mainArea;
     }
-    const toolBar = parentDiv.querySelector(".basic-body-item .mail-detail-basic-action-bar") as HTMLElement | null;
+    const toolBar = parentDiv.querySelector(".ui-ellipsis-toolbar-btns") as HTMLElement | null;
     if (!toolBar) {
         console.log("------>>> tool bar for crypt button not found");
         return;
@@ -310,7 +316,7 @@ function addCryptoBtnToReadingMailQQ(template: HTMLTemplateElement, mainArea?: H
         return;
     }
 
-    const mailArea = parentDiv.querySelector(".xmail-ui-float-scroll .mail-detail-content") as HTMLElement | null;
+    const mailArea = parentDiv.querySelector(".mail-detail-content") as HTMLElement | null;
     if (!mailArea) {
         console.log("------>>> no reading mail body found");
         return;
@@ -1055,5 +1061,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     addCustomStyles('css/qq.css');
     const template = await parseContentHtml('html/inject_qq.html');
     appendForQQ(template);
-    console.log("------>>> qq content init success");
+    console.log("------>>>✅ qq content init success");
 });
