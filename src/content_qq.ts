@@ -25,14 +25,13 @@ import {
 } from "./content_common";
 import {emailRegex, extractEmail, hideLoading, sendMessageToBackground, showLoading,} from "./utils";
 import browser from "webextension-polyfill";
-import {__bmail_mail_body_class_name, MsgType} from "./consts";
+import {__bmail_mail_body_class_name, MsgType, MailFlag} from "./consts";
 import {
     addAttachmentEncryptBtn,
     AttachmentEncryptKey,
     decryptAttachmentFileData,
     loadAKForReading
 } from "./content_attachment";
-import {MailFlag} from "./bmail_body";
 
 function appendForQQ(template: HTMLTemplateElement) {
 
@@ -109,7 +108,7 @@ async function addCryptoBtnToComposeDivQQ(template: HTMLTemplateElement, compose
         return
     }
 
-    const mailBodyDiv = composeDiv.querySelector(".mail-content-editor") as HTMLElement;
+    const mailBodyDiv = composeDiv.querySelector(".mail-content-editor-inner") as HTMLElement;
     if (!mailBodyDiv) {
         console.log("----->>> mail body not found in compose");
         return;

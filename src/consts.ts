@@ -17,6 +17,7 @@ export enum MsgType {
     AdminAddress = 'AdminAddress',
     LocalAppNotInstall = "LocalAppNotInstall",
     KeyForLocalApp = "KeyForLocalApp",
+    QQNewVersionEncrypt = "QQNewVersionEncrypt",
 }
 
 export enum WalletStatus {
@@ -60,3 +61,6 @@ export const API_Uninstall_User = "/uninstall_user"
 export const Local_App_Nonce = "40981a5dc01567a287e10214c4b17f428bdb308b4dc3a968"
 
 export const __dbKey_uninstall_data: string = '__dbKey_uninstall_data__';
+
+export const MailFlag = "0be465716ad37c9119253196f921e677";
+

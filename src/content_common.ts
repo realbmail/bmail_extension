@@ -7,14 +7,13 @@ import {
     sendMessageToBackground,
     showLoading, sprintf
 } from "./utils";
-import {MailFlag} from "./bmail_body";
 import {EmailReflects} from "./proto/bmail_srv";
 import {
     __bmail_mail_body_class_name,
     AttachmentFileSuffix,
     ECInvalidEmailAddress,
     ECNoValidMailReceiver,
-    ECQueryBmailFailed, ExtensionDownloadLink,
+    ECQueryBmailFailed, ExtensionDownloadLink, MailFlag,
     MsgType
 } from "./consts";
 import {BmailError, EventData, wrapResponse} from "./inject_msg";

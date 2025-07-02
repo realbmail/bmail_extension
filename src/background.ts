@@ -4,7 +4,7 @@ import {closeDatabase, initDatabase} from "./database";
 import {resetStorage, sessionGet, sessionSet} from "./session_storage";
 import {loadWalletJsonFromDB, MailAddress, MailKey} from "./wallet";
 import {BMRequestToSrv, decodeHex, extractJsonString, extractNameFromUrl} from "./utils";
-import {BMailBody, decodeMail, encodeMail, initMailBodyVersion, MailFlag} from "./bmail_body";
+import {BMailBody, decodeMail, encodeMail, initMailBodyVersion} from "./bmail_body";
 import {BMailAccount, QueryReq, EmailReflects, BindAction} from "./proto/bmail_srv";
 import {
     __dbKey_cur_account_details,
@@ -14,7 +14,7 @@ import {
     API_Bind_Email,
     API_Query_Bmail_Details,
     API_Query_By_EMails,
-    API_Unbind_Email, API_Uninstall_User, MsgType,
+    API_Unbind_Email, API_Uninstall_User, MailFlag, MsgType,
     WalletStatus
 } from "./consts";
 import {extractAesKeyId, sendMsgToContent} from "./content_common";

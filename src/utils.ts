@@ -1,8 +1,7 @@
 import * as QRCode from 'qrcode';
 import browser from "webextension-polyfill";
 import {BMReq, BMRsp} from "./proto/bmail_srv";
-import {MailFlag} from "./bmail_body";
-import {MsgType} from "./consts";
+import {MsgType, MailFlag} from "./consts";
 import * as iconv from 'iconv-lite';
 import {getContactSrv} from "./setting";
 

@@ -5,10 +5,9 @@ import {BMRequestToSrv, decodeHex, encodeHex} from "./utils";
 import {ed2CurvePub} from "./edwards25519";
 import pako from "pako";
 import {DecryptRequest} from "./proto/bmail_srv";
-import {API_Decrypt_By_Admin} from "./consts";
+import {API_Decrypt_By_Admin, MailFlag} from "./consts";
 
 let MailBodyVersion = '0.0.0';
-export const MailFlag = "0be465716ad37c9119253196f921e677";
 
 export function initMailBodyVersion(version: string) {
     MailBodyVersion = version;

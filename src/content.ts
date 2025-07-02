@@ -16,7 +16,7 @@ import {
 } from "./content_common";
 import {sendMessageToBackground} from "./utils";
 
-import {BmailError, EventData, wrapResponse} from "./inject_msg";
+import {BmailError, EventData, InjectResult, wrapResponse} from "./inject_msg";
 
 
 export function addBmailObject(jsFilePath: string): void {
@@ -121,6 +121,12 @@ window.addEventListener("message", async (event) => {
 
         case MsgType.DecryptData:
             rspEvent = await decryptData(eventData);
+            window.postMessage(rspEvent, "*");
+            break;
+
+        case MsgType.QQNewVersionEncrypt:
+            const result = new InjectResult(true, 'test qq encrypt!');
+            rspEvent = new EventData(eventData.id, Inject_Msg_Flag, eventData.type, result, false);
             window.postMessage(rspEvent, "*");
             break;
 

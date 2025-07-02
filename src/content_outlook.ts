@@ -28,9 +28,8 @@ import {
     sendMessageToBackground,
     showLoading
 } from "./utils";
-import {MailFlag} from "./bmail_body";
 import {addAttachmentEncryptBtn, AttachmentEncryptKey, decryptFile, loadAKForReading} from "./content_attachment";
-import {AttachmentFileSuffix, MsgType} from "./consts";
+import {AttachmentFileSuffix, MsgType, MailFlag} from "./consts";
 
 function queryEmailAddrOutLook() {
     const element = document.getElementById("O365_AppName") as HTMLLinkElement | null;
