@@ -26,6 +26,7 @@
 }
 
 .bmail-decrypt-div-outlook {
+    min-width: 52px;
     border: 2px solid rgba(242, 133, 82, 0.2);
     height: 28px;
     border-radius: 4px;

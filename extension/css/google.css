@@ -84,12 +84,12 @@
 }
 
 .bmail-crypto-btn-div-google {
+    min-width: 70px;
     padding: 0 16px;
     border-radius: 18px;
     background-color: #04062E;
     height: 36px;
     cursor: pointer;
-
 }
 
 .bmail-crypto-action-google {
