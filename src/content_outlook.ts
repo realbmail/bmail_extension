@@ -49,7 +49,7 @@ function appendForOutLook(template: HTMLTemplateElement) {
 
     observeForElement(document.body, 800,
         () => {
-            return document.querySelector(".qQbyL .xKrjQ");
+            return document.getElementById("folderPaneDroppableContainer") as HTMLDivElement;
         }, async () => {
             appendBmailInboxMenuOutLook(template).then();
             monitorContactAction().then();
