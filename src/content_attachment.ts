@@ -241,6 +241,7 @@ export function decryptAttachmentFileData(
 
     const blob = new Blob([decryptedData as unknown as BlobPart], {type: 'application/octet-stream'});
 
+    const blob = new Blob([decryptedDataTyped], { type: 'application/octet-stream' });
     saveAs(blob, fileName);
     // console.log('------>>> 文件下载并解密成功', fileName);
 }
