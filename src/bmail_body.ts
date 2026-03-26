@@ -5,10 +5,9 @@ import {BMRequestToSrv, decodeHex, encodeHex} from "./utils";
 import {ed2CurvePub} from "./edwards25519";
 import pako from "pako";
 import {DecryptRequest} from "./proto/bmail_srv";
-import {API_Decrypt_By_Admin} from "./consts";
+import {API_Decrypt_By_Admin, MailFlag} from "./consts";
 
 let MailBodyVersion = '0.0.0';
-export const MailFlag = "0be465716ad37c9119253196f921e677";
 
 export function initMailBodyVersion(version: string) {
     MailBodyVersion = version;
@@ -76,6 +75,11 @@ export class BMailBody {
         const attData = nacl.secretbox(naclUtil.decodeUTF8(attachment), this.nonce, aesKey!);
         this.attAesKey = naclUtil.encodeBase64(attData);
     }
+}
+
+export function testGenerateNonce() {
+    const nonce = nacl.randomBytes(nacl.secretbox.nonceLength);
+    console.log("----->>>static encoded nonce:", encodeHex(nonce))
 }
 
 export function encodeMail(peers: string[], data: string, key: MailKey, attachment?: string, mails: string[] = []): BMailBody {

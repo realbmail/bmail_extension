@@ -1,0 +1,98 @@
+﻿<UserControl x:Class="BMailApp.MailAttachmentView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:BMailApp"
+             Loaded="UserControl_Loaded">
+
+    <!-- 资源区：绑定用的转换器，如果你仍需右键菜单“解密/打开”逻辑，请保留 -->
+    <UserControl.Resources>
+        <local:ContainsBmailToVisibilityConverter x:Key="ContainsBmailToVisibilityConverter" />
+        <local:NotContainsBmailToVisibilityConverter x:Key="NotContainsBmailToVisibilityConverter" />
+    </UserControl.Resources>
+
+    <!-- 整体布局：两行，第一行放标题，第二行放文件列表 -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- 标题（根据设计图可调大小/样式） -->
+        <TextBlock Text="Bmail附件"
+                   FontSize="18"
+                   FontWeight="Bold"
+                   Margin="10,0,0,10"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Left"/>
+
+        <!-- 文件列表和“没有文件”提示放在第2行 -->
+        <Grid Grid.Row="1">
+            <!-- 只需一行一列，用来放 ListBox 和空文件提示 -->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- 文件列表 -->
+            <ListBox x:Name="FilesListBox"
+                     Margin="10"
+                     BorderThickness="0"
+                     Background="Transparent"
+                     SelectionChanged="FilesListBox_SelectionChanged"
+                     MouseDoubleClick="FilesListBox_MouseDoubleClick">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <!-- 每个文件条目做成一个白色“卡片”样式 -->
+                        <Border CornerRadius="8"
+                                Background="White"
+                                Margin="0,0,0,10"
+                                Padding="10">
+                            <!-- 将右键菜单放在 Border 上，让整个条目都可右键 -->
+                            <Border.ContextMenu>
+                                <ContextMenu>
+                                    <!-- 如果文件名包含 _bmail，则显示“解密”，否则显示“打开” -->
+                                    <MenuItem Header="解密" 
+                                              Click="DecryptMenuItem_Click"
+                                              Visibility="{Binding Converter={StaticResource ContainsBmailToVisibilityConverter}}"/>
+                                    <MenuItem Header="打开" 
+                                              Click="OpenMenuItem_Click"
+                                              Visibility="{Binding Converter={StaticResource NotContainsBmailToVisibilityConverter}}"/>
+                                    <!-- 删除按钮始终显示 -->
+                                    <MenuItem Header="删除" Click="DeleteMenuItem_Click"/>
+                                </ContextMenu>
+                            </Border.ContextMenu>
+
+                            <!-- 横向排列：左侧图标 + 文件名 -->
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <!-- 示例文件图标，宽高可根据设计图微调 -->
+                                <Image Source="Resources/file.png"
+                                       Width="24" Height="24"
+                                       Margin="0,0,10,0"/>
+
+                                <!-- 文件名文本（DataContext 即文件名字符串） -->
+                                <TextBlock Text="{Binding}"
+                                           VerticalAlignment="Center"
+                                           Foreground="#333"
+                                           FontSize="14"/>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <!-- 当没有文件时显示提示 -->
+            <TextBlock x:Name="NoFilesTextBlock"
+                       Text="目录中没有文件"
+                       Foreground="Gray"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Visibility="Collapsed"/>
+        </Grid>
+    </Grid>
+
+    <!-- UserControl 级别的右键菜单，用于“刷新”操作 -->
+    <UserControl.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="刷新" Click="RefreshMenuItem_Click"/>
+        </ContextMenu>
+    </UserControl.ContextMenu>
+</UserControl>

@@ -1,8 +1,7 @@
 import * as QRCode from 'qrcode';
 import browser from "webextension-polyfill";
 import {BMReq, BMRsp} from "./proto/bmail_srv";
-import {MailFlag} from "./bmail_body";
-import {MsgType} from "./consts";
+import {MsgType, MailFlag} from "./consts";
 import * as iconv from 'iconv-lite';
 import {getContactSrv} from "./setting";
 
@@ -188,7 +187,7 @@ export function extractNameFromUrl(url: string, key: string): string | null {
         const rawParam = match ? match[1] : null;
 
         if (!rawParam) {
-            console.log(`------>>> URL 中未找到参数 ${key}`);
+            // console.log(`------>>> URL 中未找到参数 ${key}`);
             return null;
         }
 

@@ -1,15 +1,22 @@
 import browser from "webextension-polyfill";
-import {ECDecryptFailed, ECEncryptedFailed, ECInternalError, ECWalletClosed, Inject_Msg_Flag, MsgType} from "./consts";
+import {
+    ECDecryptFailed,
+    ECEncryptedFailed,
+    ECInternalError,
+    ECWalletClosed,
+    Inject_Msg_Flag,
+    MsgType
+} from "./consts";
 import {
     addCustomStyles, ContentPageProvider,
     parseContentHtml,
     parseEmailToBmail,
     readCurrentMailAddress,
-    setupEmailAddressByInjection
+    setupEmailAddressByInjection, showConfirmDialog
 } from "./content_common";
 import {sendMessageToBackground} from "./utils";
 
-import {BmailError, EventData, wrapResponse} from "./inject_msg";
+import {BmailError, EventData, InjectResult, wrapResponse} from "./inject_msg";
 
 
 export function addBmailObject(jsFilePath: string): void {
@@ -46,12 +53,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log("----->>> no need to insert bmail elements", currentUrl)
         return;
     }
-    console.log("----->>> need to insert bmail elements:", currentUrl)
+    // console.log("----->>> need to insert bmail elements:", currentUrl)
     addCustomStyles('css/common.css');
     const template = await parseContentHtml('html/inject.html');
     appendTipDialog(template);
     translateInjectedElm();
-    console.log("------>>> shared content init success");
+    console.log("------>>>✅ shared content init success");
 });
 
 
@@ -114,6 +121,12 @@ window.addEventListener("message", async (event) => {
 
         case MsgType.DecryptData:
             rspEvent = await decryptData(eventData);
+            window.postMessage(rspEvent, "*");
+            break;
+
+        case MsgType.QQNewVersionEncrypt:
+            const result = new InjectResult(true, 'test qq encrypt!');
+            rspEvent = new EventData(eventData.id, Inject_Msg_Flag, eventData.type, result, false);
             window.postMessage(rspEvent, "*");
             break;
 
@@ -212,9 +225,24 @@ browser.runtime.onMessage.addListener((request, _sender, sendResponse: (response
                 sendResponse({success: true});
                 return;
             }
-            provider.processAttachmentDownload(request.fileName, request.attachment).then();
+            provider.processAttachmentDownload(request.fileName, request.attachment, request.hasLocalApp).then();
+            sendResponse({success: true});
+            break;
+
+        // case MsgType.LocalAppNotRun:
+        //     showConfirmDialog(browser.i18n.getMessage("local_app_not_run"), browser.i18n.getMessage("start_local_app"), async () => {
+        //     })
+        //     break;
+        //
+        case MsgType.LocalAppNotInstall:
+            const link = request.message
+            console.log("------>>> current download link:", link)
+            showConfirmDialog(browser.i18n.getMessage("local_app_not_install"), browser.i18n.getMessage("download_local_app"), async () => {
+                window.open(link, "_blank", "width=800,height=600");
+            })
             sendResponse({success: true});
             break;
     }
+
     return true;
 });

@@ -1,0 +1,577 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		690280D02D5D9FD30030F2D7 /* CryptoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69478A6E2D5C633800B6815E /* CryptoKit.framework */; };
+		690280D42D5DC50E0030F2D7 /* TweetNacl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 690280D32D5DC50D0030F2D7 /* TweetNacl.framework */; };
+		690280D52D5DC50E0030F2D7 /* TweetNacl.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 690280D32D5DC50D0030F2D7 /* TweetNacl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		692D59252D535D3700F3C5EC /* msgService in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2B3FB4BE2D51F9DB00A0DF15 /* msgService */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		69478A752D5C6AAA00B6815E /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69478A742D5C6AAA00B6815E /* CryptoSwift.framework */; };
+		69478A762D5C6AAA00B6815E /* CryptoSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 69478A742D5C6AAA00B6815E /* CryptoSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		692D59222D535D0200F3C5EC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2B224AD22D50B97200F3E892 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2B3FB4BD2D51F9DB00A0DF15;
+			remoteInfo = msgService;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		2B3FB4BC2D51F9DB00A0DF15 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		692D59242D535D0D00F3C5EC /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 6;
+			files = (
+				692D59252D535D3700F3C5EC /* msgService in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		69478A772D5C6AAA00B6815E /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				690280D52D5DC50E0030F2D7 /* TweetNacl.framework in Embed Frameworks */,
+				69478A762D5C6AAA00B6815E /* CryptoSwift.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		2B224ADA2D50B97200F3E892 /* BMailApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BMailApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2B3FB4BE2D51F9DB00A0DF15 /* msgService */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = msgService; sourceTree = BUILT_PRODUCTS_DIR; };
+		690280D32D5DC50D0030F2D7 /* TweetNacl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TweetNacl.framework; path = Carthage/Build/Mac/TweetNacl.framework; sourceTree = "<group>"; };
+		69478A6E2D5C633800B6815E /* CryptoKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CryptoKit.framework; path = System/Library/Frameworks/CryptoKit.framework; sourceTree = SDKROOT; };
+		69478A712D5C635F00B6815E /* libcommonCrypto.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcommonCrypto.tbd; path = usr/lib/system/libcommonCrypto.tbd; sourceTree = SDKROOT; };
+		69478A742D5C6AAA00B6815E /* CryptoSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CryptoSwift.framework; path = Carthage/Build/Mac/CryptoSwift.framework; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		2B3FB4C92D51FC4500A0DF15 /* Exceptions for "LaunchAgents" folder in "BMailApp" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				com.yourcompany.msgservice.plist,
+			);
+			target = 2B224AD92D50B97200F3E892 /* BMailApp */;
+		};
+		696ABE0A2D56E2AB0013F28F /* Exceptions for "msgService" folder in "BMailApp" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				fileManger.swift,
+				WalletData.swift,
+			);
+			target = 2B224AD92D50B97200F3E892 /* BMailApp */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		2B224ADC2D50B97200F3E892 /* bmail */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = bmail;
+			sourceTree = "<group>";
+		};
+		2B3FB4BF2D51F9DB00A0DF15 /* msgService */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				696ABE0A2D56E2AB0013F28F /* Exceptions for "msgService" folder in "BMailApp" target */,
+			);
+			path = msgService;
+			sourceTree = "<group>";
+		};
+		2B3FB4C52D51FC2100A0DF15 /* LaunchAgents */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				2B3FB4C92D51FC4500A0DF15 /* Exceptions for "LaunchAgents" folder in "BMailApp" target */,
+			);
+			path = LaunchAgents;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2B224AD72D50B97200F3E892 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				690280D02D5D9FD30030F2D7 /* CryptoKit.framework in Frameworks */,
+				69478A752D5C6AAA00B6815E /* CryptoSwift.framework in Frameworks */,
+				690280D42D5DC50E0030F2D7 /* TweetNacl.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2B3FB4BB2D51F9DB00A0DF15 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2B224AD12D50B97200F3E892 = {
+			isa = PBXGroup;
+			children = (
+				2B3FB4C52D51FC2100A0DF15 /* LaunchAgents */,
+				2B224ADC2D50B97200F3E892 /* bmail */,
+				2B3FB4BF2D51F9DB00A0DF15 /* msgService */,
+				69478A6D2D5C633800B6815E /* Frameworks */,
+				2B224ADB2D50B97200F3E892 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		2B224ADB2D50B97200F3E892 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2B224ADA2D50B97200F3E892 /* BMailApp.app */,
+				2B3FB4BE2D51F9DB00A0DF15 /* msgService */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		69478A6D2D5C633800B6815E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				690280D32D5DC50D0030F2D7 /* TweetNacl.framework */,
+				69478A742D5C6AAA00B6815E /* CryptoSwift.framework */,
+				69478A712D5C635F00B6815E /* libcommonCrypto.tbd */,
+				69478A6E2D5C633800B6815E /* CryptoKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2B224AD92D50B97200F3E892 /* BMailApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2B224AEB2D50B97300F3E892 /* Build configuration list for PBXNativeTarget "BMailApp" */;
+			buildPhases = (
+				2B224AD62D50B97200F3E892 /* Sources */,
+				2B224AD72D50B97200F3E892 /* Frameworks */,
+				2B224AD82D50B97200F3E892 /* Resources */,
+				692D59242D535D0D00F3C5EC /* CopyFiles */,
+				69478A772D5C6AAA00B6815E /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				692D59232D535D0200F3C5EC /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				2B224ADC2D50B97200F3E892 /* bmail */,
+				2B3FB4C52D51FC2100A0DF15 /* LaunchAgents */,
+			);
+			name = BMailApp;
+			packageProductDependencies = (
+			);
+			productName = bmail;
+			productReference = 2B224ADA2D50B97200F3E892 /* BMailApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		2B3FB4BD2D51F9DB00A0DF15 /* msgService */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2B3FB4C42D51F9DB00A0DF15 /* Build configuration list for PBXNativeTarget "msgService" */;
+			buildPhases = (
+				2B3FB4BA2D51F9DB00A0DF15 /* Sources */,
+				2B3FB4BB2D51F9DB00A0DF15 /* Frameworks */,
+				2B3FB4BC2D51F9DB00A0DF15 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				2B3FB4BF2D51F9DB00A0DF15 /* msgService */,
+			);
+			name = msgService;
+			packageProductDependencies = (
+			);
+			productName = msgService;
+			productReference = 2B3FB4BE2D51F9DB00A0DF15 /* msgService */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2B224AD22D50B97200F3E892 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1620;
+				LastUpgradeCheck = 1620;
+				TargetAttributes = {
+					2B224AD92D50B97200F3E892 = {
+						CreatedOnToolsVersion = 16.2;
+					};
+					2B3FB4BD2D51F9DB00A0DF15 = {
+						CreatedOnToolsVersion = 16.2;
+					};
+				};
+			};
+			buildConfigurationList = 2B224AD52D50B97200F3E892 /* Build configuration list for PBXProject "BMailApp" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 2B224AD12D50B97200F3E892;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 2B224ADB2D50B97200F3E892 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2B224AD92D50B97200F3E892 /* BMailApp */,
+				2B3FB4BD2D51F9DB00A0DF15 /* msgService */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2B224AD82D50B97200F3E892 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2B224AD62D50B97200F3E892 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2B3FB4BA2D51F9DB00A0DF15 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		692D59232D535D0200F3C5EC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2B3FB4BD2D51F9DB00A0DF15 /* msgService */;
+			targetProxy = 692D59222D535D0200F3C5EC /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		2B224AE92D50B97300F3E892 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.2;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		2B224AEA2D50B97300F3E892 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		2B224AEC2D50B97300F3E892 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = bmail/bmail.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 5;
+				DEVELOPMENT_ASSET_PATHS = "\"bmail/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = 2XYK8RBB6M;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = BMailApp;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/usr/lib/system",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				MARKETING_VERSION = 1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yushian.bmail;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		2B224AED2D50B97300F3E892 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = bmail/bmail.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 5;
+				DEVELOPMENT_ASSET_PATHS = "\"bmail/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = 2XYK8RBB6M;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = BMailApp;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/usr/lib/system",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				MARKETING_VERSION = 1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yushian.bmail;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		2B3FB4C22D51F9DB00A0DF15 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = msgService/msgService.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = 2XYK8RBB6M;
+				ENABLE_HARDENED_RUNTIME = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/usr/lib/system",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yushian.bmail.helper;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		2B3FB4C32D51F9DB00A0DF15 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = msgService/msgService.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = 2XYK8RBB6M;
+				ENABLE_HARDENED_RUNTIME = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/usr/lib/system",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yushian.bmail.helper;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2B224AD52D50B97200F3E892 /* Build configuration list for PBXProject "BMailApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2B224AE92D50B97300F3E892 /* Debug */,
+				2B224AEA2D50B97300F3E892 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2B224AEB2D50B97300F3E892 /* Build configuration list for PBXNativeTarget "BMailApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2B224AEC2D50B97300F3E892 /* Debug */,
+				2B224AED2D50B97300F3E892 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2B3FB4C42D51F9DB00A0DF15 /* Build configuration list for PBXNativeTarget "msgService" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2B3FB4C22D51F9DB00A0DF15 /* Debug */,
+				2B3FB4C32D51F9DB00A0DF15 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2B224AD22D50B97200F3E892 /* Project object */;
+}

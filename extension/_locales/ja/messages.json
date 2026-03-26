@@ -433,5 +433,17 @@
   },
   "user_consent_tips": {
     "message": "まずユーザー通知を確認してください。"
+  },
+  "local_app_not_run": {
+    "message": "BMailが起動していません"
+  },
+  "start_local_app": {
+    "message": "BMailを起動"
+  },
+  "local_app_not_install": {
+    "message": "BMailがインストールされていません"
+  },
+  "download_local_app": {
+    "message": "BMailアプリをダウンロード"
   }
 }

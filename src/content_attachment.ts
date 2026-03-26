@@ -198,16 +198,12 @@ function processFileData(event: ProgressEvent<FileReader>, originalFile: File, a
 
     const encryptedBody = nacl.secretbox(data, aesKey.nonce, aesKey.key);
 
-    // Ensure the encryptedBody is backed by an ArrayBuffer
-    const encryptedArrayBuffer = encryptedBody.buffer instanceof ArrayBuffer
-        ? encryptedBody.buffer
-        : new ArrayBuffer(encryptedBody.length);
-    const encryptedBodyTyped = new Uint8Array(encryptedArrayBuffer);
-    if (encryptedBody.buffer !== encryptedArrayBuffer) {
-        encryptedBodyTyped.set(encryptedBody);
-    }
+    // const encryptedBlob = new Blob([encryptedBody], {type: 'application/octet-stream'});
 
-    const encryptedBlob = new Blob([encryptedBodyTyped], { type: 'application/octet-stream' });
+    const encryptedBlob = new Blob(
+        [encryptedBody as unknown as BlobPart],
+        { type: 'application/octet-stream' }
+    );
 
     aesKey.cacheAKForCompose();
 
@@ -243,19 +239,11 @@ export function decryptAttachmentFileData(
         throw new Error(browser.i18n.getMessage("attachment_decrypt_error"));
     }
 
-    // Ensure the decryptedData is backed by an ArrayBuffer
-    const decryptedArrayBuffer = decryptedData.buffer instanceof ArrayBuffer
-        ? decryptedData.buffer
-        : new ArrayBuffer(decryptedData.length);
-    const decryptedDataTyped = new Uint8Array(decryptedArrayBuffer);
-    if (decryptedData.buffer !== decryptedArrayBuffer) {
-        decryptedDataTyped.set(decryptedData);
-    }
+    const blob = new Blob([decryptedData as unknown as BlobPart], {type: 'application/octet-stream'});
 
     const blob = new Blob([decryptedDataTyped], { type: 'application/octet-stream' });
     saveAs(blob, fileName);
-
-    console.log('------>>> 文件下载并解密成功', fileName);
+    // console.log('------>>> 文件下载并解密成功', fileName);
 }
 
 export async function decryptAttachment(aekId: string, url: string, fileName: string) {

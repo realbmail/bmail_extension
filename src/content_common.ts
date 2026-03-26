@@ -7,14 +7,13 @@ import {
     sendMessageToBackground,
     showLoading, sprintf
 } from "./utils";
-import {MailFlag} from "./bmail_body";
 import {EmailReflects} from "./proto/bmail_srv";
 import {
     __bmail_mail_body_class_name,
     AttachmentFileSuffix,
     ECInvalidEmailAddress,
     ECNoValidMailReceiver,
-    ECQueryBmailFailed, ExtensionDownloadLink,
+    ECQueryBmailFailed, ExtensionDownloadLink, MailFlag,
     MsgType
 } from "./consts";
 import {BmailError, EventData, wrapResponse} from "./inject_msg";
@@ -27,7 +26,7 @@ export const __decrypt_button_css_name = '.bmail-decrypt-btn'
 export interface ContentPageProvider {
     readCurrentMailAddress(): string;
 
-    processAttachmentDownload(filePath?: string, attachmentData?: any): Promise<void>
+    processAttachmentDownload(filePath?: string, attachmentData?: any, hasLocalApp?: boolean): Promise<void>
 }
 
 function bmailInboxAction() {
@@ -99,6 +98,36 @@ export function showTipsDialog(title: string, message: string, callback?: () => 
             await callback();
         })
     }
+    dialog.style.display = "block";
+}
+
+export function showConfirmDialog(message: string, confirmTitle?: string, callback?: () => Promise<void>) {
+    const dialog = document.getElementById("dialog-confirm-container") as HTMLElement
+    if (!dialog) {
+        return;
+    }
+    dialog.querySelector(".dialog-confirm-tips")!.textContent = message;
+
+    const confirmBtn = dialog.querySelector(".dialog-confirm-ok") as HTMLElement
+
+    if (confirmTitle) {
+        confirmBtn.textContent = confirmTitle
+    }
+
+    const handler = async (event: Event) => {
+        if (callback) {
+            await callback();
+        }
+        dialog.style.display = "none";
+        confirmBtn.removeEventListener("click", handler);
+    }
+    confirmBtn.addEventListener("click", handler)
+
+
+    dialog.querySelector(".dialog-confirm-no")?.addEventListener("click", () => {
+        dialog.style.display = "none";
+    })
+
     dialog.style.display = "block";
 }
 
@@ -722,4 +751,13 @@ const __appendedDownloadTips = `<br><div style="margin: auto; width: 32%; font-s
 
 function loadDownloadTips(): string {
     return sprintf(__appendedDownloadTips, ExtensionDownloadLink, browser.i18n.getMessage("download_tips"));
+}
+
+export async function sendMsgToContent(message: any) {
+    const tabs = await browser.tabs.query({active: true, currentWindow: true});
+    if (!tabs[0]) {
+        return;
+    }
+
+    await browser.tabs.sendMessage(tabs[0].id!, message);
 }

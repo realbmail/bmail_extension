@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "BMail",
-  "version": "3.2.7",
+  "version": "4.2.3",
   "default_locale": "en",
   "description": "An extension using blockchain technology for peer-to-peer encryption of emails",
   "action": {
@@ -22,7 +22,9 @@
     "activeTab",
     "tabs",
     "alarms",
-    "downloads"
+    "downloads",
+    "nativeMessaging",
+    "contextMenus"
   ],
   "host_permissions": [
     "https://bmail.simplenets.org/*"

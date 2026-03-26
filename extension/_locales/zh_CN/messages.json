@@ -427,5 +427,17 @@
   },
   "user_consent_tips": {
     "message": "请先选中用户须知"
+  },
+  "local_app_not_run": {
+    "message": "BMail未启动"
+  },
+  "start_local_app": {
+    "message": "启动Bmail"
+  },
+  "local_app_not_install": {
+    "message": "BMail未安装"
+  },
+  "download_local_app": {
+    "message": "下载BMail APp"
   }
 }

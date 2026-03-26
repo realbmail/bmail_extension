@@ -28,9 +28,8 @@ import {
     sendMessageToBackground,
     showLoading
 } from "./utils";
-import {MailFlag} from "./bmail_body";
-import {addAttachmentEncryptBtn, decryptFile, loadAKForReading} from "./content_attachment";
-import {AttachmentFileSuffix, MsgType} from "./consts";
+import {addAttachmentEncryptBtn, AttachmentEncryptKey, decryptFile, loadAKForReading} from "./content_attachment";
+import {AttachmentFileSuffix, MsgType, MailFlag} from "./consts";
 
 function queryEmailAddrOutLook() {
     const element = document.getElementById("O365_AppName") as HTMLLinkElement | null;
@@ -50,7 +49,7 @@ function appendForOutLook(template: HTMLTemplateElement) {
 
     observeForElement(document.body, 800,
         () => {
-            return document.querySelector(".qQbyL .xKrjQ");
+            return document.getElementById("folderPaneDroppableContainer") as HTMLDivElement;
         }, async () => {
             appendBmailInboxMenuOutLook(template).then();
             monitorContactAction().then();
@@ -472,8 +471,8 @@ class Provider implements ContentPageProvider {
         return queryEmailAddrOutLook() ?? "";
     }
 
-    async processAttachmentDownload(fileName?: string, _attachmentData?: any): Promise<void> {
-        await procDownloadFile(fileName);
+    async processAttachmentDownload(fileName?: string, _attachmentData?: any, hasLocalApp?: boolean): Promise<void> {
+        await procDownloadFile(fileName, hasLocalApp);
     }
 }
 
@@ -619,22 +618,28 @@ function extractFileNameWithExtension(filePath: string): string | null {
     }
 }
 
-async function procDownloadFile(filePath?: string) {
+async function procDownloadFile(filePath?: string, hasLocalApp: boolean = false) {
     if (!filePath) {
         console.log("------>>> miss parameters:filePath");
         return;
     }
     const fileName = extractFileNameWithExtension(filePath);
-    if (!fileName) {
-        console.log("------>>>  filePath", filePath);
+    const aekId = extractAesKeyId(fileName);
+    if (!aekId) {
+        console.log("------>>> no file name found for filePath", filePath);
         return;
     }
 
-    const aekId = extractAesKeyId(fileName);
-    if (!aekId) {
-        console.log("----->>> not bmail file:", fileName);
+    const aesKey = loadAKForReading(aekId.id);
+    if (aesKey && !!hasLocalApp) {
+        sendMessageToBackground({
+            key: AttachmentEncryptKey.toJson(aesKey),
+            id: aekId.id,
+        }, MsgType.KeyForLocalApp).then();
+
         return;
     }
+
     const dialog = document.getElementById("bmail-decrypt-dialog") as HTMLElement
     dialog.style.display = 'block';
     dialog.querySelector(".bmail-file-path")!.textContent = filePath;

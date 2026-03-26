@@ -4,32 +4,27 @@
 
 .bmail_left_menu_btn_div_qq {
     background-color: rgba(242, 133, 82, 0.2);
-
     display: flex;
     align-items: center;
     justify-content: flex-start;
     cursor: pointer;
-    margin-left: 4px;
-    border-radius: 6px;
-    height: 32px;
-}
-
-.bmail_left_menu_btn_div_qq {
     padding: 0 2px 0 12px;
     margin-left: 2px;
+    margin-bottom: 2px;
+    border-radius: 4px;
+    height: 32px;
 }
 
 .bmail_left_menu_btn_div_qq span {
     font-size: 14px;
     font-weight: 700;
     line-height: 20px;
-    padding-left: 12px;
+    padding-left: 4px;
 }
 
 .bmail_left_menu_btn_div_qq img {
-    width: 16px;
+    width: 18px;
     height: auto;
-    margin: 2px;
 }
 
 .bmail-crypto-btn-div-qq {
@@ -89,14 +84,15 @@
 
 .bmail-decrypt-div-qq {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    align-content: center;
+    justify-content: center;
 }
 
 .bmail-btn_in_compose-div-qq img {
-    width: 32px;
+    width: 22px;
     height: auto;
+    margin-right: 4px;
 }
 
 .attachmentOverlayButtonForQQOldVersion {

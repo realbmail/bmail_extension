@@ -1,0 +1,154 @@
+﻿<Window x:Class="BMailApp.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="登录"
+        Height="600"
+        Width="400"
+        WindowStartupLocation="CenterScreen"
+        Icon="Resources/logo.ico"
+        Loaded="Window_Loaded"
+        WindowStyle="SingleBorderWindow"
+        Background="White">
+
+    <Window.Resources>
+        <!-- 定义一个名为 OrangeButtonStyle 的按钮样式 -->
+        <Style x:Key="OrangeButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="#F37B1D"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="15">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#C2540F"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#A3420B"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 新增下载链接样式，使其与整体设计兼容且更美观 -->
+        <Style x:Key="DownloadHyperlinkStyle" TargetType="Hyperlink">
+            <Setter Property="Foreground" Value="#F37B1D"/>
+            <Setter Property="TextDecorations" Value="{x:Null}"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="#C2540F"/>
+                    <Setter Property="TextDecorations" Value="Underline"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <!-- 可以用一个外层Grid或Border来做圆角、阴影等效果 -->
+    <Grid>
+        <!-- 如果需要在WindowStyle=None时支持拖拽、关闭按钮等，可以在这里自定义标题栏 -->
+        <Border Background="White"
+                CornerRadius="10"
+                Margin="10">
+            <Grid>
+                <!-- 主内容布局 -->
+                <Grid x:Name="MainContent">
+                    <StackPanel Margin="30" VerticalAlignment="Top">
+
+                        <!-- 顶部图标（可替换为你设计图上的“M”图标） -->
+                        <Image Source="Resources/logo.ico"
+                               Width="80" Height="80"
+                               HorizontalAlignment="Center"
+                               Margin="0,20,0,10"/>
+
+                        <!-- 显示Bmail地址 -->
+                        <Border CornerRadius="10"
+                                Background="#F8F9F9"
+                                Padding="10,5"
+                                MinHeight="64"
+                                Margin="0,0,0,20"
+                                HorizontalAlignment="Center">
+                            <TextBlock x:Name="BmailAddressTextBlock"
+                                       Text="BMCPSXUvB4kU8GyhG4JghA83wnxq4qjuRY74SBDkaXYUoY"
+                                       FontSize="14"
+                                       VerticalAlignment="Center"
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Center"
+                                       HorizontalAlignment="Center"/>
+                        </Border>
+
+                        <!-- 密码输入 -->
+                        <Border CornerRadius="10"
+                                Background="#F3F5F7"
+                                Margin="0,0,0,10"
+                                HorizontalAlignment="Stretch"
+                                MinHeight="48">
+                            <Grid>
+                                <!-- 水印文本 -->
+                                <TextBlock Text="Password"
+                                           Foreground="#C0C0C0"
+                                           VerticalAlignment="Center"
+                                           Margin="15,0,0,0"
+                                           IsHitTestVisible="False"/>
+                                <!-- 自定义模板的 PasswordBox -->
+                                <PasswordBox x:Name="PasswordBox"
+                                             BorderThickness="0"
+                                             Background="#F3F5F7"
+                                             VerticalAlignment="Center"
+                                             Margin="10,0,10,0"
+                                             Height="36">
+                                    <PasswordBox.Template>
+                                        <ControlTemplate TargetType="PasswordBox">
+                                            <Border Background="{TemplateBinding Background}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    BorderBrush="{TemplateBinding BorderBrush}">
+                                                <ScrollViewer x:Name="PART_ContentHost"
+                                                              VerticalAlignment="Center"
+                                                              HorizontalScrollBarVisibility="Hidden"
+                                                              VerticalScrollBarVisibility="Hidden"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </PasswordBox.Template>
+                                </PasswordBox>
+                            </Grid>
+                        </Border>
+
+                        <!-- 登录按钮 -->
+                        <Button Content="登录"
+                                Height="40"
+                                Style="{StaticResource OrangeButtonStyle}"
+                                Click="LoginButton_Click"/>
+
+                        <!-- 优化后的下载安装包超链接 -->
+                        <TextBlock HorizontalAlignment="Right" Margin="0,20,0,10">
+                            <Hyperlink Style="{StaticResource DownloadHyperlinkStyle}"
+                                       NavigateUri="https://mail.simplenets.org/file/extension.zip"
+                                       RequestNavigate="Hyperlink_RequestNavigate">
+                                下载安装包
+                            </Hyperlink>
+                        </TextBlock>
+                        
+                    </StackPanel>
+                </Grid>
+
+                <!-- 加载遮罩层 -->
+                <Grid x:Name="LoadingOverlay" 
+                      Background="#88000000" 
+                      Visibility="Collapsed">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="正在登录..."
+                                   Foreground="White"
+                                   FontSize="18"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

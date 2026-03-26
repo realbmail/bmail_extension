@@ -25,9 +25,13 @@ import {
 } from "./content_common";
 import {emailRegex, extractEmail, hideLoading, sendMessageToBackground, showLoading,} from "./utils";
 import browser from "webextension-polyfill";
-import {__bmail_mail_body_class_name, MsgType} from "./consts";
-import {addAttachmentEncryptBtn, decryptAttachmentFileData, loadAKForReading} from "./content_attachment";
-import {MailFlag} from "./bmail_body";
+import {__bmail_mail_body_class_name, MsgType, MailFlag} from "./consts";
+import {
+    addAttachmentEncryptBtn,
+    AttachmentEncryptKey,
+    decryptAttachmentFileData,
+    loadAKForReading
+} from "./content_attachment";
 
 function appendForQQ(template: HTMLTemplateElement) {
 
@@ -104,7 +108,7 @@ async function addCryptoBtnToComposeDivQQ(template: HTMLTemplateElement, compose
         return
     }
 
-    const mailBodyDiv = composeDiv.querySelector(".mail-content-editor") as HTMLElement;
+    const mailBodyDiv = composeDiv.querySelector(".mail-content-editor-inner") as HTMLElement;
     if (!mailBodyDiv) {
         console.log("----->>> mail body not found in compose");
         return;
@@ -254,6 +258,7 @@ async function encryptMailAndSendQQ(mailBody: HTMLElement, receiverTable: HTMLEl
         if (!success) {
             return;
         }
+
         sendDiv.click();
     } catch (e) {
         console.log("------>>> mail crypto err:", e);
@@ -267,6 +272,12 @@ function monitorReadingArea(template: HTMLTemplateElement, mainArea: HTMLElement
     let oldElement: HTMLElement | null;
     observeForElement(mainArea, 200, () => {
         const readerElm = mainArea.querySelector(".mail-list-page-reader-body.reader-body-children") as HTMLElement;
+        if (!readerElm) {
+            const decryptBtn = mainArea.querySelector(".ui-ellipsis-toolbar-btns")?.querySelector(".bmail-btn_in_compose-div-qq");
+            if (!!decryptBtn) {
+                decryptBtn.remove();
+            }
+        }
         if (oldElement === readerElm) {
             return null;
         }
@@ -278,7 +289,7 @@ function monitorReadingArea(template: HTMLTemplateElement, mainArea: HTMLElement
 }
 
 async function monitorQQMailReading(template: HTMLTemplateElement) {
-    const mainArea = document.querySelector(".frame-main") as HTMLElement | null;
+    const mainArea = document.querySelector(".mail_app") as HTMLElement | null;
     if (!mainArea) {
         console.log("------>>> no mail reading area found");
         return;
@@ -293,7 +304,7 @@ function addCryptoBtnToReadingMailQQ(template: HTMLTemplateElement, mainArea?: H
     if (mainArea) {
         parentDiv = mainArea;
     }
-    const toolBar = parentDiv.querySelector(".basic-body-item .mail-detail-basic-action-bar") as HTMLElement | null;
+    const toolBar = parentDiv.querySelector(".ui-ellipsis-toolbar-btns") as HTMLElement | null;
     if (!toolBar) {
         console.log("------>>> tool bar for crypt button not found");
         return;
@@ -305,7 +316,7 @@ function addCryptoBtnToReadingMailQQ(template: HTMLTemplateElement, mainArea?: H
         return;
     }
 
-    const mailArea = parentDiv.querySelector(".xmail-ui-float-scroll .mail-detail-content") as HTMLElement | null;
+    const mailArea = parentDiv.querySelector(".mail-detail-content") as HTMLElement | null;
     if (!mailArea) {
         console.log("------>>> no reading mail body found");
         return;
@@ -369,31 +380,44 @@ function addDecryptBtnForAttachment(template: HTMLTemplateElement) {
             console.log("------>>> no need to add decrypt button to this attachment element");
             continue;
         }
-        const toolbar = attachment.querySelector(".xmail-ui-hyperlink.attach-link")?.parentNode
+        const toolbar = attachment.querySelector(".attach-operate-btn")
         if (!toolbar || toolbar.childNodes.length < 2) {
             console.log("------>>> download tool bar not found");
             continue;
         }
         const clone = bmailDownloadLi.cloneNode(true) as HTMLElement;
         clone.textContent = browser.i18n.getMessage('bmail_attachment_decrypt');
-        const downBtn = toolbar.childNodes[1] as HTMLElement;
+        const downBtn = toolbar.childNodes[0] as HTMLElement;
         addDecryptBtnToAttachmentItem(downBtn, clone, parsedId.id);
-        toolbar.append(clone);
+        attachment.querySelector(".attach-info")?.append(clone);
+        // toolbar.insertBefore(clone, downBtn)//.append(clone);
     }
 }
 
 function addDecryptBtnToAttachmentItem(downloadBtn: HTMLElement, clone: HTMLElement, aekID: string) {
-    clone.addEventListener('click', async () => {
+    clone.addEventListener('click', async (event) => {
+        // 阻止事件冒泡
+        event.stopPropagation();
+        // event.preventDefault()
+
+        const statusRsp = await sendMessageToBackground('', MsgType.CheckIfLogin)
+        if (statusRsp.success < 0) {
+            return;
+        }
+
         const aesKey = loadAKForReading(aekID);
         if (!aesKey) {
-            const statusRsp = await sendMessageToBackground('', MsgType.CheckIfLogin)
-            if (statusRsp.success < 0) {
-                return;
-            }
-
             showTipsDialog("Tips", browser.i18n.getMessage("decrypt_mail_body_first"))
             return;
         }
+
+        if (aesKey) {
+            sendMessageToBackground({
+                key: AttachmentEncryptKey.toJson(aesKey),
+                id: aekID,
+            }, MsgType.KeyForLocalApp).then();
+        }
+
         downloadBtn.click();
     });
 }
@@ -546,12 +570,12 @@ const resolveContactDetailStack: Array<(value: string) => void> = [];
 
 function monitorQQContact() {
     observeForElementDirect(document.body, 0, () => {
-        return document.querySelector(".xmail-cmp-contact-card")
+        return document.querySelector(".xmail-cmp-contact-card") as HTMLElement
     }, async () => {
 
         const contactDetail = document.querySelector(".xmail-cmp-contact-card");
         let email = ""
-        const emailDiv = contactDetail?.querySelector(".cmp-card-email span") as HTMLElement
+        const emailDiv = contactDetail?.querySelector(".cmp-basic-email span") as HTMLElement
         if (emailDiv) {
             console.log("------>>>current email:=>", emailDiv.innerText);
             email = emailDiv.innerText.trim();
@@ -567,7 +591,7 @@ function monitorQQContact() {
 
 
 async function monitorComposeAction(template: HTMLTemplateElement) {
-    let frameMainDiv = document.querySelector(".frame-main") as HTMLElement;
+    let frameMainDiv = document.querySelector(".frame-middle") as HTMLElement;
     if (!frameMainDiv) {
         console.log("------>>>compose action: this is not for qq new version");
         return;
@@ -845,8 +869,7 @@ async function monitorQQMailReadingOldVersion(template: HTMLTemplateElement) {
         return;
     }
 
-    const div = document.getElementById("mainFrameContainer") as HTMLElement;
-    let iframe = div.querySelector('iframe[name="mainFrame"]') as HTMLIFrameElement | null;
+    const iframe = document.getElementById("mainFrameContainer")?.querySelector('iframe[name="mainFrame"]') as HTMLIFrameElement | null;
     if (!iframe) {
         return;
     }
@@ -1014,26 +1037,22 @@ class Provider implements ContentPageProvider {
         return queryEmailAddrQQ() ?? "";
     }
 
-    async processAttachmentDownload(_fileName?: string, attachmentData?: any): Promise<void> {
-        console.log("-------->>>", attachmentData)
-        await downloadAndDecryptAgain(attachmentData);
-    }
-}
+    async processAttachmentDownload(_fileName?: string, attachmentData?: any, hasLocalApp?: boolean): Promise<void> {
+        console.log("-------->>>", hasLocalApp);
+        if (!attachmentData) {
+            console.log("------>>> miss parameters:downloadUrl");
+            return;
+        }
+        const aesKey = loadAKForReading(attachmentData.aekID);
+        if (!aesKey) {
+            showTipsDialog("warn", browser.i18n.getMessage("bmail_file_key_invalid"))
+            return;
+        }
 
-async function downloadAndDecryptAgain(attachmentData?: any) {
-    if (!attachmentData) {
-        console.log("------>>> miss parameters:downloadUrl");
-        return;
+        const encryptedData = new Uint8Array(attachmentData.data);
+        const fileName = attachmentData.fileName;
+        decryptAttachmentFileData(encryptedData, aesKey, fileName);
     }
-    const aesKey = loadAKForReading(attachmentData.aekID);
-    if (!aesKey) {
-        showTipsDialog("warn", browser.i18n.getMessage("bmail_file_key_invalid"))
-        return;
-    }
-
-    const encryptedData = new Uint8Array(attachmentData.data);
-    const fileName = attachmentData.fileName;
-    decryptAttachmentFileData(encryptedData, aesKey, fileName);
 }
 
 (window as any).contentPageProvider = new Provider();
@@ -1042,5 +1061,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     addCustomStyles('css/qq.css');
     const template = await parseContentHtml('html/inject_qq.html');
     appendForQQ(template);
-    console.log("------>>> qq content init success");
+    console.log("------>>>✅ qq content init success");
 });

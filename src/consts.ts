@@ -15,6 +15,9 @@ export enum MsgType {
     SetEmailByInjection = 'SetEmailByInjection',
     KeepAlive = 'KeepAlive',
     AdminAddress = 'AdminAddress',
+    LocalAppNotInstall = "LocalAppNotInstall",
+    KeyForLocalApp = "KeyForLocalApp",
+    QQNewVersionEncrypt = "QQNewVersionEncrypt",
 }
 
 export enum WalletStatus {
@@ -43,7 +46,8 @@ export const __dbKey_cur_key: string = '__dbKey_cur_key__';
 export const __dbKey_cur_addr: string = '__dbKey_cur_addr__';
 export const __bmail_mail_body_class_name = "bmail-encrypted-data-wrapper"
 export const ExtensionDownloadLink = "https://chromewebstore.google.com/detail/bmail/kjlhomfbkgfkkfdpcolkecfanmipiiic"
-
+export const HostAppMacDownloadLink = "https://mail.simplenets.org/file/BMailApp_Installer.pkg"
+export const HostAppWinDownloadLink = "https://mail.simplenets.org/file/BMailApp_Installer.zip"
 
 export const API_Bind_Email = "/bind_account"
 export const API_Unbind_Email = "/unbind_account"
@@ -52,3 +56,11 @@ export const API_Query_Bmail_Details = "/query_account"
 export const API_Active_Account = "/account_active"
 export const API_Active_By_Email = "/active_by_email"
 export const API_Decrypt_By_Admin = "/decrypt_by_admin"
+export const API_Uninstall_User = "/uninstall_user"
+
+export const Local_App_Nonce = "40981a5dc01567a287e10214c4b17f428bdb308b4dc3a968"
+
+export const __dbKey_uninstall_data: string = '__dbKey_uninstall_data__';
+
+export const MailFlag = "0be465716ad37c9119253196f921e677";
+

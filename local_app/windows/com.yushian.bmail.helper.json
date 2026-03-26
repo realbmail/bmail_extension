@@ -1,0 +1,12 @@
+{
+  "name": "com.yushian.bmail.helper",
+  "description": "BMail App Native Messaging Host",
+  "path": "C:\\Users\\99927\\Downloads\\bmail_extension\\local_app\\windows\\BMailApp\\bin\\Debug\\net8.0-windows\\BMailApp.exe",
+  "type": "stdio",
+  "allowed_origins": [
+    "chrome-extension://kjlhomfbkgfkkfdpcolkecfanmipiiic/",
+    "chrome-extension://medjdfpcdolhehloaifeglgcmnkiplog/",
+    "chrome-extension://ikgahkicnpejefphekiikmdjjbohacbc/",
+    "chrome-extension://nndbmahejplagdcjmliknjkgflnlakaf/"
+  ]
+}

@@ -381,7 +381,7 @@ class Provider implements ContentPageProvider {
         return queryEmailAddrGoogle() ?? "";
     }
 
-    async processAttachmentDownload(_fileName?: string, _attachmentData?: any): Promise<void> {
+    async processAttachmentDownload(_fileName?: string, _attachmentData?: any, hasLocalApp?: boolean): Promise<void> {
         return;
     }
 }

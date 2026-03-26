@@ -1,30 +1,41 @@
 /// <reference lib="webworker" />
 import browser, {Runtime} from "webextension-polyfill";
-import {closeDatabase} from "./database";
+import {closeDatabase, initDatabase} from "./database";
 import {resetStorage, sessionGet, sessionSet} from "./session_storage";
-import {MailAddress, MailKey} from "./wallet";
+import {loadWalletJsonFromDB, MailAddress, MailKey} from "./wallet";
 import {BMRequestToSrv, decodeHex, extractJsonString, extractNameFromUrl} from "./utils";
-import {BMailBody, decodeMail, encodeMail, initMailBodyVersion, MailFlag} from "./bmail_body";
+import {BMailBody, decodeMail, encodeMail, initMailBodyVersion} from "./bmail_body";
 import {BMailAccount, QueryReq, EmailReflects, BindAction} from "./proto/bmail_srv";
 import {
     __dbKey_cur_account_details,
     __dbKey_cur_addr,
     __dbKey_cur_key,
-    __key_wallet_status, API_Bind_Email, API_Query_Bmail_Details, API_Query_By_EMails, API_Unbind_Email,
-    MsgType,
+    __key_wallet_status,
+    API_Bind_Email,
+    API_Query_Bmail_Details,
+    API_Query_By_EMails,
+    API_Unbind_Email, API_Uninstall_User, MailFlag, MsgType,
     WalletStatus
 } from "./consts";
-import {extractAesKeyId} from "./content_common";
+import {extractAesKeyId, sendMsgToContent} from "./content_common";
 import {openWallet, updateIcon} from "./wallet_util";
-import {getAdminAddress} from "./setting";
+import {getAdminAddress, getContactSrv} from "./setting";
 import {parseEmailTemplate} from "./main_common";
+import {
+    AddMenuListener,
+    AppCmdOpen,
+    createContextMenu,
+    hostLocalAppName,
+    sendAkToLocalApp,
+    sendDownloadAction
+} from "./local_app";
 
 const runtime = browser.runtime;
 const alarms = browser.alarms;
 const __alarm_name__: string = '__alarm_name__timer__';
 
 runtime.onMessage.addListener((request: any, _sender: Runtime.MessageSender, sendResponse: (response?: any) => void): true | void => {
-    // console.log("[service work] action :=>", request.action, sender.url);
+    // console.log("------>>> action :=>", request.action, sender.url);
     switch (request.action) {
         case MsgType.KeepAlive:
             sendResponse({status: true});
@@ -34,7 +45,7 @@ runtime.onMessage.addListener((request: any, _sender: Runtime.MessageSender, sen
             browser.action.openPopup().then(() => {
                 sendResponse({success: true});
             }).catch((error) => {
-                console.error("[service work] bmail inbox action failed:", error);
+                console.error("------>>> bmail inbox action failed:", error);
                 sendResponse({success: false, error: error.message});
             });
             return true;
@@ -73,6 +84,7 @@ runtime.onMessage.addListener((request: any, _sender: Runtime.MessageSender, sen
 
         case MsgType.OpenPlugin:
             browser.action.openPopup().then();
+            sendResponse({success: 1, data: ""});
             return true;
 
         case MsgType.QueryCurBMail:
@@ -83,6 +95,19 @@ runtime.onMessage.addListener((request: any, _sender: Runtime.MessageSender, sen
             getAdminAddress().then(str => {
                 sendResponse({success: true, data: str});
             })
+            return true;
+
+        case MsgType.KeyForLocalApp:
+            checkWalletStatus(sendResponse).then(async mKey => {
+                if (!mKey) {
+                    return
+                }
+                await sendAkToLocalApp(request.data.id, request.data.key, mKey);
+
+                const msg = {command: AppCmdOpen, data: ""};
+                const result = await browser.runtime.sendNativeMessage(hostLocalAppName, msg);
+            });
+            sendResponse({success: 1, data: ""});
             return true;
 
         default:
@@ -97,36 +122,57 @@ async function createAlarm(): Promise<void> {
         alarms.create(__alarm_name__, {
             periodInMinutes: 1
         });
+        console.log("------>>> alarm create success")
     }
 }
 
 alarms.onAlarm.addListener(timerTaskWork);
+let needResetContextMenu = false;
 
 async function timerTaskWork(alarm: any): Promise<void> {
     if (alarm.name === __alarm_name__) {
-        console.log("[service work] Alarm Triggered!");
+        if (needResetContextMenu) {
+            console.log("------>>> Alarm Triggered! need reset context menu");
+            await setupUninstallUrl();
+            needResetContextMenu = await createContextMenu();
+        }
     }
 }
 
 self.addEventListener('install', (event) => {
-    console.log('[service work] Service Worker installing...');
+    console.log('------>>> Service Worker installing......');
     const evt = event as ExtendableEvent;
     evt.waitUntil(createAlarm());
+    serviceInit();
 });
 
-self.addEventListener('activate', (event) => {
-    const extendableEvent = event as ExtendableEvent;
-    extendableEvent.waitUntil((self as unknown as ServiceWorkerGlobalScope).clients.claim());
-    console.log('[service work] Service Worker activating......');
-    resetStorage().then();
-
+function serviceInit() {
+    console.log("------>>> service init......")
     const manifestData = browser.runtime.getManifest();
     initMailBodyVersion(manifestData.version);
+
+    initDatabase().then(() => {
+        createContextMenu().then(needReload => {
+            needResetContextMenu = needReload;
+        });
+        AddMenuListener();
+        setupUninstallUrl().then();
+    });
+}
+
+self.addEventListener('activate', (event) => {
+    console.log('------>>> Service Worker activating......');
+    const extendableEvent = event as ExtendableEvent;
+    extendableEvent.waitUntil((self as unknown as ServiceWorkerGlobalScope).clients.claim());
+    extendableEvent.waitUntil(createAlarm());
+
     updateIcon(false);
+    processedDownloads.clear();
+    resetStorage().then();
 });
 
 runtime.onInstalled.addListener((details: Runtime.OnInstalledDetailsType) => {
-    console.log("[service work] onInstalled event triggered......");
+    console.log("------>>> onInstalled......");
     if (details.reason === "install") {
         browser.tabs.create({
             url: runtime.getURL("html/home.html#onboarding/welcome")
@@ -136,12 +182,15 @@ runtime.onInstalled.addListener((details: Runtime.OnInstalledDetailsType) => {
 });
 
 runtime.onStartup.addListener(() => {
-    console.log('[service work] Service Worker onStartup......');
+    console.log('------>>> onStartup......');
     updateIcon(false);
+    processedDownloads.clear();
+    resetStorage().then();
+    serviceInit();
 });
 
 runtime.onSuspend.addListener(() => {
-    console.log('[service work] Browser is shutting down, closing IndexedDB...');
+    console.log('------>>> onSuspend......');
     closeDatabase();
 });
 
@@ -181,10 +230,10 @@ async function encryptData(peerAddr: string[], plainTxt: string, sendResponse: (
         }
 
         const mail = encodeMail(peerAddr, plainTxt, mKey, attachment, mailReceiver);
-        // console.log("[service work] encrypted mail body =>", mail);
+        // console.log("------>>> encrypted mail body =>", mail);
         sendResponse({success: true, data: JSON.stringify(mail)});
     } catch (err) {
-        console.log("[service worker]  encrypt data failed:", err)
+        console.log("------>>> encrypt data failed:", err)
         sendResponse({success: -1, message: `internal error: ${err}`});
     }
 }
@@ -199,7 +248,7 @@ async function decryptData(mailData: string, sendResponse: (response: any) => vo
         const mailBody = await decodeMail(mailData, mKey, adminAddress);
         sendResponse({success: 1, data: mailBody.body, attachment: mailBody.attachment});
     } catch (err) {
-        console.log("[service worker] decrypt data failed:", err)
+        console.log("------>>> decrypt data failed:", err)
         sendResponse({success: -1, message: browser.i18n.getMessage("decrypt_mail_body_failed") + ` error: ${err}`});
     }
 }
@@ -214,7 +263,7 @@ async function checkLoginStatus(sendResponse: (response: any) => void) {
         }
         sendResponse({success: 1});
     } catch (err) {
-        console.log("[service work] checkLoginStatus failed:", err)
+        console.log("------>>> checkLoginStatus failed:", err)
     }
 }
 
@@ -250,7 +299,7 @@ async function SigDataInBackground(data: any, sendResponse: (response: any) => v
 }
 
 async function getAccount(address: string, force: boolean, sendResponse: (response: any) => void) {
-    console.log("[service worker] loading account info from server", address, force);
+    console.log("------>>> loading account info from server", address, force);
     let account = await sessionGet(__dbKey_cur_account_details);
     if (account && !force) {
         sendResponse({success: 1, data: account});
@@ -266,14 +315,14 @@ async function getAccount(address: string, force: boolean, sendResponse: (respon
     } catch (err) {
         const e = err as Error;
         sendResponse({success: -1, message: e.message});
-        console.log("[service work] load account details from server =>", err);
+        console.log("------>>> load account details from server =>", err);
         return null;
     }
 }
 
 async function loadAccountDetailsFromSrv(address: string): Promise<BMailAccount | null> {
     if (!address) {
-        console.log("[service work] no address found locally =>");
+        console.log("------>>> no address found locally =>");
         return null;
     }
 
@@ -283,19 +332,18 @@ async function loadAccountDetailsFromSrv(address: string): Promise<BMailAccount 
     const message = QueryReq.encode(payload).finish();
     const sig = await signData(message);
     if (!sig) {
-        console.log("[service work]  signature not found");
+        console.log("------>>> signature not found");
         return null;
     }
 
     const srvRsp = await BMRequestToSrv(API_Query_Bmail_Details, address, message, sig)
     if (!srvRsp) {
-        console.log("[service work]  fetch failed no response data found");
+        console.log("------>>> fetch failed no response data found");
         return null;
     }
     const accountDetails = BMailAccount.decode(srvRsp) as BMailAccount;
     await sessionSet(__dbKey_cur_account_details, accountDetails);
     return accountDetails;
-
 }
 
 async function signData(message: Uint8Array) {
@@ -334,20 +382,20 @@ async function searchAccountByEmails(emails: string[], sendResponse: (response: 
         const message = QueryReq.encode(query).finish();
         const signature = await signData(message);
         if (!signature) {
-            console.log("[service worker] sign data failed");
+            console.log("------>>> sign data failed");
             sendResponse({success: -3, message: "sign data failed"});
             return;
         }
         const rspData = await BMRequestToSrv(API_Query_By_EMails, addr.bmail_address, message, signature);
         if (!rspData) {
-            console.log("[service worker] no contact data");
+            console.log("------>>> no contact data");
             sendResponse({success: -4, message: "no blockchain address found"});
             return;
         }
         const result = EmailReflects.decode(rspData) as EmailReflects
         sendResponse({success: 1, data: result});
     } catch (e) {
-        console.log("[service worker] search bmail accounts failed:", e)
+        console.log("------>>> search bmail accounts failed:", e)
         sendResponse({success: -5, message: "network failed:" + e});
     }
 }
@@ -406,13 +454,13 @@ async function bindingAction(isUnbind: boolean, email: string, sendResponse: (re
         }
 
         const srvRsp = await BMRequestToSrv(apiPath, addr.bmail_address, message, sig)
-        console.log("[service worker] binding or unbind=", isUnbind, " action success:=>", srvRsp);
+        console.log("------>>> binding or unbind=", isUnbind, " action success:=>", srvRsp);
         sendResponse({success: 1, message: (srvRsp as Uint8Array)[0]});
 
         loadAccountDetailsFromSrv(addr.bmail_address).then()
     } catch (e) {
         const err = e as Error;
-        console.log("[service worker] bind account failed:", err);
+        console.log("------>>> bind account failed:", err);
         sendResponse({success: -1, message: err.message});
     }
 }
@@ -434,40 +482,46 @@ async function queryCurrentBmailAddress(sendResponse: (response: any) => void) {
     sendResponse({success: 1, data: addr.bmail_address});
 }
 
-const targetDownloadIds = new Set<number>();
+const outlookDownloadItems = new Set<number>();
 const initiatedDownloadUrls = new Set<string>();
 
 browser.downloads.onCreated.addListener(async (downloadItem) => {
     const downloadUrl = downloadItem.url;
     if (processedDownloads.has(downloadUrl)) {
+        console.log("------>>> download file:", downloadItem.filename)
         return;
     }
+
     if (initiatedDownloadUrls.has(downloadUrl)) {
+        console.log("------>>> duplicate item download:", downloadItem)
         initiatedDownloadUrls.delete(downloadUrl);
         return;
     }
 
+    // console.log("------>>> new download item id is:", downloadItem.id)
+
     if (downloadUrl.includes("outlook.live.com")) {
-        targetDownloadIds.add(downloadItem.id);
+        outlookDownloadItems.add(downloadItem.id);
+        // console.log("------>>> new download item create:", downloadItem)
     } else if (downloadUrl.includes("mail.qq.com")) {
-        console.log("------>>> qq download url:=>", downloadUrl);
+        // console.log("------>>> qq download url:=>", downloadUrl);
         try {
             await downloadQQAttachment(downloadUrl);
         } catch (e) {
             console.log("------>>> download qq attachment failed:", e, downloadUrl);
         }
     }
+    processedDownloads.delete(downloadUrl);
 });
 
 async function downloadQQAttachment(url: string) {
     const fileName = extractNameFromUrl(url, 'name') || extractNameFromUrl(url, 'filename');
     const parsedId = extractAesKeyId(fileName);
     if (!parsedId) {
-        console.log("------>>> no need to decrypt this file", fileName);
+        console.log("------>>> no need to decrypt this file", fileName, url);
         return;
     }
     initiatedDownloadUrls.add(url);
-
     const response = await fetch(url, {
         method: 'GET',
         credentials: 'include', // 如果需要携带 Cookie
@@ -493,10 +547,15 @@ async function downloadQQAttachment(url: string) {
             continue;
         }
 
-        await browser.tabs.sendMessage(tab.id!, {
+        const result = await browser.tabs.sendMessage(tab.id!, {
             action: MsgType.BMailDownload,
             attachment: attData,
+            fileName: fileName,
         });
+        // console.log("------>>> qq file download decrypt result:", result)
+        if (result.success) {
+            initiatedDownloadUrls.delete(url);
+        }
     }
 }
 
@@ -506,36 +565,38 @@ browser.downloads.onChanged.addListener(async (delta) => {
     }
 
     const downloadId = delta.id;
-    if (!targetDownloadIds.has(downloadId)) {
-        return;
-    }
 
     const items = await browser.downloads.search({id: downloadId});
     const downloadFile = items[0];
-    // console.log("----------->>> Downloaded file: ", downloadFile);
+    let fileName = downloadFile.filename;
+    const newDownloadFilePath = await sendDownloadAction(fileName);
 
-    const fileName = downloadFile.filename;
+    if (!outlookDownloadItems.has(downloadId)) {
+        return;
+    }
+
     if (!fileName) {
-        console.log("----------->>> file name in download item not found:", delta);
-        targetDownloadIds.delete(downloadId); // 清除已处理的下载 ID
+        // console.log("------>>> file name in download item not found:", delta);
+        outlookDownloadItems.delete(downloadId); // 清除已处理的下载 ID
         return;
     }
 
     const bmailFile = extractAesKeyId(fileName);
     if (!bmailFile) {
-        console.log("----------->>> this file is not for bmail :", fileName);
-        targetDownloadIds.delete(downloadId); // 清除已处理的下载 ID
+        // console.log("------>>> this file is not for bmail :", fileName);
+        outlookDownloadItems.delete(downloadId); // 清除已处理的下载 ID
         return;
     }
 
-    const tabs = await browser.tabs.query({active: true, currentWindow: true});
-    if (!tabs[0]) {
-        return;
+    let hasLocalApp = false;
+    if (newDownloadFilePath) {
+        fileName = newDownloadFilePath;
+        hasLocalApp = true;
     }
 
-    await browser.tabs.sendMessage(tabs[0].id!, {action: MsgType.BMailDownload, fileName: fileName});
+    await sendMsgToContent({action: MsgType.BMailDownload, fileName: fileName, hasLocalApp: hasLocalApp})
 
-    targetDownloadIds.delete(downloadId);
+    outlookDownloadItems.delete(downloadId);
 });
 
 let processedDownloads = new Set();
@@ -544,8 +605,24 @@ async function handleExistingDownloads() {
     const downloads = await browser.downloads.search({});
 
     downloads.forEach(downloadItem => {
+        if (!downloadItem.exists) {
+            console.log("------>>> download item doesn't exist:", downloadItem.filename)
+            return;
+        }
         processedDownloads.add(downloadItem.url); // 添加到已处理集合
     });
 }
 
 handleExistingDownloads().then();
+
+export async function setupUninstallUrl() {
+    const hostUrl = await getContactSrv();
+    const wallet = await loadWalletJsonFromDB();
+    if (!wallet) {
+        console.log("------>>> setup uninstall url error: no wallet locally");
+        return
+    }
+    const uninstallUrl = `${hostUrl}${API_Uninstall_User}?address=${wallet.address.bmail_address}`
+    await browser.runtime.setUninstallURL(uninstallUrl);
+    console.log("------>>> setup uninstall url success:", uninstallUrl)
+}
