@@ -37,3 +37,4 @@ resources/.arch-internal-preview.css
 /local_app/macos/BMailApp_PKG/Certificates2.p12
 local_app/macos/BMailApp_PKG/Expanded/BMailApp.pkg
 local_app/macos/BMailApp_PKG/Expanded/Distribution
+.vscode
