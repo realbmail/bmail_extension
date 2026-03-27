@@ -33,6 +33,7 @@ module.exports = (env, argv) => {
             background: path.resolve(__dirname, './src/background.ts'),
             home: path.resolve(__dirname, './src/home.ts'),
             main: path.resolve(__dirname, './src/main.ts'),
+            compose: path.resolve(__dirname, './src/compose.ts'),
             inject: path.resolve(__dirname, './src/inject.ts'),
             content: path.resolve(__dirname, './src/content.ts'),
             content_google: path.resolve(__dirname, './src/content_google.ts'),

@@ -19,6 +19,7 @@ import {
 import {emailRegex, hideLoading, showLoading} from "./utils";
 import browser from "webextension-polyfill";
 import {addAttachmentEncryptBtn, decryptAttachment} from "./content_attachment";
+import {initFabInjector} from "./fab_injector/fab_injector";
 
 function appendForGoogle(template: HTMLTemplateElement) {
     const clone = parseBmailInboxBtn(template, 'bmail_left_menu_btn_google') as HTMLElement;
@@ -393,5 +394,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     addCustomStyles('css/google.css');
     const template = await parseContentHtml('html/inject_google.html');
     appendForGoogle(template);
+    initFabInjector();
     console.log("------>>> google content init success");
 });

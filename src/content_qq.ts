@@ -32,6 +32,7 @@ import {
     decryptAttachmentFileData,
     loadAKForReading
 } from "./content_attachment";
+import {initFabInjector} from "./fab_injector/fab_injector";
 
 function appendForQQ(template: HTMLTemplateElement) {
 
@@ -1061,5 +1062,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     addCustomStyles('css/qq.css');
     const template = await parseContentHtml('html/inject_qq.html');
     appendForQQ(template);
+    initFabInjector();
     console.log("------>>>✅ qq content init success");
 });

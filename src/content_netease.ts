@@ -18,6 +18,7 @@ import {
 import {extractEmail, hideLoading, showLoading} from "./utils";
 import {addAttachmentEncryptBtn, decryptAttachment} from "./content_attachment";
 import {__bmail_mail_body_class_name} from "./consts";
+import {initFabInjector} from "./fab_injector/fab_injector";
 
 function appendForNetEase(template: HTMLTemplateElement) {
     const clone = parseBmailInboxBtn(template, "bmail_left_menu_btn_netEase");
@@ -483,5 +484,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     addCustomStyles('css/netease.css');
     const template = await parseContentHtml('html/inject_netease.html');
     appendForNetEase(template);
+    initFabInjector();
     console.log("------>>> netease content init success");
 });

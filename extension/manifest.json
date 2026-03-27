@@ -85,6 +85,7 @@
       "resources": [
         "css/*.css",
         "html/*.html",
+        "js/compose.js",
         "js/inject.js",
         "file/*",
         "img/*"

@@ -30,6 +30,7 @@ import {
 } from "./utils";
 import {addAttachmentEncryptBtn, AttachmentEncryptKey, decryptFile, loadAKForReading} from "./content_attachment";
 import {AttachmentFileSuffix, MsgType, MailFlag} from "./consts";
+import {initFabInjector} from "./fab_injector/fab_injector";
 
 function queryEmailAddrOutLook() {
     const element = document.getElementById("O365_AppName") as HTMLLinkElement | null;
@@ -723,5 +724,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const template = await parseContentHtml('html/inject_outlook.html');
     appendDecryptDialog(template);
     appendForOutLook(template);
+    initFabInjector();
     console.log("------>>> outlook content init success");
 });
