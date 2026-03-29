@@ -88,13 +88,28 @@ Gmail 滚动后截图: [粘贴]
 1. 在 Gmail 页面,按 F12 打开 DevTools
 2. 切换到 Console 面板
 3. 复制粘贴以下代码并回车:
+
+   **Gmail 专用代码** (兼容 Trusted Types 安全策略):
+   ```javascript
+   const style = document.createElement('style');
+   style.textContent = '* { color: red !important; background: yellow !important; }';
+   document.head.appendChild(style);
+   ```
+
+   **其他邮箱(QQ、163、Outlook)可使用**:
    ```javascript
    const style = document.createElement('style');
    style.innerHTML = '* { color: red !important; background: yellow !important; }';
    document.head.appendChild(style);
    ```
+
 4. 观察页面变化
 5. 截图整个页面,**重点关注 FAB 按钮和周围的页面元素**
+
+**注意**:
+- 在 Gmail 页面,由于 Trusted Types CSP 策略,必须使用 `textContent` 代替 `innerHTML`
+- 在其他邮箱可以使用任一方式
+- 两种方式都能验证 Shadow DOM 样式隔离效果
 
 ### 提交给 AI
 
@@ -106,11 +121,13 @@ Gmail 滚动后截图: [粘贴]
 你的观察:
 - 页面其他元素是否变成红字黄底: [是/否]
 - FAB 按钮是否保持原样: [是/否]
+- 是否遇到 TrustedHTML 错误: [是/否]
 ```
 
 ### AI 检查要点
 - 页面元素被污染(证明测试有效)
 - FAB 按钮样式不受影响(Shadow DOM 隔离成功)
+- 如果在 Gmail 上遇到 TrustedHTML 错误,使用 textContent 方案
 
 ---
 
@@ -159,22 +176,53 @@ Network 面板截图: [粘贴 compose.html 的请求]
 ### 测试目标
 确认 Iframe 和宿主页面能双向通信
 
+### 前置条件检查
+
+**如果找不到 compose.html 的 context,请先确认**:
+
+1. **确认 Iframe 已加载**:
+   - 点击 FAB 按钮,侧边栏应该从右侧滑入
+   - 侧边栏顶部应显示 "BMail Compose Sandbox" 标题
+   - 如果侧边栏没有出现,检查 Console 是否有错误
+
+2. **确认 Iframe 元素存在**:
+   - 在 DevTools Elements 面板中按 Ctrl+F (或 Cmd+F)
+   - 搜索 "bmail-iframe"
+   - 应该能找到一个 `<iframe>` 元素
+   - 检查其 `src` 属性,应该是 `chrome-extension://...../html/compose.html`
+
+3. **刷新页面重试**:
+   - 如果上述检查都通过但仍找不到 context
+   - 刷新页面,重新加载扩展
+   - 再次点击 FAB 按钮打开侧边栏
+
 ### 测试步骤
 
 1. 确保 Iframe 已打开(如果没有,点击 FAB 打开)
 2. 在 DevTools 的 Console 面板顶部,找到 context 切换下拉菜单
+   - 默认显示为 "top"
+   - 点击下拉菜单
+   - 查找包含 "compose.html" 或 "chrome-extension://" 的选项
 3. 切换到 Iframe 的 context (通常显示为 compose.html)
 4. 在 Console 中执行:
    ```javascript
    window.parent.postMessage({
-     type: 'TEST_FROM_IFRAME',
-     payload: { message: 'Hello from iframe' }
+     type: 'CLOSE_PANEL',
+     payload: null
    }, '*');
-   console.log('已从 Iframe 发送消息');
+   console.log('已从 Iframe 发送 CLOSE_PANEL 消息');
    ```
-5. 切换回 top context
-6. 观察 Console 是否有接收消息的日志
-7. 截图 Console 面板(包含发送和接收的日志)
+5. 观察侧边栏是否关闭
+6. 切换回 top context
+7. 查看 Console 中是否有 "Host acknowledged CLOSE_PANEL" 日志
+8. 截图 Console 面板(包含发送和接收的日志)
+
+**注意**: 当前系统支持的消息类型为:
+- `READY`: Iframe 启动完成通知
+- `CLOSE_PANEL`: 请求关闭侧边栏
+- `SEND_EMAIL`: 发送邮件请求
+
+测试时请使用这些已定义的消息类型。
 
 ### 提交给 AI
 
@@ -185,6 +233,7 @@ Console 截图: [粘贴,确保能看到发送和接收的日志]
 
 你的观察:
 - Iframe 是否成功发送消息: [是/否]
+- 侧边栏是否关闭: [是/否]
 - 宿主页面是否接收到消息: [是/否]
 - 是否有错误: [是/否]
 
@@ -194,7 +243,8 @@ Console 日志内容:
 
 ### AI 检查要点
 - Iframe -> 宿主 通信成功
-- fab_injector 正确接收消息
+- 侧边栏成功关闭(证明消息被处理)
+- Console 中有 "Host acknowledged CLOSE_PANEL" 日志
 - 无跨域错误
 
 ---

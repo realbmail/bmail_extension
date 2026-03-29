@@ -15,6 +15,7 @@ const extensionOrigin = new URL(extensionPageUrl).origin;
 
 interface FabRuntime {
     isOpen: boolean;
+    hasReceivedReady: boolean;
     host: HTMLElement;
     iframe: HTMLIFrameElement;
     setOpen: (nextOpen: boolean) => void;
@@ -167,7 +168,6 @@ function buildShadowMarkup(): string {
             .bmail-shell[data-open="true"] .bmail-overlay {
                 opacity: 1;
                 visibility: visible;
-                pointer-events: auto;
             }
 
             .bmail-shell[data-open="true"] .bmail-panel {
@@ -195,10 +195,11 @@ function buildShadowMarkup(): string {
                     <button class="bmail-close" type="button" aria-label="Close panel">×</button>
                 </div>
                 <iframe
+                    id="bmail-iframe"
                     class="bmail-iframe"
                     title="BMail Compose"
                     src="${extensionPageUrl}"
-                    loading="lazy"
+                    loading="eager"
                     referrerpolicy="no-referrer"
                 ></iframe>
             </aside>
@@ -226,21 +227,26 @@ function bindMessageBus(runtime: FabRuntime): void {
 
         switch (message.type) {
             case "READY":
+                runtime.hasReceivedReady = true;
+                console.log("[bmail:debug] Received iframe message: READY");
                 postToIframe(runtime.iframe, {
                     type: "HOST_ACK",
                     payload: {receivedType: "READY"},
                 });
+                console.log("[bmail:debug] Acknowledged iframe message: READY");
                 postToIframe(runtime.iframe, {
                     type: "PANEL_STATE",
                     payload: {open: runtime.isOpen},
                 });
                 break;
             case "CLOSE_PANEL":
+                console.log("[bmail:debug] Received iframe message: CLOSE_PANEL");
                 runtime.setOpen(false);
                 postToIframe(runtime.iframe, {
                     type: "HOST_ACK",
                     payload: {receivedType: "CLOSE_PANEL"},
                 });
+                console.log("[bmail:debug] Acknowledged iframe message: CLOSE_PANEL");
                 break;
             case "SEND_EMAIL": {
                 if (!isSendEmailMessage(message)) {
@@ -255,6 +261,7 @@ function bindMessageBus(runtime: FabRuntime): void {
                 }
 
                 try {
+                    console.log("[bmail:debug] Received iframe message: SEND_EMAIL");
                     const payload: SendEmailPayload = message.payload;
                     const result = await adapter.fillAndSend(
                         payload.ciphertext,
@@ -264,6 +271,7 @@ function bindMessageBus(runtime: FabRuntime): void {
                         type: "HOST_ACK",
                         payload: {receivedType: "SEND_EMAIL"},
                     });
+                    console.log("[bmail:debug] Acknowledged iframe message: SEND_EMAIL");
                     if (result.status === "sent") {
                         runtime.setOpen(false);
                     }
@@ -283,13 +291,12 @@ function createFabRuntime(): FabRuntime {
     const host = document.createElement("div");
     host.id = FAB_HOST_ID;
 
-    const shadowRoot = host.attachShadow({mode: "closed"});
+    const shadowRoot = host.attachShadow({mode: "open"});
     shadowRoot.innerHTML = buildShadowMarkup();
 
     const shell = shadowRoot.querySelector(".bmail-shell") as HTMLElement;
     const fabButton = shadowRoot.querySelector(".bmail-fab") as HTMLButtonElement;
     const closeButton = shadowRoot.querySelector(".bmail-close") as HTMLButtonElement;
-    const overlay = shadowRoot.querySelector(".bmail-overlay") as HTMLDivElement;
     const panel = shadowRoot.querySelector(".bmail-panel") as HTMLElement;
     const iframe = shadowRoot.querySelector(".bmail-iframe") as HTMLIFrameElement;
 
@@ -297,6 +304,12 @@ function createFabRuntime(): FabRuntime {
         shell.dataset.open = String(nextOpen);
         panel.setAttribute("aria-hidden", String(!nextOpen));
         runtime.isOpen = nextOpen;
+
+        // Debug: Check if body overflow is affected
+        console.log('[bmail:debug] Panel state:', nextOpen ? 'open' : 'closed');
+        console.log('[bmail:debug] Body overflow:', document.body.style.overflow || 'default');
+        console.log('[bmail:debug] Body computed overflow:', window.getComputedStyle(document.body).overflow);
+
         postToIframe(iframe, {
             type: "PANEL_STATE",
             payload: {open: nextOpen},
@@ -305,6 +318,7 @@ function createFabRuntime(): FabRuntime {
 
     const runtime: FabRuntime = {
         isOpen: false,
+        hasReceivedReady: false,
         host,
         iframe,
         setOpen,
@@ -318,11 +332,33 @@ function createFabRuntime(): FabRuntime {
         setOpen(false);
     });
 
-    overlay.addEventListener("click", () => {
+    document.addEventListener(
+        "pointerdown",
+        (event: PointerEvent) => {
+            if (!runtime.isOpen) {
+                return;
+            }
+
+            if (event.composedPath().includes(runtime.host)) {
+                return;
+            }
+
+            setOpen(false);
+        },
+        true,
+    );
+
+    document.addEventListener("keydown", (event: KeyboardEvent) => {
+        if (!runtime.isOpen || event.key !== "Escape") {
+            return;
+        }
+
         setOpen(false);
     });
 
     iframe.addEventListener("load", () => {
+        console.log("[bmail:debug] compose iframe loaded:", extensionPageUrl);
+        console.log("[bmail:debug] compose iframe contentWindow available:", Boolean(iframe.contentWindow));
         postToIframe(iframe, {
             type: "PANEL_STATE",
             payload: {open: runtime.isOpen},
@@ -334,6 +370,24 @@ function createFabRuntime(): FabRuntime {
     });
 
     document.body.appendChild(host);
+
+    // Debug: Check initial body state after FAB injection
+    console.log('[bmail:debug] FAB injected successfully');
+    console.log("[bmail:debug] compose iframe attached:", {
+        hostId: host.id,
+        iframeId: iframe.id,
+        src: iframe.src,
+    });
+    console.log('[bmail:debug] Initial body overflow:', document.body.style.overflow || 'default');
+    console.log('[bmail:debug] Initial body computed overflow:', window.getComputedStyle(document.body).overflow);
+
+    window.setTimeout(() => {
+        if (runtime.hasReceivedReady) {
+            return;
+        }
+        console.warn("[bmail:debug] compose iframe did not send READY within 5000ms");
+    }, 5000);
+
     bindMessageBus(runtime);
 
     return runtime;
