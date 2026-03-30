@@ -33,6 +33,7 @@ import {
     loadAKForReading
 } from "./content_attachment";
 import {initFabInjector} from "./fab_injector/fab_injector";
+import {MockMailSiteAdapter} from "./adapters/MockMailSiteAdapter";
 
 function appendForQQ(template: HTMLTemplateElement) {
 
@@ -1062,6 +1063,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     addCustomStyles('css/qq.css');
     const template = await parseContentHtml('html/inject_qq.html');
     appendForQQ(template);
+
+    // 注册 Mock 适配器
+    window.bmailMailSiteAdapter = new MockMailSiteAdapter();
+    console.log('[content_qq] MockMailSiteAdapter registered');
+
     initFabInjector();
     console.log("------>>>✅ qq content init success");
 });

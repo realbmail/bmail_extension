@@ -2,6 +2,7 @@ import {FabMessage, FabMessageType} from "./fab_injector/message_bus";
 import {ComposeEditor} from "./compose/editor";
 import {RecipientManager} from "./compose/recipient_manager";
 import {Encryptor, EncryptedPackage} from "./compose/encryptor";
+import {Sender, SendOptions} from "./compose/sender";
 
 let editor: ComposeEditor | null = null;
 let recipientManager: RecipientManager | null = null;
@@ -196,48 +197,94 @@ function initEditor(): void {
     }
 }
 
+/**
+ * 显示发送状态
+ */
+function showSendStatus(type: 'loading' | 'success' | 'error', message: string): void {
+    const statusDiv = document.getElementById('send-status');
+    if (!statusDiv) return;
+
+    const statusContent = statusDiv.querySelector('.status-content');
+    const statusMessage = statusDiv.querySelector('.status-message');
+
+    if (statusContent && statusMessage) {
+        statusContent.className = `status-content status-${type}`;
+        statusMessage.textContent = message;
+    }
+
+    statusDiv.style.display = 'block';
+
+    if (type === 'success' || type === 'error') {
+        setTimeout(() => {
+            statusDiv.style.display = 'none';
+        }, 3000);
+    }
+}
+
+/**
+ * 清空表单
+ */
+function clearForm(): void {
+    const subjectInput = document.getElementById('subject-input') as HTMLInputElement;
+    if (subjectInput) {
+        subjectInput.value = '';
+    }
+    editor?.clear();
+    recipientManager?.clear();
+}
+
 function setupActions(): void {
     const sendButton = document.getElementById("compose-send-test");
     const closeButton = document.getElementById("compose-close-panel");
 
     sendButton?.addEventListener("click", async () => {
-        if (!editor) {
-            appendLog('Error: Editor not initialized');
+        if (!editor || !recipientManager) {
+            appendLog('Error: Components not initialized');
             return;
         }
 
-        if (!recipientManager) {
-            appendLog('Error: Recipient manager not initialized');
-            return;
-        }
+        // 获取主题
+        const subjectInput = document.getElementById('subject-input') as HTMLInputElement;
+        const subject = subjectInput?.value.trim() || '';
 
+        // 获取收件人和内容
         const recipients = recipientManager.getValidEmails();
-        if (recipients.length === 0) {
-            appendLog('Error: No recipients added');
-            return;
+        const content = editor.getHTML();
+
+        // 禁用发送按钮
+        if (sendButton instanceof HTMLButtonElement) {
+            sendButton.disabled = true;
         }
 
-        if (editor.isEmpty()) {
-            appendLog('Error: Email content is empty');
-            return;
+        // 显示发送中状态
+        showSendStatus('loading', '正在发送邮件...');
+        appendLog('Starting send process...');
+
+        try {
+            // 使用 Sender 发送
+            const result = await Sender.send({ recipients, subject, content });
+
+            if (result.success) {
+                showSendStatus('success', '邮件发送成功!');
+                appendLog(`✓ Email sent successfully (ID: ${result.messageId})`);
+
+                // 清空表单
+                setTimeout(() => {
+                    clearForm();
+                }, 2000);
+            } else {
+                showSendStatus('error', result.error || '发送失败');
+                appendLog(`✗ Send failed: ${result.error}`);
+            }
+        } catch (error) {
+            showSendStatus('error', '发送过程中发生错误');
+            appendLog(`✗ Send error: ${error}`);
+        } finally {
+            // 恢复发送按钮
+            if (sendButton instanceof HTMLButtonElement) {
+                sendButton.disabled = false;
+            }
         }
-
-        // 执行加密
-        const encryptSuccess = await performEncryption();
-        if (!encryptSuccess || !currentEncryptedPackage) {
-            appendLog('Failed to encrypt email');
-            return;
-        }
-
-        // 发送加密包
-        const serializedPackage = Encryptor.serializePackage(currentEncryptedPackage);
-        appendLog(`Sending to ${recipients.length} recipient(s): ${recipients.join(', ')}`);
-
-        postToHost("SEND_EMAIL", {
-            subject: "BMail encrypted email",
-            ciphertext: serializedPackage,
-        });
-        appendLog("SEND_EMAIL dispatched to host");
     });
 
     closeButton?.addEventListener("click", () => {

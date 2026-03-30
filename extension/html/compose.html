@@ -108,6 +108,32 @@
             margin-bottom: 20px;
         }
 
+        /* Subject Input styles */
+        .subject-section {
+            margin-bottom: 15px;
+        }
+
+        .subject-section label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .subject-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .subject-input:focus {
+            outline: none;
+            border-color: #4285f4;
+        }
+
         .recipient-input-section {
             margin-bottom: 15px;
         }
@@ -274,6 +300,48 @@
             50% { width: 70%; }
             100% { width: 100%; }
         }
+
+        /* Send Status styles */
+        .send-status {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 2000;
+            min-width: 300px;
+        }
+
+        .status-content {
+            text-align: center;
+        }
+
+        .status-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .status-message {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .status-success .status-icon::before {
+            content: '✓';
+            color: #34a853;
+        }
+
+        .status-error .status-icon::before {
+            content: '✗';
+            color: #d93025;
+        }
+
+        .status-loading .status-icon::before {
+            content: '⏳';
+        }
     </style>
 </head>
 <body>
@@ -287,11 +355,21 @@
         </div>
         <!-- Recipient Manager Container -->
         <div id="recipient-container"></div>
+        <!-- Subject Input -->
+        <div class="subject-section">
+            <label for="subject-input">主题:</label>
+            <input
+                type="text"
+                id="subject-input"
+                placeholder="输入邮件主题"
+                class="subject-input"
+            />
+        </div>
         <!-- Rich Text Editor Container -->
         <div id="editor-container"></div>
         <div class="compose-actions">
-            <button id="compose-send-test" class="compose-btn compose-btn-primary" type="button">Send Email</button>
-            <button id="compose-close-panel" class="compose-btn compose-btn-secondary" type="button">Close Panel</button>
+            <button id="compose-send-test" class="compose-btn compose-btn-primary" type="button">发送</button>
+            <button id="compose-close-panel" class="compose-btn compose-btn-secondary" type="button">取消</button>
         </div>
         <div id="compose-log" class="compose-log" aria-live="polite"></div>
     </section>
@@ -303,6 +381,14 @@
     <div class="status-text">正在加密...</div>
     <div class="status-progress">
         <div class="progress-bar"></div>
+    </div>
+</div>
+
+<!-- Send Status Overlay -->
+<div id="send-status" class="send-status" style="display: none;">
+    <div class="status-content">
+        <div class="status-icon"></div>
+        <div class="status-message"></div>
     </div>
 </div>
 

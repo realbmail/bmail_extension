@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -n \"case ''SEND_EMAIL''\" src/fab_injector/message_bus.ts)"
+    ]
+  }
+}

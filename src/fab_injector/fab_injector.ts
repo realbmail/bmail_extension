@@ -263,21 +263,39 @@ function bindMessageBus(runtime: FabRuntime): void {
                 try {
                     console.log("[bmail:debug] Received iframe message: SEND_EMAIL");
                     const payload: SendEmailPayload = message.payload;
+
+                    // 调用适配器的 fillAndSend 方法
+                    // 注意: 新的接口传递的是 encryptedContent,而适配器期望的是 ciphertext
                     const result = await adapter.fillAndSend(
-                        payload.ciphertext,
+                        payload.encryptedContent,
                         payload.subject,
                     );
+
+                    // 发送 SEND_EMAIL_RESPONSE 响应
                     postToIframe(runtime.iframe, {
-                        type: "HOST_ACK",
-                        payload: {receivedType: "SEND_EMAIL"},
+                        type: "SEND_EMAIL_RESPONSE",
+                        payload: {
+                            success: result.status === "sent",
+                            messageId: `msg_${Date.now()}`,
+                            error: result.status !== "sent" ? result.message || "发送失败" : undefined
+                        }
                     });
-                    console.log("[bmail:debug] Acknowledged iframe message: SEND_EMAIL");
+                    console.log("[bmail:debug] Sent SEND_EMAIL_RESPONSE");
+
                     if (result.status === "sent") {
                         runtime.setOpen(false);
                     }
                 } catch (error) {
                     const err = error as Error;
-                    emitHostError(runtime.iframe, err.message || "Failed to send message.");
+                    // 发送失败响应
+                    postToIframe(runtime.iframe, {
+                        type: "SEND_EMAIL_RESPONSE",
+                        payload: {
+                            success: false,
+                            error: err.message || "发送失败"
+                        }
+                    });
+                    console.error("[bmail:debug] Send error:", err);
                 }
                 break;
             }

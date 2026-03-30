@@ -1,14 +1,26 @@
 export type FabMessageType =
     | "READY"
     | "SEND_EMAIL"
+    | "SEND_EMAIL_RESPONSE"
     | "CLOSE_PANEL"
     | "PANEL_STATE"
     | "HOST_ACK"
     | "HOST_ERROR";
 
 export interface SendEmailPayload {
-    ciphertext: string;
+    recipients: string[];
     subject: string;
+    encryptedContent: string;
+    metadata: {
+        timestamp: number;
+        version: string;
+    };
+}
+
+export interface SendEmailResponsePayload {
+    success: boolean;
+    messageId?: string;
+    error?: string;
 }
 
 export interface PanelStatePayload {
@@ -26,6 +38,7 @@ export interface HostErrorPayload {
 export interface FabMessageMap {
     READY: null;
     SEND_EMAIL: SendEmailPayload;
+    SEND_EMAIL_RESPONSE: SendEmailResponsePayload;
     CLOSE_PANEL: null;
     PANEL_STATE: PanelStatePayload;
     HOST_ACK: HostAckPayload;
